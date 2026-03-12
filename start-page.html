@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 极简起始页</title>        
+    <title>Axapri | 极简起始页</title>             
     <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
@@ -152,7 +152,7 @@
         }
         #search-input {
             width: 100%;
-            padding: 14px 44px 14px 75px;
+            padding: 14px 44px 14px 65px;
             border: 1px solid var(--border-color);
             border-radius: 32px;
             background-color: var(--card-bg);
@@ -187,15 +187,15 @@
             outline: none;
             color: var(--text-color);
             font-size: 0.95rem;
-            font-weight: 50;
+            font-weight: 500;
             cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
+            justify-content: center;
+            padding-right: 0;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath fill='%236b7280' d='M0 0l3.5 3.5 3.5-3.5z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
-            background-position: right 0 center;
+            background-position: right 2px center;
             line-height: 1;
         }
         .engine-dropdown {
@@ -250,7 +250,7 @@
         .shortcut-card {
             display: flex;
             flex-direction: column;
-            align-items: center; /* 图标+名称整体水平居中 */
+            align-items: center;
             justify-content: center;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -267,16 +267,14 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-color: var(--primary-color);
         }
-        /* 新增：强制名称文本水平居中，超出自动换行 */
         .shortcut-name {
             text-align: center;
             width: 100%;
             margin-top: 8px;
             font-size: 0.85rem;
-            white-space: normal; /* 允许换行 */
-            word-wrap: break-word; /* 超长文字换行 */
+            white-space: normal;
+            word-wrap: break-word;
         }
-        /* 图标样式优化 */
         .shortcut-icon {
             font-size: 1.5rem;
             color: var(--primary-color);
@@ -412,7 +410,6 @@
             #clock { font-size: 2.5rem; }
             .shortcuts-container { gap: 12px; }
             .icon-library { grid-template-columns: repeat(5, 1fr); }
-            /* 移动端适配搜索引擎下拉框宽度 */
             .engine-dropdown { width: 100px; }
         }
     </style>
@@ -447,7 +444,6 @@
     <div class="search-container">
         <div class="search-input-wrap">
             <button class="engine-trigger" id="engine-trigger">百度</button>
-            <!-- 新增Yandex、搜狗、360搜索引擎选项 -->
             <ul class="engine-dropdown" id="engine-dropdown">
                 <li class="active" data-url="https://www.baidu.com/s?wd=">百度</li>
                 <li data-url="https://www.google.com/search?q=">谷歌</li>
@@ -698,7 +694,6 @@
         });
         document.addEventListener('click', () => iconLibrary.classList.remove('show'));
 
-// 绑定长按事件（修复手机端点击）
 function bindLongPressEvent(card, itemId) {
     let pressTimer = null;
 
