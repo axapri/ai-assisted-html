@@ -1,1 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 极简起始页</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #f5f5f5;
+            --border-color: #e0e0e0;
+            --primary-color: #4285f4;
+            --shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+            --active-color: rgba(66, 133, 244, 0.1);
+            --icon-color: #757575;
+            --dropdown-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --bg-img: none;
+        }
 
+        .dark-mode {
+            --bg-color: #181818;
+            --text-color: #e0e0e0;
+            --card-bg: #242424;
+            --border-color: #333333;
+            --primary-color: #8ab4f8;
+            --icon-color: #9e9e9e;
+            --active-color: rgba(138, 180, 248, 0.2);
+        }
+        .eye-care-mode {
+            --bg-color: #f8f9e8;
+            --text-color: #4a5568;
+            --card-bg: #feffe6;
+            --border-color: #e8e9d0;
+            --primary-color: #5a67d8;
+            --icon-color: #6c7781;
+            --active-color: rgba(90, 103, 216, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.15s ease;
+        }
+        body {
+            background: var(--bg-color) var(--bg-img) center/cover no-repeat fixed;
+            font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding: 10vh 20px 20px;
+            color: var(--text-color);
+            position: relative;
+        }
+
+        .top-controls {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow);
+            outline: none;
+        }
+
+        .bg-switch-panel {
+            position: fixed;
+            top: 70px;
+            right: 20px;
+            width: 280px;
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: var(--dropdown-shadow);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            display: none;
+            z-index: 15;
+        }
+        .bg-switch-panel.show { display: block; }
+        .bg-item {
+            width: 100%;
+            height: 60px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            overflow: hidden;
+        }
+        .bg-item.active { border-color: var(--primary-color); }
+        .bg-item img { width: 100%; height: 100%; object-fit: cover; }
+        .custom-bg-wrap { width: 100%; margin-top: 8px; }
+        #bg-file-input { display: none; }
+        .file-select-btn {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-size: 0.85rem;
+            text-align: center;
+            cursor: pointer;
+            display: block;
+        }
+        .file-select-btn:hover { background-color: var(--active-color); }
+
+        .time-date-container {
+            text-align: center;
+            margin-bottom: 1.8rem;
+        }
+        #clock {
+            font-size: 3.2rem;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+        #date {
+            font-size: 1rem;
+            color: var(--icon-color);
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 580px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        .search-input-wrap {
+            width: 100%;
+            position: relative;
+        }
+        #search-input {
+            width: 100%;
+            padding: 14px 44px 14px 75px;
+            border: 1px solid var(--border-color);
+            border-radius: 32px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            outline: none;
+            font-size: 1rem;
+            box-shadow: var(--shadow);
+        }
+        #search-input:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(66, 133, 244, 0.15);
+        }
+        .search-icon {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--icon-color);
+            opacity: 0.7;
+            font-size: 1.1rem;
+            pointer-events: none;
+        }
+        .engine-trigger {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-52%);
+            width: 50px;
+            height: 75%;
+            background-color: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-color);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath fill='%236b7280' d='M0 0l3.5 3.5 3.5-3.5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0 center;
+            line-height: 1;
+        }
+        .engine-dropdown {
+            position: absolute;
+            left: 15px;
+            top: calc(100% + 4px);
+            width: 90px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: var(--dropdown-shadow);
+            border: 1px solid var(--border-color);
+            list-style: none;
+            padding: 4px 0;
+            display: none;
+            z-index: 10;
+            opacity: 0;
+            transform: translateY(3px);
+        }
+        .engine-dropdown.show {
+            display: block;
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .engine-dropdown li {
+            padding: 7px 12px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            font-weight: 400;
+            border-radius: 4px;
+            margin: 0 3px;
+            line-height: 1.2;
+        }
+        .engine-dropdown li:hover {
+            background-color: var(--active-color);
+            transform: translateX(2px);
+        }
+        .engine-dropdown li.active {
+            color: var(--primary-color);
+            font-weight: 500;
+            background-color: var(--active-color);
+        }
+
+        .shortcuts-container {
+            width: 100%;
+            max-width: 580px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 16px;
+            padding: 0 10px;
+            position: relative;
+        }
+        .shortcut-card {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px 8px;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            user-select: none;
+            position: relative;
+            z-index: 1;
+        }
+        .shortcut-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-color: var(--primary-color);
+        }
+
+        .add-shortcut-modal, .delete-confirm-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .add-shortcut-modal.show, .delete-confirm-modal.show { display: flex; }
+        .modal-content, .delete-modal-content {
+            width: 90%;
+            max-width: 500px;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .delete-modal-content { max-width: 300px; text-align: center; }
+        .modal-title, .delete-modal-title {
+            font-size: 1.1rem;
+            margin-bottom: 16px;
+            text-align: center;
+            font-weight: 500;
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .form-group label {
+            font-size: 0.85rem;
+            color: var(--icon-color);
+        }
+        .form-group input {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            outline: none;
+            font-size: 0.9rem;
+        }
+        .icon-select-wrap {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .icon-trigger {
+            padding: 10px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .icon-library {
+            display: none;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-top: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        .icon-library.show { display: grid; }
+        .icon-item {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            color: var(--primary-color);
+            font-size: 1.2rem;
+        }
+        .icon-item:hover {
+            background-color: var(--active-color);
+            border-color: var(--primary-color);
+        }
+        .icon-item.selected {
+            background-color: var(--active-color);
+            border-color: var(--primary-color);
+        }
+        .modal-btns, .delete-modal-btns {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        .cancel-btn {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        .confirm-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        @media (max-width: 480px) {
+            #clock { font-size: 2.5rem; }
+            .shortcuts-container { gap: 12px; }
+            .icon-library { grid-template-columns: repeat(5, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <div class="top-controls">
+        <button class="control-btn" id="mode-toggle" title="切换模式">
+            <i class="fa fa-adjust" aria-hidden="true"></i>
+        </button>
+        <button class="control-btn" id="bg-toggle" title="切换背景">
+            <i class="fa fa-picture-o" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="bg-switch-panel" id="bg-panel">
+        <div class="bg-item active" data-bg="none">
+            <div style="width:100%;height:100%;background:var(--bg-color);display:flex;align-items:center;justify-content:center;font-size:0.8rem">原始背景</div>
+        </div>
+        <div class="custom-bg-wrap">
+            <label class="file-select-btn" for="bg-file-input">
+                <i class="fa fa-upload"></i> 选择本地图片/相册照片
+            </label>
+            <input type="file" id="bg-file-input" accept="image/*">
+        </div>
+    </div>
+
+    <div class="time-date-container">
+        <div id="clock">00:00</div>
+        <div id="date">2026年03月12日 星期四</div>
+    </div>
+
+    <div class="search-container">
+        <div class="search-input-wrap">
+            <button class="engine-trigger" id="engine-trigger">百度</button>
+            <ul class="engine-dropdown" id="engine-dropdown">
+                <li class="active" data-url="https://www.baidu.com/s?wd=">百度</li>
+                <li data-url="https://www.google.com/search?q=">谷歌</li>
+                <li data-url="https://cn.bing.com/search?q=">必应</li>
+            </ul>
+            <i class="fa fa-search search-icon"></i>
+            <input type="text" id="search-input" placeholder="输入关键词搜索...">
+        </div>
+    </div>
+
+    <div class="shortcuts-container" id="shortcuts-container">
+        <div class="shortcut-card" id="add-shortcut-card">
+            <i class="fa fa-plus shortcut-icon"></i>
+            <span class="shortcut-name">添加</span>
+        </div>
+    </div>
+
+    <div class="add-shortcut-modal" id="add-shortcut-modal">
+        <div class="modal-content">
+            <div class="modal-title">添加常用快捷方式</div>
+            <div class="modal-form">
+                <div class="form-group">
+                    <label for="shortcut-name">名称</label>
+                    <input type="text" id="shortcut-name" placeholder="例如：GitHub">
+                </div>
+                <div class="form-group">
+                    <label for="shortcut-url">网址</label>
+                    <input type="text" id="shortcut-url" placeholder="例如：https://github.com">
+                </div>
+                <div class="form-group">
+                    <label>图标选择</label>
+                    <div class="icon-select-wrap">
+                        <div class="icon-trigger" id="icon-trigger">
+                            <span id="selected-icon-text">选择图标</span>
+                            <i class="fa fa-chevron-down"></i>
+                        </div>
+                        <div class="icon-library" id="icon-library">
+                            <div class="icon-item" data-icon="github"><i class="fa fa-github"></i></div>
+                            <div class="icon-item" data-icon="weixin"><i class="fa fa-weixin"></i></div>
+                            <div class="icon-item" data-icon="youtube-play"><i class="fa fa-youtube-play"></i></div>
+                            <div class="icon-item" data-icon="shopping-cart"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="icon-item" data-icon="envelope"><i class="fa fa-envelope"></i></div>
+                            <div class="icon-item" data-icon="chrome"><i class="fa fa-chrome"></i></div>
+                            <div class="icon-item" data-icon="facebook"><i class="fa fa-facebook"></i></div>
+                            <div class="icon-item" data-icon="twitter"><i class="fa fa-twitter"></i></div>
+                            <div class="icon-item" data-icon="instagram"><i class="fa fa-instagram"></i></div>
+                            <div class="icon-item" data-icon="linkedin"><i class="fa fa-linkedin"></i></div>
+                            <div class="icon-item" data-icon="telegram"><i class="fa fa-telegram"></i></div>
+                            <div class="icon-item" data-icon="whatsapp"><i class="fa fa-whatsapp"></i></div>
+                            <div class="icon-item" data-icon="music"><i class="fa fa-music"></i></div>
+                            <div class="icon-item" data-icon="video-camera"><i class="fa fa-video-camera"></i></div>
+                            <div class="icon-item" data-icon="picture-o"><i class="fa fa-picture-o"></i></div>
+                            <div class="icon-item" data-icon="gamepad"><i class="fa fa-gamepad"></i></div>
+                            <div class="icon-item" data-icon="book"><i class="fa fa-book"></i></div>
+                            <div class="icon-item" data-icon="briefcase"><i class="fa fa-briefcase"></i></div>
+                            <div class="icon-item" data-icon="coffee"><i class="fa fa-coffee"></i></div>
+                            <div class="icon-item" data-icon="gift"><i class="fa fa-gift"></i></div>
+                            <div class="icon-item" data-icon="heart"><i class="fa fa-heart"></i></div>
+                            <div class="icon-item" data-icon="star"><i class="fa fa-star"></i></div>
+                            <div class="icon-item" data-icon="settings"><i class="fa fa-cog"></i></div>
+                            <div class="icon-item" data-icon="link"><i class="fa fa-link"></i></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-btns">
+                    <button class="modal-btn cancel-btn" id="cancel-add">取消</button>
+                    <button class="modal-btn confirm-btn" id="confirm-add">确认</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="delete-confirm-modal" id="delete-confirm-modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-title">确定要删除该快捷方式吗？</div>
+            <div class="delete-modal-btns">
+                <button class="modal-btn cancel-btn" id="cancel-delete">取消</button>
+                <button class="modal-btn confirm-btn" id="confirm-delete">确认删除</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 本地存储工具
+        const storage = {
+            get: (key) => {
+                const value = localStorage.getItem(key);
+                if (!value) return null;
+                try { return JSON.parse(value); } 
+                catch (e) { return value; }
+            },
+            set: (key, value) => localStorage.setItem(key, JSON.stringify(value)),
+            remove: (key) => localStorage.removeItem(key)
+        };
+
+        // 默认快捷方式（每个都有独立ID，支持单独删除）
+        const defaultShortcuts = [
+            { id: 'default_github', name: 'GitHub', url: 'https://github.com/', icon: 'github', fixed: false },
+            { id: 'default_wangyiyun', name: '网易云', url: 'https://music.163.com/', icon: 'music', fixed: false },
+            { id: 'default_bilibili', name: 'B站', url: 'https://www.bilibili.com', icon: 'play-circle', fixed: false }
+        ];
+
+        // 全局变量
+        let shortcutsList = storage.get('shortcutsList') || [...defaultShortcuts];
+        let deleteId = ''; // 仅存储当前要删除的单个卡片ID
+        const shortcutsContainer = document.getElementById('shortcuts-container');
+
+        // 时钟日期
+        function updateTimeDate() {
+            const now = new Date();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            document.getElementById('clock').textContent = `${hours}:${minutes}`;
+            
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const weekList = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const week = weekList[now.getDay()];
+            document.getElementById('date').textContent = `${year}年${month}月${day}日 ${week}`;
+        }
+        updateTimeDate();
+        setInterval(updateTimeDate, 60000);
+
+        // 搜索功能
+        const searchInput = document.getElementById('search-input');
+        const engineTrigger = document.getElementById('engine-trigger');
+        const engineDropdown = document.getElementById('engine-dropdown');
+        const engineItems = engineDropdown.querySelectorAll('li');
+        let activeEngineUrl = storage.get('activeEngine') || 'https://www.baidu.com/s?wd=';
+
+        if (storage.get('activeEngine')) {
+            engineItems.forEach(item => {
+                if (item.dataset.url === storage.get('activeEngine')) {
+                    item.classList.add('active');
+                    engineTrigger.textContent = item.textContent;
+                }
+            });
+        }
+
+        engineTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            engineDropdown.classList.toggle('show');
+        });
+        engineDropdown.addEventListener('mouseleave', () => engineDropdown.classList.remove('show'));
+        engineItems.forEach(item => {
+            item.addEventListener('click', () => {
+                engineItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+                engineTrigger.textContent = item.textContent;
+                activeEngineUrl = item.dataset.url;
+                storage.set('activeEngine', activeEngineUrl);
+                engineDropdown.classList.remove('show');
+                searchInput.focus();
+            });
+        });
+        document.addEventListener('click', () => engineDropdown.classList.remove('show'));
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && searchInput.value.trim()) {
+                window.location.href = activeEngineUrl + encodeURIComponent(searchInput.value.trim());
+                searchInput.value = '';
+            }
+        });
+
+        // 模式切换
+        const modeToggle = document.getElementById('mode-toggle');
+        const body = document.body;
+        const modes = ['light-mode', 'dark-mode', 'eye-care-mode'];
+        let currentMode = storage.get('currentMode') || 'light-mode';
+
+        function initMode() {
+            body.classList.remove('dark-mode', 'eye-care-mode');
+            if (currentMode === 'dark-mode') body.classList.add('dark-mode');
+            if (currentMode === 'eye-care-mode') body.classList.add('eye-care-mode');
+        }
+        initMode();
+        modeToggle.addEventListener('click', () => {
+            const currentIndex = modes.indexOf(currentMode);
+            currentMode = modes[(currentIndex + 1) % modes.length];
+            storage.set('currentMode', currentMode);
+            initMode();
+        });
+
+        // 背景图片
+        const bgToggle = document.getElementById('bg-toggle');
+        const bgPanel = document.getElementById('bg-panel');
+        const bgItems = bgPanel.querySelectorAll('.bg-item');
+        const bgFileInput = document.getElementById('bg-file-input');
+        let currentBg = storage.get('currentBg') || 'none';
+
+        function initBg() {
+            document.documentElement.style.setProperty('--bg-img', currentBg === 'none' ? 'none' : `url('${currentBg}')`);
+            bgItems.forEach(item => item.classList.toggle('active', item.dataset.bg === currentBg));
+        }
+        initBg();
+
+        bgToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            bgPanel.classList.toggle('show');
+        });
+        bgPanel.addEventListener('click', (e) => e.stopPropagation());
+        bgItems.forEach(item => {
+            item.addEventListener('click', () => {
+                currentBg = item.dataset.bg;
+                storage.set('currentBg', currentBg);
+                initBg();
+                bgPanel.classList.remove('show');
+            });
+        });
+        bgFileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (!file || !file.type.startsWith('image/')) {
+                alert('请选择有效的图片文件！');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                currentBg = event.target.result;
+                storage.set('currentBg', currentBg);
+                initBg();
+                bgPanel.classList.remove('show');
+            };
+            reader.readAsDataURL(file);
+        });
+        document.addEventListener('click', () => bgPanel.classList.remove('show'));
+
+        // 图标选择
+        const addShortcutModal = document.getElementById('add-shortcut-modal');
+        const addShortcutCard = document.getElementById('add-shortcut-card');
+        const cancelAddBtn = document.getElementById('cancel-add');
+        const confirmAddBtn = document.getElementById('confirm-add');
+        const shortcutNameInput = document.getElementById('shortcut-name');
+        const shortcutUrlInput = document.getElementById('shortcut-url');
+        const iconTrigger = document.getElementById('icon-trigger');
+        const iconLibrary = document.getElementById('icon-library');
+        const selectedIconText = document.getElementById('selected-icon-text');
+        const iconItems = iconLibrary.querySelectorAll('.icon-item');
+        let selectedIcon = '';
+
+        iconTrigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            iconLibrary.classList.toggle('show');
+        });
+        iconItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                iconItems.forEach(i => i.classList.remove('selected'));
+                item.classList.add('selected');
+                selectedIcon = item.dataset.icon;
+                selectedIconText.textContent = `已选：${selectedIcon}`;
+                iconLibrary.classList.remove('show');
+            });
+        });
+        document.addEventListener('click', () => iconLibrary.classList.remove('show'));
+
+        // 渲染快捷方式
+        function renderShortcuts() {
+            // 清空容器，保留添加卡片
+            const addCard = document.getElementById('add-shortcut-card');
+            shortcutsContainer.innerHTML = '';
+            shortcutsContainer.appendChild(addCard);
+
+            // 逐个渲染快捷方式（确保每个卡片独立）
+            shortcutsList.forEach((item) => {
+                const card = document.createElement('div');
+                card.className = 'shortcut-card';
+                card.dataset.id = item.id; // 绑定唯一ID
+                card.innerHTML = `
+                    <i class="fa fa-${item.icon} shortcut-icon"></i>
+                    <span class="shortcut-name">${item.name}</span>
+                `;
+
+                // 左键点击跳转
+                card.addEventListener('click', () => {
+                    window.open(item.url, '_blank');
+                });
+
+                // 右键点击：仅记录当前卡片ID，弹出删除框（精准删除）
+                card.addEventListener('contextmenu', (e) => {
+                    e.preventDefault(); // 阻止默认右键菜单
+                    deleteId = item.id; // 只赋值当前卡片的唯一ID
+                    document.getElementById('delete-confirm-modal').classList.add('show');
+                });
+
+                // 插入到添加卡片前面
+                addCard.before(card);
+            });
+        }
+
+        // 删除确认逻辑：仅删除选中的那一个快捷方式
+        const deleteConfirmModal = document.getElementById('delete-confirm-modal');
+        const cancelDeleteBtn = document.getElementById('cancel-delete');
+        const confirmDeleteBtn = document.getElementById('confirm-delete');
+
+        confirmDeleteBtn.addEventListener('click', () => {
+            // 核心逻辑：过滤掉ID等于deleteId的那一个元素，其余保留
+            shortcutsList = shortcutsList.filter(item => item.id !== deleteId);
+            storage.set('shortcutsList', shortcutsList); // 保存修改后的列表
+            renderShortcuts(); // 重新渲染（仅移除被删除的卡片）
+            deleteConfirmModal.classList.remove('show');
+            deleteId = ''; // 清空待删除ID，避免误删
+        });
+
+        cancelDeleteBtn.addEventListener('click', () => {
+            deleteConfirmModal.classList.remove('show');
+            deleteId = '';
+        });
+
+        deleteConfirmModal.addEventListener('click', (e) => {
+            if (e.target === deleteConfirmModal) {
+                deleteConfirmModal.classList.remove('show');
+                deleteId = '';
+            }
+        });
+
+        // 添加快捷方式
+        addShortcutCard.addEventListener('click', () => {
+            addShortcutModal.classList.add('show');
+            shortcutNameInput.value = '';
+            shortcutUrlInput.value = '';
+            selectedIcon = '';
+            selectedIconText.textContent = '选择图标';
+            iconItems.forEach(i => i.classList.remove('selected'));
+        });
+
+        cancelAddBtn.addEventListener('click', () => addShortcutModal.classList.remove('show'));
+
+        addShortcutModal.addEventListener('click', (e) => {
+            if (e.target === addShortcutModal) addShortcutModal.classList.remove('show');
+        });
+
+        confirmAddBtn.addEventListener('click', () => {
+            const name = shortcutNameInput.value.trim();
+            let url = shortcutUrlInput.value.trim();
+            const icon = selectedIcon || 'link';
+            
+            if (!name || !url) {
+                alert('名称和网址不能为空！');
+                return;
+            }
+
+            if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                url = 'https://' + url;
+            }
+
+            // 自定义卡片也生成唯一ID，确保后续可单独删除
+            shortcutsList.push({
+                id: 'custom_' + Date.now(),
+                name,
+                url,
+                icon,
+                fixed: false
+            });
+            storage.set('shortcutsList', shortcutsList);
+            renderShortcuts();
+            addShortcutModal.classList.remove('show');
+        });
+
+        // 初始化
+        renderShortcuts();
+        searchInput.focus();
+    </script>
+</body>
+</html>
