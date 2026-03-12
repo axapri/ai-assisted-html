@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 极简起始页</title>    
-    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <title>极简起始页</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -187,7 +186,7 @@
             outline: none;
             color: var(--text-color);
             font-size: 0.95rem;
-            font-weight: 500;
+            font-weight: 50;
             cursor: pointer;
             display: flex;
             align-items: center;
@@ -250,7 +249,7 @@
         .shortcut-card {
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* 图标+名称整体水平居中 */
             justify-content: center;
             background-color: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -266,6 +265,21 @@
             transform: translateY(-3px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
             border-color: var(--primary-color);
+        }
+        /* 新增：强制名称文本水平居中，超出自动换行 */
+        .shortcut-name {
+            text-align: center;
+            width: 100%;
+            margin-top: 8px;
+            font-size: 0.85rem;
+            white-space: normal; /* 允许换行 */
+            word-wrap: break-word; /* 超长文字换行 */
+        }
+        /* 图标样式优化 */
+        .shortcut-icon {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            margin-bottom: 4px;
         }
 
         .add-shortcut-modal, .delete-confirm-modal {
@@ -397,6 +411,8 @@
             #clock { font-size: 2.5rem; }
             .shortcuts-container { gap: 12px; }
             .icon-library { grid-template-columns: repeat(5, 1fr); }
+            /* 移动端适配搜索引擎下拉框宽度 */
+            .engine-dropdown { width: 100px; }
         }
     </style>
 </head>
@@ -430,10 +446,14 @@
     <div class="search-container">
         <div class="search-input-wrap">
             <button class="engine-trigger" id="engine-trigger">百度</button>
+            <!-- 新增Yandex、搜狗、360搜索引擎选项 -->
             <ul class="engine-dropdown" id="engine-dropdown">
                 <li class="active" data-url="https://www.baidu.com/s?wd=">百度</li>
                 <li data-url="https://www.google.com/search?q=">谷歌</li>
                 <li data-url="https://cn.bing.com/search?q=">必应</li>
+                <li data-url="https://yandex.com/search/?text=">Yandex</li>
+                <li data-url="https://www.sogou.com/web?query=">搜狗</li>
+                <li data-url="https://www.so.com/s?q=">360</li>
             </ul>
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="search-input" placeholder="输入关键词搜索...">
@@ -513,7 +533,6 @@
     </div>
 
     <script>
-        // 本地存储工具
         const storage = {
             get: (key) => {
                 const value = localStorage.getItem(key);
@@ -525,21 +544,16 @@
             remove: (key) => localStorage.removeItem(key)
         };
 
-        // 默认快捷方式（每个都有独立ID，支持单独删除）
         const defaultShortcuts = [
             { id: 'default_baidu', name: '百度', url: 'https://www.baidu.com', icon: 'baidu', fixed: false },
             { id: 'default_zhihu', name: '知乎', url: 'https://www.zhihu.com', icon: 'comment', fixed: false },
             { id: 'default_bilibili', name: 'B站', url: 'https://www.bilibili.com', icon: 'play-circle', fixed: false }
         ];
 
-        // 全局变量
         let shortcutsList = storage.get('shortcutsList') || [...defaultShortcuts];
-        let deleteId = ''; // 仅存储当前要删除的单个卡片ID
-        let longPressTimer = null; // 长按计时器
-        const LONG_PRESS_DURATION = 500; // 长按触发时间（毫秒）
+        let deleteId = '';
         const shortcutsContainer = document.getElementById('shortcuts-container');
 
-        // 时钟日期
         function updateTimeDate() {
             const now = new Date();
             const hours = String(now.getHours()).padStart(2, '0');
@@ -556,7 +570,6 @@
         updateTimeDate();
         setInterval(updateTimeDate, 60000);
 
-        // 搜索功能
         const searchInput = document.getElementById('search-input');
         const engineTrigger = document.getElementById('engine-trigger');
         const engineDropdown = document.getElementById('engine-dropdown');
@@ -596,7 +609,6 @@
             }
         });
 
-        // 模式切换
         const modeToggle = document.getElementById('mode-toggle');
         const body = document.body;
         const modes = ['light-mode', 'dark-mode', 'eye-care-mode'];
@@ -615,7 +627,6 @@
             initMode();
         });
 
-        // 背景图片
         const bgToggle = document.getElementById('bg-toggle');
         const bgPanel = document.getElementById('bg-panel');
         const bgItems = bgPanel.querySelectorAll('.bg-item');
@@ -658,7 +669,6 @@
         });
         document.addEventListener('click', () => bgPanel.classList.remove('show'));
 
-        // 图标选择
         const addShortcutModal = document.getElementById('add-shortcut-modal');
         const addShortcutCard = document.getElementById('add-shortcut-card');
         const cancelAddBtn = document.getElementById('cancel-add');
@@ -687,86 +697,79 @@
         });
         document.addEventListener('click', () => iconLibrary.classList.remove('show'));
 
-        // 绑定长按事件（兼容PC/移动端）
-        function bindLongPressEvent(card, itemId) {
-            // PC端鼠标长按
-            card.addEventListener('mousedown', (e) => {
-                // 排除右键（右键已有独立删除逻辑）
-                if (e.button === 2) return;
-                e.preventDefault();
-                longPressTimer = setTimeout(() => {
-                    deleteId = itemId;
-                    document.getElementById('delete-confirm-modal').classList.add('show');
-                }, LONG_PRESS_DURATION);
-            });
+// 绑定长按事件（修复手机端点击）
+function bindLongPressEvent(card, itemId) {
+    let pressTimer = null;
 
-            // PC端松开鼠标/移出卡片 取消长按
-            card.addEventListener('mouseup', () => clearTimeout(longPressTimer));
-            card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+    card.addEventListener('mousedown', function(e) {
+        if (e.button === 2) return;
+        pressTimer = setTimeout(function() {
+            deleteId = itemId;
+            document.getElementById('delete-confirm-modal').classList.add('show');
+        }, 500);
+    });
 
-            // 移动端触摸长按
-            card.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                longPressTimer = setTimeout(() => {
-                    deleteId = itemId;
-                    document.getElementById('delete-confirm-modal').classList.add('show');
-                }, LONG_PRESS_DURATION);
-            });
+    card.addEventListener('mouseup', function() {
+        clearTimeout(pressTimer);
+    });
+    card.addEventListener('mouseleave', function() {
+        clearTimeout(pressTimer);
+    });
 
-            // 移动端松开触摸/移出卡片 取消长按
-            card.addEventListener('touchend', () => clearTimeout(longPressTimer));
-            card.addEventListener('touchcancel', () => clearTimeout(longPressTimer));
-        }
+    card.addEventListener('touchstart', function() {
+        pressTimer = setTimeout(function() {
+            deleteId = itemId;
+            document.getElementById('delete-confirm-modal').classList.add('show');
+        }, 500);
+    });
 
-        // 渲染快捷方式
+    card.addEventListener('touchend', function() {
+        clearTimeout(pressTimer);
+    });
+    card.addEventListener('touchcancel', function() {
+        clearTimeout(pressTimer);
+    });
+}
+
         function renderShortcuts() {
-            // 清空容器，保留添加卡片
             const addCard = document.getElementById('add-shortcut-card');
             shortcutsContainer.innerHTML = '';
             shortcutsContainer.appendChild(addCard);
 
-            // 逐个渲染快捷方式（确保每个卡片独立）
             shortcutsList.forEach((item) => {
                 const card = document.createElement('div');
                 card.className = 'shortcut-card';
-                card.dataset.id = item.id; // 绑定唯一ID
+                card.dataset.id = item.id;
                 card.innerHTML = `
                     <i class="fa fa-${item.icon} shortcut-icon"></i>
                     <span class="shortcut-name">${item.name}</span>
                 `;
 
-                // 左键点击跳转
                 card.addEventListener('click', () => {
                     window.open(item.url, '_blank');
                 });
 
-                // 右键点击：仅记录当前卡片ID，弹出删除框（精准删除）
                 card.addEventListener('contextmenu', (e) => {
-                    e.preventDefault(); // 阻止默认右键菜单
-                    deleteId = item.id; // 只赋值当前卡片的唯一ID
+                    e.preventDefault();
+                    deleteId = item.id;
                     document.getElementById('delete-confirm-modal').classList.add('show');
                 });
 
-                // 绑定长按删除事件
                 bindLongPressEvent(card, item.id);
-
-                // 插入到添加卡片前面
                 addCard.before(card);
             });
         }
 
-        // 删除确认逻辑：仅删除选中的那一个快捷方式
         const deleteConfirmModal = document.getElementById('delete-confirm-modal');
         const cancelDeleteBtn = document.getElementById('cancel-delete');
         const confirmDeleteBtn = document.getElementById('confirm-delete');
 
         confirmDeleteBtn.addEventListener('click', () => {
-            // 核心逻辑：过滤掉ID等于deleteId的那一个元素，其余保留
             shortcutsList = shortcutsList.filter(item => item.id !== deleteId);
-            storage.set('shortcutsList', shortcutsList); // 保存修改后的列表
-            renderShortcuts(); // 重新渲染（仅移除被删除的卡片）
+            storage.set('shortcutsList', shortcutsList);
+            renderShortcuts();
             deleteConfirmModal.classList.remove('show');
-            deleteId = ''; // 清空待删除ID，避免误删
+            deleteId = '';
         });
 
         cancelDeleteBtn.addEventListener('click', () => {
@@ -781,7 +784,6 @@
             }
         });
 
-        // 添加快捷方式
         addShortcutCard.addEventListener('click', () => {
             addShortcutModal.classList.add('show');
             shortcutNameInput.value = '';
@@ -811,7 +813,6 @@
                 url = 'https://' + url;
             }
 
-            // 自定义卡片也生成唯一ID，确保后续可单独删除
             shortcutsList.push({
                 id: 'custom_' + Date.now(),
                 name,
@@ -824,7 +825,6 @@
             addShortcutModal.classList.remove('show');
         });
 
-        // 初始化
         renderShortcuts();
         searchInput.focus();
     </script>
