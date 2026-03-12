@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 极简起始页</title>
-    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <title>极简起始页</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -412,7 +411,7 @@
 
     <div class="bg-switch-panel" id="bg-panel">
         <div class="bg-item active" data-bg="none">
-            <div style="width:100%;height:100%;background:var(--bg-color);display:flex;align-items:center;justify-content:center;font-size:0.8rem">原始背景</div>
+            <div style="width:100%;height:100%;background:var(--bg-color);display:flex;align-items:center;justify-content:center;font-size:0.8rem">无背景</div>
         </div>
         <div class="custom-bg-wrap">
             <label class="file-select-btn" for="bg-file-input">
@@ -434,6 +433,9 @@
                 <li class="active" data-url="https://www.baidu.com/s?wd=">百度</li>
                 <li data-url="https://www.google.com/search?q=">谷歌</li>
                 <li data-url="https://cn.bing.com/search?q=">必应</li>
+                <li data-url="https://yandex.com//search?q=">Yandex</li>
+                <li data-url="https://www.sogou.com//search?q=">搜狗搜索</li>
+                <li data-url="https://www.so.com//search?q=">360搜索</li>
             </ul>
             <i class="fa fa-search search-icon"></i>
             <input type="text" id="search-input" placeholder="输入关键词搜索...">
@@ -527,14 +529,16 @@
 
         // 默认快捷方式（每个都有独立ID，支持单独删除）
         const defaultShortcuts = [
-            { id: 'default_github', name: 'GitHub', url: 'https://github.com/', icon: 'github', fixed: false },
-            { id: 'default_wangyiyun', name: '网易云', url: 'https://music.163.com/', icon: 'music', fixed: false },
+            { id: 'default_baidu', name: '百度', url: 'https://www.baidu.com', icon: 'baidu', fixed: false },
+            { id: 'default_zhihu', name: '知乎', url: 'https://www.zhihu.com', icon: 'comment', fixed: false },
             { id: 'default_bilibili', name: 'B站', url: 'https://www.bilibili.com', icon: 'play-circle', fixed: false }
         ];
 
         // 全局变量
         let shortcutsList = storage.get('shortcutsList') || [...defaultShortcuts];
         let deleteId = ''; // 仅存储当前要删除的单个卡片ID
+        let longPressTimer = null; // 长按计时器
+        const LONG_PRESS_DURATION = 500; // 长按触发时间（毫秒）
         const shortcutsContainer = document.getElementById('shortcuts-container');
 
         // 时钟日期
@@ -685,6 +689,37 @@
         });
         document.addEventListener('click', () => iconLibrary.classList.remove('show'));
 
+        // 绑定长按事件（兼容PC/移动端）
+        function bindLongPressEvent(card, itemId) {
+            // PC端鼠标长按
+            card.addEventListener('mousedown', (e) => {
+                // 排除右键（右键已有独立删除逻辑）
+                if (e.button === 2) return;
+                e.preventDefault();
+                longPressTimer = setTimeout(() => {
+                    deleteId = itemId;
+                    document.getElementById('delete-confirm-modal').classList.add('show');
+                }, LONG_PRESS_DURATION);
+            });
+
+            // PC端松开鼠标/移出卡片 取消长按
+            card.addEventListener('mouseup', () => clearTimeout(longPressTimer));
+            card.addEventListener('mouseleave', () => clearTimeout(longPressTimer));
+
+            // 移动端触摸长按
+            card.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                longPressTimer = setTimeout(() => {
+                    deleteId = itemId;
+                    document.getElementById('delete-confirm-modal').classList.add('show');
+                }, LONG_PRESS_DURATION);
+            });
+
+            // 移动端松开触摸/移出卡片 取消长按
+            card.addEventListener('touchend', () => clearTimeout(longPressTimer));
+            card.addEventListener('touchcancel', () => clearTimeout(longPressTimer));
+        }
+
         // 渲染快捷方式
         function renderShortcuts() {
             // 清空容器，保留添加卡片
@@ -713,6 +748,9 @@
                     deleteId = item.id; // 只赋值当前卡片的唯一ID
                     document.getElementById('delete-confirm-modal').classList.add('show');
                 });
+
+                // 绑定长按删除事件
+                bindLongPressEvent(card, item.id);
 
                 // 插入到添加卡片前面
                 addCard.before(card);
