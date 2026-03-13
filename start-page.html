@@ -2,9 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 极简起始页</title>                  
-    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <!-- 关键：添加viewport适配，解决微信内排版问题 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="format-detection" content="telephone=no">
+    <title>极简起始页</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -44,6 +45,8 @@
             padding: 0;
             box-sizing: border-box;
             transition: all 0.15s ease;
+            /* 关键：强制单行显示，解决竖排问题 */
+            white-space: nowrap;
         }
         body {
             background: var(--bg-color) var(--bg-img) center/cover no-repeat fixed;
@@ -56,6 +59,8 @@
             padding: 10vh 20px 20px;
             color: var(--text-color);
             position: relative;
+            /* 修复微信内字体缩放问题 */
+            font-size: 16px;
         }
 
         .top-controls {
@@ -152,7 +157,8 @@
         }
         #search-input {
             width: 100%;
-            padding: 14px 44px 14px 65px;
+            /* 适配按钮宽度调整内边距 */
+            padding: 14px 44px 14px 80px;
             border: 1px solid var(--border-color);
             border-radius: 32px;
             background-color: var(--card-bg);
@@ -160,6 +166,8 @@
             outline: none;
             font-size: 1rem;
             box-shadow: var(--shadow);
+            /* 强制单行 */
+            white-space: nowrap;
         }
         #search-input:focus {
             border-color: var(--primary-color);
@@ -180,7 +188,8 @@
             left: 15px;
             top: 50%;
             transform: translateY(-52%);
-            width: 50px;
+            /* 加宽按钮：PC/手机统一70px，解决窄的问题 */
+            width: 70px;
             height: 75%;
             background-color: transparent;
             border: none;
@@ -192,18 +201,20 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            /* 核心添加：右侧内边距，避免文字遮挡下拉箭头 */
-            padding-right: 12px;
-            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath fill='%236b7280' d='M0 0l3.5 3.5 3.5-3.5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 2px center;
-            line-height: 1;
+            padding-right: 0;
+            /* 删除下拉箭头背景图 */
+            background-image: none !important;
+            /* 强制单行，防止竖排 */
+            white-space: nowrap;
+            /* 防止文字溢出 */
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .engine-dropdown {
             position: absolute;
             left: 15px;
             top: calc(100% + 4px);
-            width: 90px;
+            width: 100px;
             background-color: var(--card-bg);
             border-radius: 8px;
             box-shadow: var(--dropdown-shadow);
@@ -407,11 +418,20 @@
             color: white;
         }
 
+        /* 手机端适配（兜底） */
         @media (max-width: 480px) {
             #clock { font-size: 2.5rem; }
             .shortcuts-container { gap: 12px; }
             .icon-library { grid-template-columns: repeat(5, 1fr); }
             .engine-dropdown { width: 100px; }
+            /* 手机端按钮宽度确保70px */
+            .engine-trigger {
+                width: 70px !important;
+            }
+            /* 搜索框内边距适配 */
+            #search-input {
+                padding-left: 80px !important;
+            }
         }
     </style>
 </head>
