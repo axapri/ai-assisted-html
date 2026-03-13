@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 生日祝福</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", "PingFang SC", "微软雅黑", sans-serif;
+        }
+
+        body {
+            background: #f9f7f5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .wish-card {
+            background: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            padding: 60px 40px;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .card-decoration {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fef7fb, #fcf1f7);
+            z-index: 0;
+        }
+
+        .decor-left {
+            top: -80px;
+            left: -80px;
+        }
+
+        .decor-right {
+            bottom: -80px;
+            right: -80px;
+            background: linear-gradient(135deg, #f5fafe, #eaf6fa);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .birthday-title {
+            font-size: 42px;
+            font-weight: 600;
+            color: #2d3748;
+            margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            transition: all 0.5s ease; /* 新增：文字动画过渡 */
+        }
+
+        .birthday-title span {
+            color: #e53e3e;
+        }
+
+        .wish-text {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #4a5568;
+            margin-bottom: 32px;
+            font-weight: 400;
+        }
+
+        .signature {
+            font-size: 16px;
+            color: #718096;
+            font-style: italic;
+        }
+
+        .confetti {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #e53e3e;
+            opacity: 0;
+            animation: confetti-fall 6s linear infinite;
+            z-index: 0;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(720deg);
+                opacity: 0;
+            }
+        }
+
+        @keyframes title-pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        @media (max-width: 480px) {
+            .wish-card {
+                padding: 40px 20px;
+            }
+            .birthday-title {
+                font-size: 32px;
+            }
+            .wish-text {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wish-card">
+        <div class="card-decoration decor-left"></div>
+        <div class="card-decoration decor-right"></div>
+        
+        <div class="card-content">
+            <h1 class="birthday-title">HAPPY <span>BIRTHDAY</span></h1>
+            <p class="wish-text">
+                愿你在新的一岁里，
+                既有随处可栖的温柔，
+                也有追风逐梦的骁勇。
+                日子清透，世事温柔，
+                生日快乐 🎂
+            </p>
+            <p class="signature">—— 致独一无二的你</p>
+        </div>
+    </div>
+
+    <script>
+        window.addEventListener('load', () => {
+            // 1. 卡片入场动画
+            const card = document.querySelector('.wish-card');
+            card.style.opacity = 0;
+            card.style.transform = 'translateY(20px)';
+            card.style.transition = 'all 0.8s ease';
+            
+            setTimeout(() => {
+                card.style.opacity = 1;
+                card.style.transform = 'translateY(0)';
+
+                // 2. 入场动画完成后，自动启动彩屑和文字动画
+                startSurprise();
+            }, 300);
+        });
+
+        // 彩屑生成函数
+        function createConfetti() {
+            const confetti = document.createElement('div');
+            confetti.classList.add('confetti');
+            const colors = ['#e53e3e', '#ed8936', '#48bb78', '#4299e1', '#9f7aea'];
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.width = `${Math.random() * 6 + 4}px`;
+            confetti.style.height = `${Math.random() * 6 + 4}px`;
+            confetti.style.animationDuration = `${Math.random() * 4 + 4}s`;
+            
+            document.querySelector('.wish-card').appendChild(confetti);
+            setTimeout(() => confetti.remove(), 6000);
+        }
+
+        // 启动惊喜效果（自动运行）
+        function startSurprise() {
+            // 3. 循环生成彩屑（持续飘落）
+            setInterval(createConfetti, 50);
+            
+            // 4. 文字脉冲动画（循环播放）
+            const title = document.querySelector('.birthday-title');
+            title.style.animation = 'title-pulse 2s ease-in-out infinite';
+        }
+    </script>
+</body>
+</html>
