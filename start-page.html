@@ -2,10 +2,10 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <!-- 关键：添加viewport适配，解决微信内排版问题 -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="format-detection" content="telephone=no">
-    <title>极简起始页</title>
+    <title>Axapri | 极简起始页</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
         :root {
@@ -157,7 +157,6 @@
         }
         #search-input {
             width: 100%;
-            /* 适配按钮宽度调整内边距 */
             padding: 14px 44px 14px 80px;
             border: 1px solid var(--border-color);
             border-radius: 32px;
@@ -166,7 +165,6 @@
             outline: none;
             font-size: 1rem;
             box-shadow: var(--shadow);
-            /* 强制单行 */
             white-space: nowrap;
         }
         #search-input:focus {
@@ -188,7 +186,6 @@
             left: 15px;
             top: 50%;
             transform: translateY(-52%);
-            /* 加宽按钮：PC/手机统一70px，解决窄的问题 */
             width: 70px;
             height: 75%;
             background-color: transparent;
@@ -202,11 +199,8 @@
             align-items: center;
             justify-content: center;
             padding-right: 0;
-            /* 删除下拉箭头背景图 */
             background-image: none !important;
-            /* 强制单行，防止竖排 */
             white-space: nowrap;
-            /* 防止文字溢出 */
             overflow: hidden;
             text-overflow: ellipsis;
         }
@@ -715,7 +709,6 @@
         });
         document.addEventListener('click', () => iconLibrary.classList.remove('show'));
 
-// 绑定长按事件（修复手机端点击）
 function bindLongPressEvent(card, itemId) {
     let pressTimer = null;
 
