@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 极简起始页</title>             
+    <title>Axapri | 极简起始页</title>                  
     <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
     <style>
@@ -192,7 +192,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding-right: 0;
+            /* 核心添加：右侧内边距，避免文字遮挡下拉箭头 */
+            padding-right: 12px;
             background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='4'%3E%3Cpath fill='%236b7280' d='M0 0l3.5 3.5 3.5-3.5z'/%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 2px center;
@@ -694,6 +695,7 @@
         });
         document.addEventListener('click', () => iconLibrary.classList.remove('show'));
 
+// 绑定长按事件（修复手机端点击）
 function bindLongPressEvent(card, itemId) {
     let pressTimer = null;
 
