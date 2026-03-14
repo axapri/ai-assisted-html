@@ -6,13 +6,60 @@
     <title>Axapri | 极简方块闪避</title>
     <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <style>
-        /* 全局极致简约风格 */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            transition: background-color 0.2s ease;
+            transition: background-color 0.25s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg-primary: #f9fafb;
+            --bg-container: #ffffff;
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --player-color: #2563eb;
+            --obstacle-color: #e5e7eb;
+            --btn-primary: #2563eb;
+            --btn-hover: #1d4ed8;
+            --btn-secondary: #f3f4f6;
+            --btn-secondary-hover: #e5e7eb;
+            --border-light: #e5e7eb;
+        }
+
+        .dark-mode {
+            --bg-primary: #111827;
+            --bg-container: #1f2937;
+            --card-bg: rgba(31, 41, 55, 0.95);
+            --card-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+            --text-primary: #f9fafb;
+            --text-secondary: #9ca3af;
+            --player-color: #3b82f6;
+            --obstacle-color: #374151;
+            --btn-primary: #3b82f6;
+            --btn-hover: #2563eb;
+            --btn-secondary: #374151;
+            --btn-secondary-hover: #4b5663;
+            --border-light: #374151;
+        }
+
+        .eye-mode {
+            --bg-primary: #f0f5f0;
+            --bg-container: #fafef5;
+            --card-bg: rgba(250, 254, 245, 0.95);
+            --card-shadow: 0 12px 40px rgba(40, 180, 100, 0.06);
+            --text-primary: #2d3a2e;
+            --text-secondary: #5a665b;
+            --player-color: #34b562;
+            --obstacle-color: #dbe8dc;
+            --btn-primary: #34b562;
+            --btn-hover: #2aa854;
+            --btn-secondary: #e6f1e6;
+            --btn-secondary-hover: #d1e4d2;
+            --border-light: #d1e4d2;
         }
 
         body {
@@ -21,98 +68,111 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: #f9fafb;
-            color: #111827;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             padding: 20px;
             overflow: hidden;
         }
 
-        /* 游戏容器 - 极致简约卡片 */
         #game-container {
             width: 100%;
             max-width: 400px;
             height: 600px;
-            background: #ffffff;
-            border-radius: 20px;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            background: var(--bg-container);
+            border-radius: 24px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.06);
             position: relative;
             overflow: hidden;
-            /* 确保容器尺寸固定，无内边距干扰 */
             padding: 0;
             margin: 0;
         }
 
-        /* 游戏信息区 - 悬浮极简设计 */
+        #controls-panel {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            display: flex;
+            gap: 8px;
+            z-index: 15;
+        }
+
+        .control-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 12px;
+            border: none;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .control-btn:hover {
+            transform: translateY(-2px);
+        }
+
         #game-info {
             position: absolute;
-            top: 20px;
+            top: 16px;
             left: 0;
-            width: 100%;
+            width: calc(100% - 100px);
             display: flex;
             justify-content: space-between;
-            padding: 0 20px;
+            padding: 0 16px;
             z-index: 10;
             pointer-events: none;
         }
 
         .info-item {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
-            color: #374151;
-            background: rgba(255, 255, 255, 0.8);
-            padding: 4px 12px;
-            border-radius: 12px;
-            backdrop-filter: blur(4px);
+            color: var(--text-primary);
+            background: var(--card-bg);
+            padding: 4px 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
         .score-value {
-            color: #2563eb;
+            color: var(--player-color);
         }
 
         .speed-value {
             color: #ef4444;
         }
 
-        /* 玩家方块 - 核心交互元素 */
         #player {
             position: absolute;
             width: 50px;
             height: 50px;
-            background: #2563eb;
-            border-radius: 10px;
+            background: var(--player-color);
+            border-radius: 12px;
             bottom: 30px;
-            /* 初始位置通过JS精确设置，避免CSS偏移 */
             left: 0;
             z-index: 5;
-            /* 禁止变形，确保尺寸精准 */
             transform: none;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
         }
 
-        /* 障碍元素 - 极简几何形状 */
         .obstacle {
             position: absolute;
-            background: #e5e7eb;
+            background: var(--obstacle-color);
             border-radius: 8px;
             z-index: 4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
         }
 
-        /* 不同形状的障碍（增加视觉区分） */
-        .obs-rect {
-            width: 60px;
-            height: 20px;
-        }
+        .obs-rect { width: 60px; height: 20px; }
+        .obs-square { width: 40px; height: 40px; }
+        .obs-wide { width: 80px; height: 15px; }
 
-        .obs-square {
-            width: 40px;
-            height: 40px;
-        }
-
-        .obs-wide {
-            width: 80px;
-            height: 15px;
-        }
-
-        /* 成功/失败反馈 */
         .feedback {
             position: absolute;
             top: 50%;
@@ -126,415 +186,737 @@
             animation: feedback-fade 0.6s ease-out forwards;
         }
 
-        .feedback-score {
-            color: #2563eb;
-        }
-
-        .feedback-hit {
-            color: #ef4444;
-        }
+        .feedback-score { color: var(--player-color); }
+        .feedback-hit { color: #ef4444; }
 
         @keyframes feedback-fade {
             0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
             100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
         }
 
-        /* 开始/结束面板 - 极简模态 */
-        #game-panel {
+        #pause-panel {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 280px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--card-shadow);
+            backdrop-filter: blur(12px);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            padding: 24px;
+            z-index: 20;
+        }
+
+        .pause-title {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        #settings-panel {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            display: flex;
-            flex-direction: column;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
             align-items: center;
             justify-content: center;
-            gap: 24px;
             z-index: 20;
         }
 
-        .panel-title {
-            font-size: 32px;
+        .settings-card {
+            width: 90%;
+            max-width: 330px;
+            height: auto;
+            max-height: 78vh;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 26px 22px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .settings-card::-webkit-scrollbar {
+            display: none;
+        }
+
+        .settings-title {
+            font-size: 22px;
             font-weight: 600;
-            color: #111827;
-        }
-
-        .panel-subtitle {
-            font-size: 16px;
-            color: #6b7280;
-            max-width: 300px;
             text-align: center;
-            line-height: 1.5;
+            margin-bottom: 20px;
         }
 
-        /* 按钮 - 现代极简风格 */
-        .btn {
-            padding: 14px 32px;
-            border-radius: 10px;
+        .settings-group {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .settings-group:last-of-type {
+            border-bottom: 0;
+            margin-bottom: 18px;
+            padding-bottom: 0;
+        }
+
+        .settings-label {
+            font-size: 15px;
+            font-weight: 500;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .theme-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 8px;
+        }
+
+        .theme-btn {
+            padding: 8px 0;
+            border-radius: 8px;
             border: none;
-            font-size: 16px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
-            background: #2563eb;
-            color: white;
-            min-width: 200px;
+            background: var(--btn-secondary);
+            color: var(--text-primary);
         }
 
+        .theme-btn.active {
+            background: var(--btn-primary);
+            color: #fff;
+        }
+
+        .slider-control {
+            margin-bottom: 14px;
+        }
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+        input[type="range"] {
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: var(--border-light);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--btn-primary);
+            cursor: pointer;
+        }
+
+        .upload-control {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 6px;
+        }
+        #bg-upload {
+            display: none;
+        }
+        .upload-btn,
+        #reset-bg-btn {
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            text-align: center;
+        }
+        .upload-btn {
+            border: 1px dashed var(--text-secondary);
+            background: transparent;
+            color: var(--text-primary);
+        }
+        #reset-bg-btn {
+            border: none;
+            background: var(--btn-secondary);
+            color: var(--text-primary);
+        }
+
+        .history-section {
+            background: rgba(0,0,0,0.02);
+            border-radius: 10px;
+            padding: 12px;
+        }
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid var(--border-light);
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .btn {
+            width: 100%;
+            height: 44px;
+            line-height: 44px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            background: var(--btn-primary);
+            color: #fff;
+            text-align: center;
+        }
         .btn:hover {
-            background: #1d4ed8;
-            transform: translateY(-2px);
-            transition: transform 0.2s ease;
+            background: var(--btn-hover);
+            transform: translateY(-1px);
         }
 
-        /* 结束面板 */
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            width: 100%;
+        }
+        .btn-secondary {
+            background: var(--btn-secondary);
+            color: var(--text-primary);
+        }
+
+        #game-panel,
         #game-over {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(255, 255, 255, 0.98);
-            display: none;
-            flex-direction: column;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
             align-items: center;
             justify-content: center;
-            gap: 20px;
             z-index: 20;
         }
+        #game-over {
+            display: none;
+        }
 
+        .panel-card {
+            width: 85%;
+            max-width: 320px;
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 32px 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .panel-title {
+            font-size: 24px;
+            font-weight: 600;
+        }
+        .panel-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.5;
+        }
         .final-score {
-            font-size: 48px;
+            font-size: 36px;
             font-weight: 700;
-            color: #2563eb;
+            color: var(--player-color);
         }
-
         .final-stats {
-            font-size: 16px;
-            color: #6b7280;
-        }
-
-        /* 响应式适配 */
-        @media (max-width: 400px) {
-            #game-container {
-                height: 500px;
-            }
-            
-            #player {
-                width: 40px;
-                height: 40px;
-            }
-            
-            .panel-title {
-                font-size: 28px;
-            }
-            
-            .final-score {
-                font-size: 36px;
-            }
+            font-size: 14px;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.5;
         }
     </style>
 </head>
 <body>
-    <div id="game-container">
-        <!-- 游戏信息 -->
-        <div id="game-info">
-            <div class="info-item">得分: <span class="score-value" id="score">0</span></div>
-            <div class="info-item">速度: <span class="speed-value" id="speed">1x</span></div>
-        </div>
 
-        <!-- 玩家方块 -->
-        <div id="player"></div>
+<div id="game-container">
+    <div id="controls-panel">
+        <button class="control-btn" id="pause-btn">⏸</button>
+        <button class="control-btn" id="settings-btn">⚙️</button>
+    </div>
 
-        <!-- 反馈提示 -->
-        <div class="feedback feedback-score" id="score-feedback">+10</div>
-        <div class="feedback feedback-hit" id="hit-feedback">HIT!</div>
+    <div id="game-info">
+        <div class="info-item">得分: <span class="score-value" id="score">0</span></div>
+        <div class="info-item">速度: <span class="speed-value" id="speed">1x</span></div>
+    </div>
 
-        <!-- 开始面板 -->
-        <div id="game-panel">
-            <div class="panel-title">极简闪避</div>
-            <div class="panel-subtitle">滑动/点击左右移动方块，躲避下落的障碍。速度随得分递增，考验你的即时反应</div>
-            <button class="btn" id="start-btn">开始游戏</button>
-        </div>
+    <div id="player"></div>
+    <div class="feedback feedback-score" id="score-feedback">+10</div>
+    <div class="feedback feedback-hit" id="hit-feedback">HIT!</div>
 
-        <!-- 结束面板 -->
-        <div id="game-over">
-            <div class="panel-title">游戏结束</div>
-            <div class="final-score" id="final-score">0</div>
-            <div class="final-stats">最高速度: <span id="max-speed">1x</span></div>
-            <button class="btn" id="restart-btn">再来一局</button>
+    <div id="pause-panel">
+        <div class="pause-title">游戏暂停</div>
+        <div class="btn-row">
+            <button class="btn" id="resume-btn">继续</button>
+            <button class="btn btn-secondary" id="quit-btn">退出</button>
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            // DOM元素
-            const gameContainer = document.getElementById('game-container');
-            const player = document.getElementById('player');
-            const scoreElement = document.getElementById('score');
-            const speedElement = document.getElementById('speed');
-            const scoreFeedback = document.getElementById('score-feedback');
-            const hitFeedback = document.getElementById('hit-feedback');
-            const gamePanel = document.getElementById('game-panel');
-            const gameOver = document.getElementById('game-over');
-            const finalScoreElement = document.getElementById('final-score');
-            const maxSpeedElement = document.getElementById('max-speed');
-            const startBtn = document.getElementById('start-btn');
-            const restartBtn = document.getElementById('restart-btn');
+    <div id="settings-panel">
+        <div class="settings-card">
+            <div class="settings-title">游戏设置</div>
 
-            // 游戏核心参数
-            let gameRunning = false;
-            let score = 0;
-            let speedMultiplier = 1;
-            let maxSpeed = 1;
-            let playerX = 0; // 玩家X坐标（像素级精准）
-            let playerWidth = 50;
-            let playerHeight = 50;
-            let containerWidth = 0; // 容器宽度（实时获取）
-            let containerHeight = 0;
-            let obstacles = [];
-            let gameLoopId = null;
-            let obstacleSpawnTimer = null;
-            let touchStartX = 0;
-            let lastObstacleX = -100;
-            let minObstacleGap = 40;
+            <div class="settings-group">
+                <label class="settings-label">显示主题</label>
+                <div class="theme-buttons">
+                    <button class="theme-btn active" id="normal-theme">正常</button>
+                    <button class="theme-btn" id="dark-theme">暗黑</button>
+                    <button class="theme-btn" id="eye-theme">护眼</button>
+                </div>
+            </div>
 
-            // ========== 像素级精准初始化 ==========
-            function initDimensions() {
-                // 强制重绘，确保获取真实尺寸
-                gameContainer.style.display = 'none';
-                gameContainer.offsetHeight; // 触发重绘
-                gameContainer.style.display = '';
+            <div class="settings-group">
+                <label class="settings-label">游戏难度</label>
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>同时掉落数量</span>
+                        <span id="obstacle-count-value">3</span>
+                    </div>
+                    <input type="range" id="obstacle-count" min="1" max="3" value="3">
+                </div>
+                <div class="slider-control">
+                    <div class="slider-label">
+                        <span>下落速度</span>
+                        <span id="fall-speed-value">1.0</span>x
+                    </div>
+                    <input type="range" id="fall-speed" min="0.5" max="3" step="0.1" value="1.0">
+                </div>
+            </div>
 
-                // 精确获取容器尺寸（不含内边距、边框）
-                containerWidth = gameContainer.clientWidth;
-                containerHeight = gameContainer.clientHeight;
-                
-                // 精确获取玩家尺寸（避免CSS变形）
-                playerWidth = player.offsetWidth;
-                playerHeight = player.offsetHeight;
-                
-                // 初始位置：绝对居中（像素级精准）
-                playerX = Math.floor((containerWidth - playerWidth) / 2);
-                // 使用left属性（px），避免transform偏移
-                player.style.left = `${playerX}px`;
-                
-                lastObstacleX = -100;
-                console.log(`初始化：容器宽${containerWidth}，玩家宽${playerWidth}，初始X${playerX}`);
+            <div class="settings-group">
+                <label class="settings-label">背景设置</label>
+                <div class="upload-control">
+                    <label for="bg-upload" class="upload-btn">上传背景图片</label>
+                    <input type="file" id="bg-upload" accept="image/*">
+                    <button id="reset-bg-btn">重置背景</button>
+                </div>
+            </div>
+
+            <div class="settings-group">
+                <label class="settings-label">游戏记录（最高7条）</label>
+                <div class="history-section" id="history-list">
+                    <div class="history-item">暂无游戏记录</div>
+                </div>
+            </div>
+
+            <button class="btn" id="save-settings-btn">保存设置</button>
+        </div>
+    </div>
+
+    <div id="game-panel">
+        <div class="panel-card">
+            <div class="panel-title">极简闪避</div>
+            <div class="panel-subtitle">左右移动躲避障碍，速度会逐渐加快</div>
+            <button class="btn" id="start-btn">开始游戏</button>
+        </div>
+    </div>
+
+    <div id="game-over">
+        <div class="panel-card">
+            <div class="panel-title">游戏结束</div>
+            <div class="final-score" id="final-score">0</div>
+            <div class="final-stats">
+                最高速度: <span id="max-speed">1x</span><br>
+                游玩时长: <span id="play-time">0</span>秒
+            </div>
+            <button class="btn" id="restart-btn">再来一局</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const gameContainer = document.getElementById('game-container');
+    const player = document.getElementById('player');
+    const scoreElement = document.getElementById('score');
+    const speedElement = document.getElementById('speed');
+    const gamePanel = document.getElementById('game-panel');
+    const gameOver = document.getElementById('game-over');
+    const pausePanel = document.getElementById('pause-panel');
+    const settingsPanel = document.getElementById('settings-panel');
+
+    const pauseBtn = document.getElementById('pause-btn');
+    const settingsBtn = document.getElementById('settings-btn');
+    const startBtn = document.getElementById('start-btn');
+    const restartBtn = document.getElementById('restart-btn');
+    const resumeBtn = document.getElementById('resume-btn');
+    const quitBtn = document.getElementById('quit-btn');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+
+    const normalThemeBtn = document.getElementById('normal-theme');
+    const darkThemeBtn = document.getElementById('dark-theme');
+    const eyeThemeBtn = document.getElementById('eye-theme');
+    const obstacleCountSlider = document.getElementById('obstacle-count');
+    const obstacleCountValue = document.getElementById('obstacle-count-value');
+    const fallSpeedSlider = document.getElementById('fall-speed');
+    const fallSpeedValue = document.getElementById('fall-speed-value');
+    const bgUpload = document.getElementById('bg-upload');
+    const resetBgBtn = document.getElementById('reset-bg-btn');
+    const historyList = document.getElementById('history-list');
+
+    let gameRunning = false;
+    let gamePaused = false;
+    let score = 0;
+    let speedMultiplier = 1;
+    let maxSpeed = 1;
+    let playerX = 0;
+    let playerWidth = 50;
+    let containerWidth = 0;
+    let containerHeight = 0;
+    let obstacles = [];
+    let gameLoopId = null;
+    let spawnTimer = null;
+
+    let customSpawnCount = 3;
+    let customFallSpeed = 1.0;
+    let playStartTime = 0;
+    let totalPlayTime = 0;
+
+    const STORAGE = {
+        settings: 'minimalDodge_settings',
+        history: 'minimalDodge_history'
+    };
+
+    // 主题切换
+    function setTheme(theme) {
+        document.body.className = '';
+        if (theme === 'dark') document.body.classList.add('dark-mode');
+        if (theme === 'eye') document.body.classList.add('eye-mode');
+        normalThemeBtn.classList.remove('active');
+        darkThemeBtn.classList.remove('active');
+        eyeThemeBtn.classList.remove('active');
+        if (theme === 'normal') normalThemeBtn.classList.add('active');
+        if (theme === 'dark') darkThemeBtn.classList.add('active');
+        if (theme === 'eye') eyeThemeBtn.classList.add('active');
+    }
+
+    // 初始化存储
+    function initStorage() {
+        const saved = localStorage.getItem(STORAGE.settings);
+        if (saved) {
+            const s = JSON.parse(saved);
+            customSpawnCount = s.spawnCount ?? 3;
+            customFallSpeed = s.fallSpeed ?? 1.0;
+            setTheme(s.theme || 'normal');
+
+            if (s.bgImage) {
+                gameContainer.style.backgroundImage = `url(${s.bgImage})`;
+                gameContainer.style.backgroundSize = 'cover';
+                gameContainer.style.backgroundPosition = 'center';
             }
 
-            // ========== 障碍生成 ==========
-            function spawnObstacle() {
-                if (!gameRunning) return;
+            obstacleCountSlider.value = customSpawnCount;
+            obstacleCountValue.textContent = customSpawnCount;
+            fallSpeedSlider.value = customFallSpeed;
+            fallSpeedValue.textContent = customFallSpeed.toFixed(1);
+        }
+        // 初始化速度显示
+        speedElement.textContent = (speedMultiplier * customFallSpeed).toFixed(1) + 'x';
+        renderHistory();
+    }
 
-                const obstacleTypes = ['obs-rect', 'obs-square', 'obs-wide'];
-                const randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
-                
-                let obstacleWidth, obstacleHeight;
-                if (randomType === 'obs-rect') {
-                    obstacleWidth = 60;
-                    obstacleHeight = 20;
-                } else if (randomType === 'obs-square') {
-                    obstacleWidth = 40;
-                    obstacleHeight = 40;
-                } else {
-                    obstacleWidth = 80;
-                    obstacleHeight = 15;
-                }
-                
-                const maxX = containerWidth - obstacleWidth;
-                let randomX;
-                
-                do {
-                    randomX = Math.floor(Math.random() * maxX);
-                } while (Math.abs(randomX - lastObstacleX) < minObstacleGap && lastObstacleX !== -100);
-                
-                lastObstacleX = randomX;
-                
-                if (obstacleWidth > containerWidth * 0.7) {
-                    randomX = Math.random() > 0.5 ? 0 : containerWidth - obstacleWidth;
-                }
-                
-                const obstacle = document.createElement('div');
-                obstacle.classList.add('obstacle', randomType);
-                obstacle.style.left = `${randomX}px`;
-                obstacle.style.top = `-40px`;
-                gameContainer.appendChild(obstacle);
-                
-                obstacles.push({
-                    el: obstacle,
-                    x: randomX,
-                    y: -40,
-                    width: obstacleWidth,
-                    height: obstacleHeight,
-                    speed: 3 * speedMultiplier
-                });
+    // 保存设置（无提示，自动关闭）
+    function saveSettings() {
+        const theme = document.body.classList.contains('dark-mode') ? 'dark'
+            : document.body.classList.contains('eye-mode') ? 'eye' : 'normal';
 
-                if (score % 100 === 0 && score > 0) {
-                    speedMultiplier = Math.min(2, speedMultiplier + 0.05);
-                    maxSpeed = Math.max(maxSpeed, speedMultiplier);
-                    speedElement.textContent = `${speedMultiplier.toFixed(1)}x`;
-                }
-            }
+        const s = {
+            spawnCount: customSpawnCount,
+            fallSpeed: customFallSpeed,
+            theme: theme,
+            bgImage: gameContainer.style.backgroundImage.replace(/^url\(["']?/, '').replace(/["']?\)$/, '') || ''
+        };
+        localStorage.setItem(STORAGE.settings, JSON.stringify(s));
 
-            // ========== 游戏更新 ==========
-            function updateGame() {
-                if (!gameRunning) return;
+        settingsPanel.style.display = 'none';
+        // 实时更新速度显示
+        applySpeedNow();
+        if (gameRunning && !gamePaused) {
+            resumeGame();
+        }
+    }
 
-                for (let i = obstacles.length - 1; i >= 0; i--) {
-                    const obs = obstacles[i];
-                    obs.y += obs.speed;
-                    obs.el.style.top = `${obs.y}px`;
-
-                    if (obs.y > containerHeight) {
-                        score += 10;
-                        scoreElement.textContent = score;
-                        
-                        scoreFeedback.style.opacity = 1;
-                        setTimeout(() => scoreFeedback.style.opacity = 0, 600);
-                        
-                        obs.el.remove();
-                        obstacles.splice(i, 1);
-                        continue;
-                    }
-
-                    const playerRight = playerX + playerWidth;
-                    const playerBottom = containerHeight - 30;
-                    const playerTop = playerBottom - playerHeight;
-                    
-                    const obsRight = obs.x + obs.width;
-                    const obsBottom = obs.y + obs.height;
-                    const obsTop = obs.y;
-
-                    if (
-                        playerX < obsRight &&
-                        playerRight > obs.x &&
-                        playerTop < obsBottom &&
-                        playerBottom > obsTop
-                    ) {
-                        hitFeedback.style.opacity = 1;
-                        setTimeout(() => hitFeedback.style.opacity = 0, 600);
-                        endGame();
-                        return;
-                    }
-                }
-
-                gameLoopId = requestAnimationFrame(updateGame);
-            }
-
-            // ========== 玩家移动（像素级边界校验） ==========
-            function movePlayer(direction) {
-                if (!gameRunning) return;
-                
-                const moveStep = 15;
-                let newX = playerX;
-                
-                // 1. 先计算目标位置
-                if (direction === 'left') {
-                    newX = playerX - moveStep;
-                } else if (direction === 'right') {
-                    newX = playerX + moveStep;
-                }
-                
-                // 2. 像素级边界校验
-                // 左边界：绝对不能小于0
-                newX = Math.max(0, newX);
-                // 右边界：绝对不能超过 容器宽度 - 玩家宽度
-                newX = Math.min(newX, containerWidth - playerWidth);
-                
-                // 3. 强制取整，避免小数像素偏移
-                newX = Math.floor(newX);
-                
-                // 4. 更新位置
-                playerX = newX;
-                player.style.left = `${playerX}px`;
-                
-                // 调试：查看实时位置
-                console.log(`移动后X：${playerX}，右边界极限：${containerWidth - playerWidth}`);
-            }
-
-            // ========== 游戏结束/重置/开始 ==========
-            function endGame() {
-                gameRunning = false;
-                cancelAnimationFrame(gameLoopId);
-                clearInterval(obstacleSpawnTimer);
-                
-                finalScoreElement.textContent = score;
-                maxSpeedElement.textContent = `${maxSpeed.toFixed(1)}x`;
-                gameOver.style.display = 'flex';
-            }
-
-            function resetGame() {
-                obstacles.forEach(obs => obs.el.remove());
-                obstacles = [];
-                
-                score = 0;
-                speedMultiplier = 1;
-                maxSpeed = 1;
-                lastObstacleX = -100;
-                
-                scoreElement.textContent = score;
-                speedElement.textContent = `${speedMultiplier.toFixed(1)}x`;
-                
-                initDimensions();
-                
-                clearInterval(obstacleSpawnTimer);
-                obstacleSpawnTimer = setInterval(spawnObstacle, Math.max(1000, 2000 - (score / 20)));
-                
-                gameRunning = true;
-                updateGame();
-            }
-
-            function startGame() {
-                gamePanel.style.display = 'none';
-                gameOver.style.display = 'none';
-                resetGame();
-            }
-
-            // ========== 事件绑定 ==========
-            document.addEventListener('keydown', (e) => {
-                if (e.key === 'ArrowLeft') movePlayer('left');
-                if (e.key === 'ArrowRight') movePlayer('right');
-            });
-
-            gameContainer.addEventListener('click', (e) => {
-                const clickX = e.clientX - gameContainer.getBoundingClientRect().left;
-                const playerCenter = playerX + playerWidth / 2;
-                
-                if (clickX < playerCenter) {
-                    movePlayer('left');
-                } else {
-                    movePlayer('right');
-                }
-            });
-
-            gameContainer.addEventListener('touchstart', (e) => {
-                touchStartX = e.touches[0].clientX;
-            });
-
-            gameContainer.addEventListener('touchmove', (e) => {
-                if (!gameRunning) return;
-                const touchX = e.touches[0].clientX;
-                const diff = touchX - touchStartX;
-                
-                if (Math.abs(diff) > 10) {
-                    if (diff < 0) {
-                        movePlayer('left');
-                    } else {
-                        movePlayer('right');
-                    }
-                    touchStartX = touchX;
-                }
-            });
-
-            startBtn.addEventListener('click', startGame);
-            restartBtn.addEventListener('click', startGame);
-            window.addEventListener('resize', initDimensions);
-
-            // 初始化
-            initDimensions();
+    // 实时应用速度
+    function applySpeedNow() {
+        speedElement.textContent = (speedMultiplier * customFallSpeed).toFixed(1) + 'x';
+        obstacles.forEach(obs => {
+            obs.speed = 3 * speedMultiplier * customFallSpeed;
         });
-    </script>
+    }
+
+    // 记录只保留前7高
+    function saveRecord(score, time, maxSp, fallSpeed) {
+        let records = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
+        const now = new Date();
+        records.push({
+            score, 
+            time, 
+            max: maxSp,
+            fallSpeed: fallSpeed.toFixed(1), // 记录该局的下落速度
+            date: now.toLocaleDateString(),
+            t: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+        });
+        records.sort((a, b) => b.score - a.score);
+        if (records.length > 7) records = records.slice(0, 7);
+        localStorage.setItem(STORAGE.history, JSON.stringify(records));
+        renderHistory();
+    }
+
+    function renderHistory() {
+        const records = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
+        historyList.innerHTML = '';
+        if (records.length === 0) {
+            historyList.innerHTML = `<div class="history-item">暂无游戏记录</div>`;
+            return;
+        }
+        records.forEach(r => {
+            const div = document.createElement('div');
+            div.className = 'history-item';
+            div.innerHTML = `
+                <div>${r.date} ${r.t}</div>
+                <div>${r.score}分 · ${r.time}s · ${r.fallSpeed}x</div>
+            `;
+            historyList.appendChild(div);
+        });
+    }
+
+    function initSize() {
+        containerWidth = gameContainer.clientWidth;
+        containerHeight = gameContainer.clientHeight;
+        playerX = (containerWidth - playerWidth) >> 1;
+        player.style.left = playerX + 'px';
+    }
+
+    // 同时生成 N 个方块，保证有缝隙
+    function spawnObstacles() {
+        if (!gameRunning || gamePaused) return;
+        const types = ['obs-rect', 'obs-square', 'obs-wide'];
+        const used = [];
+        const gapMin = 12;
+
+        for (let i = 0; i < customSpawnCount; i++) {
+            const t = types[Math.random() * types.length | 0];
+            const w = t === 'obs-rect' ? 60 : t === 'obs-square' ? 40 : 80;
+            const h = t === 'obs-rect' ? 20 : t === 'obs-square' ? 40 : 15;
+
+            let x, ok;
+            let tryCount = 0;
+            do {
+                ok = true;
+                x = Math.random() * (containerWidth - w) | 0;
+                for (const u of used) {
+                    const d = Math.abs(x - u.x);
+                    if (d < w + gapMin) { ok = false; break; }
+                }
+                tryCount++;
+            } while (!ok && tryCount < 30);
+
+            used.push({x, w});
+            const el = document.createElement('div');
+            el.classList.add('obstacle', t);
+            el.style.left = x + 'px';
+            el.style.top = '-50px';
+            gameContainer.appendChild(el);
+            const speed = 3 * speedMultiplier * customFallSpeed;
+            obstacles.push({el, x, y: -50, w, h, speed});
+        }
+
+        if (score > 0 && score % 100 === 0) {
+            speedMultiplier = Math.min(2, speedMultiplier + 0.05);
+            maxSpeed = Math.max(maxSpeed, speedMultiplier);
+            applySpeedNow();
+        }
+    }
+
+    function update() {
+        if (!gameRunning || gamePaused) {
+            gameLoopId = requestAnimationFrame(update);
+            return;
+        }
+        const pLeft = playerX;
+        const pRight = pLeft + playerWidth;
+        const pTop = containerHeight - 30 - player.offsetHeight;
+        const pBottom = containerHeight - 30;
+
+        for (let i = obstacles.length - 1; i >= 0; i--) {
+            const o = obstacles[i];
+            o.y += o.speed;
+            o.el.style.top = o.y + 'px';
+
+            if (o.y > containerHeight) {
+                score += 10;
+                scoreElement.textContent = score;
+                o.el.remove();
+                obstacles.splice(i, 1);
+                continue;
+            }
+
+            const oLeft = o.x;
+            const oRight = o.x + o.w;
+            const oTop = o.y;
+            const oBottom = o.y + o.h;
+
+            if (pRight > oLeft && pLeft < oRight && pBottom > oTop && pTop < oBottom) {
+                endGame();
+                return;
+            }
+        }
+        gameLoopId = requestAnimationFrame(update);
+    }
+
+    function move(dir) {
+        if (!gameRunning || gamePaused) return;
+        playerX = Math.max(0, Math.min(containerWidth - playerWidth, playerX + (dir === 'left' ? -15 : 15)));
+        player.style.left = playerX + 'px';
+    }
+
+    function pauseGame() {
+        if (!gameRunning) return;
+        gamePaused = true;
+        pausePanel.style.display = 'flex';
+        pauseBtn.textContent = '▶';
+        totalPlayTime += (Date.now() - playStartTime) / 1000 | 0;
+    }
+
+    function resumeGame() {
+        if (!gameRunning) return;
+        gamePaused = false;
+        pausePanel.style.display = 'none';
+        pauseBtn.textContent = '⏸';
+        playStartTime = Date.now();
+    }
+
+    function endGame() {
+        gameRunning = false;
+        gamePaused = false;
+        cancelAnimationFrame(gameLoopId);
+        clearInterval(spawnTimer);
+        totalPlayTime += (Date.now() - playStartTime) / 1000 | 0;
+        document.getElementById('final-score').textContent = score;
+        document.getElementById('max-speed').textContent = (maxSpeed * customFallSpeed).toFixed(1) + 'x';
+        document.getElementById('play-time').textContent = totalPlayTime | 0;
+        // 保存记录时传入当前的下落速度
+        saveRecord(score, totalPlayTime | 0, maxSpeed * customFallSpeed, customFallSpeed);
+        gameOver.style.display = 'flex';
+        pauseBtn.textContent = '⏸';
+    }
+
+    function resetGame() {
+        obstacles.forEach(o => o.el.remove());
+        obstacles = [];
+        score = 0;
+        speedMultiplier = 1;
+        maxSpeed = 1;
+        gamePaused = false;
+        totalPlayTime = 0;
+        scoreElement.textContent = 0;
+        applySpeedNow();
+        initSize();
+        clearInterval(spawnTimer);
+        spawnTimer = setInterval(spawnObstacles, 1000);
+        playStartTime = Date.now();
+        gameRunning = true;
+    }
+
+    function startGame() {
+        gamePanel.style.display = 'none';
+        gameOver.style.display = 'none';
+        pausePanel.style.display = 'none';
+        settingsPanel.style.display = 'none';
+        pauseBtn.textContent = '⏸';
+        resetGame();
+        if (gameLoopId) cancelAnimationFrame(gameLoopId);
+        gameLoopId = requestAnimationFrame(update);
+    }
+
+    // 事件
+    document.addEventListener('keydown', e => {
+        if (e.key === 'ArrowLeft') move('left');
+        if (e.key === 'ArrowRight') move('right');
+        if (e.key === 'Escape') pauseGame();
+    });
+
+    gameContainer.addEventListener('click', e => {
+        const cx = e.clientX - gameContainer.getBoundingClientRect().left;
+        if (cx < containerWidth / 2) move('left');
+        else move('right');
+    });
+
+    startBtn.onclick = startGame;
+    restartBtn.onclick = startGame;
+    resumeBtn.onclick = resumeGame;
+    quitBtn.onclick = () => {
+        gameRunning = false;
+        gamePaused = false;
+        pausePanel.style.display = 'none';
+        gamePanel.style.display = 'flex';
+    };
+
+    pauseBtn.onclick = () => gamePaused ? resumeGame() : pauseGame();
+    settingsBtn.onclick = () => {
+        const show = settingsPanel.style.display !== 'flex';
+        settingsPanel.style.display = show ? 'flex' : 'none';
+        if (show && gameRunning && !gamePaused) pauseGame();
+    };
+
+    normalThemeBtn.onclick = () => setTheme('normal');
+    darkThemeBtn.onclick = () => setTheme('dark');
+    eyeThemeBtn.onclick = () => setTheme('eye');
+
+    obstacleCountSlider.oninput = e => {
+        customSpawnCount = +e.target.value;
+        obstacleCountValue.textContent = customSpawnCount;
+    };
+
+    fallSpeedSlider.oninput = e => {
+        customFallSpeed = +e.target.value;
+        fallSpeedValue.textContent = customFallSpeed.toFixed(1);
+    };
+
+    bgUpload.onchange = e => {
+        const f = e.target.files[0];
+        if (!f) return;
+        const r = new FileReader();
+        r.onload = ev => {
+            gameContainer.style.backgroundImage = `url(${ev.target.result})`;
+            gameContainer.style.backgroundSize = 'cover';
+            gameContainer.style.backgroundPosition = 'center';
+        };
+        r.readAsDataURL(f);
+    };
+
+    resetBgBtn.onclick = () => gameContainer.style.backgroundImage = '';
+    saveSettingsBtn.onclick = saveSettings;
+
+    window.addEventListener('resize', initSize);
+    initSize();
+    initStorage();
+});
+</script>
 </body>
 </html>
