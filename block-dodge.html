@@ -72,7 +72,7 @@
             color: var(--text-primary);
             padding: 20px;
             overflow: hidden;
-            touch-action: none; /* 禁用默认触摸行为 */
+            touch-action: manipulation;
         }
 
         #game-container {
@@ -85,8 +85,7 @@
             position: relative;
             overflow: hidden;
             padding: 0;
-            margin: 0;
-            touch-action: pan-x; /* 只允许水平滑动 */
+            margin: 0 auto;
         }
 
         #controls-panel {
@@ -105,7 +104,7 @@
             border: none;
             background: var(--card-bg);
             color: var(--text-primary);
-            font-size: 16px; /* 优化图标字号 */
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -113,7 +112,8 @@
             justify-content: center;
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
-            -webkit-tap-highlight-color: transparent; /* 移除点击高亮 */
+            -webkit-tap-highlight-color: transparent;
+            pointer-events: auto;
         }
 
         .control-btn:hover {
@@ -162,7 +162,7 @@
             z-index: 5;
             transform: none;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
-            transition: left 0.08s ease-out; /* 玩家移动更丝滑 */
+            transition: left 0.08s ease-out;
         }
 
         .obstacle {
@@ -236,63 +236,65 @@
             align-items: center;
             justify-content: center;
             z-index: 20;
+            overflow: hidden;
         }
 
-        /* 设置面板比例和PC端完全一致 */
         .settings-card {
-            width: 90%;
-            max-width: 330px;
+            width: min(330px, 90%);
             height: auto;
-            max-height: 78vh; /* 和PC端一致的高度比例 */
+            aspect-ratio: 330 / 580; 
+            max-height: calc(min(330px, 90vw) * (580/330)); 
             background: var(--card-bg);
             border-radius: 20px;
-            padding: 26px 22px;
+            padding: 18px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
-            /* 强制保持宽高比 */
-            aspect-ratio: 330 / 580;
-            max-height: calc(100vw * (580/330));
+            position: relative;
+            clip-path: inset(0);
         }
+
         .settings-card::-webkit-scrollbar {
-            display: none;
+            display: none; /* 隐藏滚动条，视觉更统一 */
         }
 
         .settings-title {
-            font-size: 22px;
+            font-size: 19px;
             font-weight: 600;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 16px;
         }
 
         .settings-group {
-            margin-bottom: 20px;
-            padding-bottom: 16px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
             border-bottom: 1px solid var(--border-light);
         }
+
         .settings-group:last-of-type {
             border-bottom: 0;
-            margin-bottom: 18px;
+            margin-bottom: 14px;
             padding-bottom: 0;
         }
 
         .settings-label {
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 500;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             display: block;
         }
 
         .theme-buttons {
             display: grid;
             grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
+            gap: 5px;
         }
 
         .theme-btn {
-            padding: 8px 0;
+            padding: 5px 0;
             border-radius: 8px;
             border: none;
-            font-size: 13px;
+            font-size: 11px;
             font-weight: 500;
             cursor: pointer;
             background: var(--btn-secondary);
@@ -306,27 +308,30 @@
         }
 
         .slider-control {
-            margin-bottom: 14px;
+            margin-bottom: 10px;
         }
+
         .slider-label {
             display: flex;
             justify-content: space-between;
-            font-size: 13px;
+            font-size: 11px;
             color: var(--text-secondary);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
+
         input[type="range"] {
             width: 100%;
-            height: 4px;
+            height: 3px;
             border-radius: 2px;
             background: var(--border-light);
             outline: none;
             -webkit-appearance: none;
         }
+
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
-            width: 16px;
-            height: 16px;
+            width: 14px;
+            height: 14px;
             border-radius: 50%;
             background: var(--btn-primary);
             cursor: pointer;
@@ -335,29 +340,33 @@
         .upload-control {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-top: 6px;
+            gap: 7px;
+            margin-top: 5px;
         }
+
         #bg-upload {
             display: none;
         }
+
         .upload-btn,
         #reset-bg-btn {
             width: 100%;
-            height: 40px;
-            line-height: 40px;
+            height: 34px;
+            line-height: 34px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 500;
             cursor: pointer;
             text-align: center;
             -webkit-tap-highlight-color: transparent;
         }
+
         .upload-btn {
             border: 1px dashed var(--text-secondary);
             background: transparent;
             color: var(--text-primary);
         }
+
         #reset-bg-btn {
             border: none;
             background: var(--btn-secondary);
@@ -366,28 +375,30 @@
 
         .history-section {
             background: rgba(0,0,0,0.02);
-            border-radius: 10px;
-            padding: 12px;
+            border-radius: 7px;
+            padding: 9px;
         }
+
         .history-item {
             display: flex;
             justify-content: space-between;
-            padding: 6px 0;
+            padding: 4px 0;
             border-bottom: 1px solid var(--border-light);
-            font-size: 12px;
+            font-size: 10px;
             color: var(--text-secondary);
         }
+
         .history-item:last-child {
             border-bottom: none;
         }
 
         .btn {
             width: 100%;
-            height: 44px;
-            line-height: 44px;
+            height: 38px;
+            line-height: 38px;
             border-radius: 10px;
             border: none;
-            font-size: 15px;
+            font-size: 13px;
             font-weight: 500;
             cursor: pointer;
             background: var(--btn-primary);
@@ -395,6 +406,7 @@
             text-align: center;
             -webkit-tap-highlight-color: transparent;
         }
+
         .btn:hover {
             background: var(--btn-hover);
             transform: translateY(-1px);
@@ -406,6 +418,7 @@
             gap: 8px;
             width: 100%;
         }
+
         .btn-secondary {
             background: var(--btn-secondary);
             color: var(--text-primary);
@@ -425,6 +438,7 @@
             justify-content: center;
             z-index: 20;
         }
+
         #game-over {
             display: none;
         }
@@ -440,21 +454,25 @@
             align-items: center;
             gap: 20px;
         }
+
         .panel-title {
             font-size: 24px;
             font-weight: 600;
         }
+
         .panel-subtitle {
             font-size: 14px;
             color: var(--text-secondary);
             text-align: center;
             line-height: 1.5;
         }
+
         .final-score {
             font-size: 36px;
             font-weight: 700;
             color: var(--player-color);
         }
+
         .final-stats {
             font-size: 14px;
             color: var(--text-secondary);
@@ -467,7 +485,7 @@
 
 <div id="game-container">
     <div id="controls-panel">
-        <button class="control-btn" id="pause-btn">⏸</button> 
+        <button class="control-btn" id="pause-btn">⏸</button>
         <button class="control-btn" id="settings-btn">⚙</button>
     </div>
 
@@ -508,7 +526,7 @@
                         <span>同时掉落数量</span>
                         <span id="obstacle-count-value">1</span>
                     </div>
-                    <input type="range" id="obstacle-count" min="1" max="3" value="1"> 
+                    <input type="range" id="obstacle-count" min="1" max="3" value="1">
                 </div>
                 <div class="slider-control">
                     <div class="slider-label">
@@ -570,6 +588,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameOver = document.getElementById('game-over');
     const pausePanel = document.getElementById('pause-panel');
     const settingsPanel = document.getElementById('settings-panel');
+    const settingsCard = document.querySelector('.settings-card');
 
     const pauseBtn = document.getElementById('pause-btn');
     const settingsBtn = document.getElementById('settings-btn');
@@ -603,12 +622,11 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoopId = null;
     let spawnTimer = null;
 
-    let customSpawnCount = 1; 
-    let customFallSpeed = 1.0; 
+    let customSpawnCount = 1;
+    let customFallSpeed = 1.0;
     let playStartTime = 0;
     let totalPlayTime = 0;
 
-    // 触摸滑动优化变量
     let touchStartX = 0;
     let touchCurrentX = 0;
     let isDragging = false;
@@ -618,7 +636,6 @@ document.addEventListener('DOMContentLoaded', () => {
         history: 'minimalDodge_history'
     };
 
-    // 主题切换
     function setTheme(theme) {
         document.body.className = '';
         if (theme === 'dark') document.body.classList.add('dark-mode');
@@ -631,12 +648,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (theme === 'eye') eyeThemeBtn.classList.add('active');
     }
 
-    // 初始化存储
     function initStorage() {
         const saved = localStorage.getItem(STORAGE.settings);
         if (saved) {
             const s = JSON.parse(saved);
-            customSpawnCount = s.spawnCount ?? 1; 
+            customSpawnCount = s.spawnCount ?? 1;
             customFallSpeed = s.fallSpeed ?? 1.0;
             setTheme(s.theme || 'normal');
 
@@ -651,18 +667,15 @@ document.addEventListener('DOMContentLoaded', () => {
             fallSpeedSlider.value = customFallSpeed;
             fallSpeedValue.textContent = customFallSpeed.toFixed(1);
         } else {
-            // 首次加载设置默认值到UI
             obstacleCountSlider.value = 1;
             obstacleCountValue.textContent = 1;
             fallSpeedSlider.value = 1.0;
             fallSpeedValue.textContent = 1.0;
         }
-        // 初始化速度显示
         speedElement.textContent = (speedMultiplier * customFallSpeed).toFixed(1) + 'x';
         renderHistory();
     }
 
-    // 保存设置（无提示，自动关闭）
     function saveSettings() {
         const theme = document.body.classList.contains('dark-mode') ? 'dark'
             : document.body.classList.contains('eye-mode') ? 'eye' : 'normal';
@@ -676,14 +689,12 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.setItem(STORAGE.settings, JSON.stringify(s));
 
         settingsPanel.style.display = 'none';
-        // 实时更新速度显示
         applySpeedNow();
         if (gameRunning && !gamePaused) {
             resumeGame();
         }
     }
 
-    // 实时应用速度
     function applySpeedNow() {
         speedElement.textContent = (speedMultiplier * customFallSpeed).toFixed(1) + 'x';
         obstacles.forEach(obs => {
@@ -691,7 +702,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 记录只保留前7高
     function saveRecord(score, time, maxSp, fallSpeed) {
         let records = JSON.parse(localStorage.getItem(STORAGE.history) || '[]');
         const now = new Date();
@@ -699,7 +709,7 @@ document.addEventListener('DOMContentLoaded', () => {
             score, 
             time, 
             max: maxSp,
-            fallSpeed: fallSpeed.toFixed(1), // 记录该局的下落速度
+            fallSpeed: fallSpeed.toFixed(1),
             date: now.toLocaleDateString(),
             t: now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
         });
@@ -734,7 +744,6 @@ document.addEventListener('DOMContentLoaded', () => {
         player.style.left = playerX + 'px';
     }
 
-    // 同时生成 N 个方块，保证有缝隙
     function spawnObstacles() {
         if (!gameRunning || gamePaused) return;
         const types = ['obs-rect', 'obs-square', 'obs-wide'];
@@ -817,10 +826,8 @@ document.addEventListener('DOMContentLoaded', () => {
         player.style.left = playerX + 'px';
     }
 
-    // 优化手机端滑动逻辑
     function handleTouchMove(x) {
         if (!gameRunning || gamePaused) return;
-        // 直接根据触摸位置设置玩家位置，更丝滑
         playerX = Math.max(0, Math.min(containerWidth - playerWidth, x - playerWidth/2));
         player.style.left = playerX + 'px';
     }
@@ -829,7 +836,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gameRunning) return;
         gamePaused = true;
         pausePanel.style.display = 'flex';
-        pauseBtn.textContent = '▶'; 
+        pauseBtn.textContent = '▶';
         totalPlayTime += (Date.now() - playStartTime) / 1000 | 0;
     }
 
@@ -837,7 +844,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gameRunning) return;
         gamePaused = false;
         pausePanel.style.display = 'none';
-        pauseBtn.textContent = '⏸'; 
+        pauseBtn.textContent = '⏸';
         playStartTime = Date.now();
     }
 
@@ -850,10 +857,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('final-score').textContent = score;
         document.getElementById('max-speed').textContent = (maxSpeed * customFallSpeed).toFixed(1) + 'x';
         document.getElementById('play-time').textContent = totalPlayTime | 0;
-        // 保存记录时传入当前的下落速度
         saveRecord(score, totalPlayTime | 0, maxSpeed * customFallSpeed, customFallSpeed);
         gameOver.style.display = 'flex';
-        pauseBtn.textContent = '⏸'; // 恢复暂停图标
+        pauseBtn.textContent = '⏸';
     }
 
     function resetGame() {
@@ -878,28 +884,34 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver.style.display = 'none';
         pausePanel.style.display = 'none';
         settingsPanel.style.display = 'none';
-        pauseBtn.textContent = '⏸'; // 开始游戏后显示暂停图标
+        pauseBtn.textContent = '⏸';
         resetGame();
         if (gameLoopId) cancelAnimationFrame(gameLoopId);
         gameLoopId = requestAnimationFrame(update);
     }
 
-    // 事件
     document.addEventListener('keydown', e => {
         if (e.key === 'ArrowLeft') move('left');
         if (e.key === 'ArrowRight') move('right');
         if (e.key === 'Escape') pauseGame();
     });
 
-    // 优化触摸事件
+    // 触摸事件处理（排除按钮和设置面板）
     gameContainer.addEventListener('touchstart', e => {
+        if (e.target.closest('.control-btn') || e.target.closest('#settings-panel')) {
+            return;
+        }
+        if (!gameRunning) return;
         e.preventDefault();
         touchStartX = e.touches[0].clientX - gameContainer.getBoundingClientRect().left;
         isDragging = true;
     });
 
     gameContainer.addEventListener('touchmove', e => {
-        if (!isDragging) return;
+        if (e.target.closest('#settings-panel')) {
+            return;
+        }
+        if (!isDragging || !gameRunning) return;
         e.preventDefault();
         touchCurrentX = e.touches[0].clientX - gameContainer.getBoundingClientRect().left;
         handleTouchMove(touchCurrentX);
@@ -909,33 +921,64 @@ document.addEventListener('DOMContentLoaded', () => {
         isDragging = false;
     });
 
-    // 点击事件保留（兼容）
-    gameContainer.addEventListener('click', e => {
-        const cx = e.clientX - gameContainer.getBoundingClientRect().left;
-        handleTouchMove(cx);
-    });
+    // 隔离设置卡片滚动事件
+    if (settingsCard) {
+        settingsCard.addEventListener('touchstart', (e) => e.stopPropagation());
+        settingsCard.addEventListener('touchmove', (e) => e.stopPropagation());
+    }
 
-    startBtn.onclick = startGame;
-    restartBtn.onclick = startGame;
+    // 按钮事件绑定
+    startBtn.addEventListener('click', startGame);
+    startBtn.addEventListener('touchend', (e) => { e.preventDefault(); startGame(); });
+
+    restartBtn.addEventListener('click', startGame);
+    restartBtn.addEventListener('touchend', (e) => { e.preventDefault(); startGame(); });
+
     resumeBtn.onclick = resumeGame;
+    resumeBtn.addEventListener('touchend', (e) => { e.preventDefault(); resumeGame(); });
+
     quitBtn.onclick = () => {
         gameRunning = false;
         gamePaused = false;
         pausePanel.style.display = 'none';
         gamePanel.style.display = 'flex';
-        pauseBtn.textContent = '⏸'; // 退出后恢复暂停图标
+        pauseBtn.textContent = '⏸';
     };
+    quitBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        gameRunning = false;
+        gamePaused = false;
+        pausePanel.style.display = 'none';
+        gamePanel.style.display = 'flex';
+        pauseBtn.textContent = '⏸';
+    });
 
     pauseBtn.onclick = () => gamePaused ? resumeGame() : pauseGame();
+    pauseBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        gamePaused ? resumeGame() : pauseGame();
+    });
+
     settingsBtn.onclick = () => {
         const show = settingsPanel.style.display !== 'flex';
         settingsPanel.style.display = show ? 'flex' : 'none';
         if (show && gameRunning && !gamePaused) pauseGame();
     };
+    settingsBtn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        const show = settingsPanel.style.display !== 'flex';
+        settingsPanel.style.display = show ? 'flex' : 'none';
+        if (show && gameRunning && !gamePaused) pauseGame();
+    });
 
     normalThemeBtn.onclick = () => setTheme('normal');
+    normalThemeBtn.addEventListener('touchend', (e) => { e.preventDefault(); setTheme('normal'); });
+
     darkThemeBtn.onclick = () => setTheme('dark');
+    darkThemeBtn.addEventListener('touchend', (e) => { e.preventDefault(); setTheme('dark'); });
+
     eyeThemeBtn.onclick = () => setTheme('eye');
+    eyeThemeBtn.addEventListener('touchend', (e) => { e.preventDefault(); setTheme('eye'); });
 
     obstacleCountSlider.oninput = e => {
         customSpawnCount = +e.target.value;
@@ -960,7 +1003,10 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     resetBgBtn.onclick = () => gameContainer.style.backgroundImage = '';
+    resetBgBtn.addEventListener('touchend', (e) => { e.preventDefault(); gameContainer.style.backgroundImage = ''; });
+
     saveSettingsBtn.onclick = saveSettings;
+    saveSettingsBtn.addEventListener('touchend', (e) => { e.preventDefault(); saveSettings(); });
 
     window.addEventListener('resize', initSize);
     initSize();
