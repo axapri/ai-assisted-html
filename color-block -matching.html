@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 色块配对</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <style>
+       /* 全局游戏风格 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f9fafb;
+            color: #111827;
+            padding: 20px;
+        }
+
+        /* 游戏容器 - 卡片式风格设计 */
+        #game-container {
+            width: 100%;
+            max-width: 600px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        /* 游戏信息区 - 扁平化无装饰 */
+        #game-stats {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .stat-value {
+            color: #374151;
+            font-weight: 600;
+        }
+
+        .time-value {
+            color: #ef4444;
+        }
+
+        .score-value {
+            color: #2563eb;
+        }
+
+        /* 游戏棋盘 - 网格布局极简 */
+        #game-board {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            width: 100%;
+        }
+
+        /* 色块卡片 - 核心交互元素 */
+        .card {
+            aspect-ratio: 1/1;
+            border-radius: 12px;
+            background: #e5e7eb;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .card.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .card-inner {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .card-front {
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-back {
+            transform: rotateY(180deg);
+        }
+
+        /* 配对成功提示 */
+        .match-indicator {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 32px;
+            font-weight: 700;
+            color: #10b981;
+            opacity: 0;
+            pointer-events: none;
+            animation: match-fade 0.8s ease-out forwards;
+        }
+
+        @keyframes match-fade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* 开始/结束面板 - 风格模态 */
+        #game-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 100;
+        }
+
+        .panel-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .panel-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            max-width: 400px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* 按钮 - 游戏风格 */
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+        }
+
+        /* 结束面板 */
+        #game-over {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 100;
+        }
+
+        .final-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .final-stats {
+            display: flex;
+            gap: 32px;
+            margin: 8px 0 24px 0;
+        }
+
+        .final-stat-item {
+            text-align: center;
+        }
+
+        .final-stat-label {
+            font-size: 14px;
+            color: #6b7280;
+        }
+
+        .final-stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 500px) {
+            #game-container {
+                padding: 24px;
+            }
+            
+            #game-board {
+                gap: 12px;
+            }
+            
+            .panel-title {
+                font-size: 28px;
+            }
+            
+            .final-score {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- 游戏数据统计 -->
+        <div id="game-stats">
+            <div class="stat-item">
+                <span class="stat-label">得分</span>
+                <span class="stat-value score-value" id="score">0</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">时间</span>
+                <span class="stat-value time-value" id="time">60</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-label">配对数</span>
+                <span class="stat-value" id="matches">0</span>
+            </div>
+        </div>
+
+        <!-- 游戏棋盘 -->
+        <div id="game-board"></div>
+    </div>
+
+    <!-- 配对成功提示 -->
+    <div class="match-indicator" id="match-indicator">MATCH!</div>
+
+    <!-- 开始面板 -->
+    <div id="game-panel">
+        <div class="panel-title">极简色块配对</div>
+        <div class="panel-subtitle">记忆色块位置，找到相同颜色的配对。每轮颜色随机生成，考验你的记忆和反应力</div>
+        <button class="btn" id="start-btn">开始游戏</button>
+    </div>
+
+    <!-- 结束面板 -->
+    <div id="game-over">
+        <div class="panel-title">游戏结束</div>
+        <div class="final-score" id="final-score">0</div>
+        <div class="final-stats">
+            <div class="final-stat-item">
+                <div class="final-stat-label">总配对</div>
+                <div class="final-stat-value" id="final-matches">0</div>
+            </div>
+            <div class="final-stat-item">
+                <div class="final-stat-label">平均耗时</div>
+                <div class="final-stat-value" id="avg-time">0</div>
+            </div>
+        </div>
+        <button class="btn" id="restart-btn">再来一局</button>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM元素
+            const gameBoard = document.getElementById('game-board');
+            const scoreElement = document.getElementById('score');
+            const timeElement = document.getElementById('time');
+            const matchesElement = document.getElementById('matches');
+            const matchIndicator = document.getElementById('match-indicator');
+            const gamePanel = document.getElementById('game-panel');
+            const gameOver = document.getElementById('game-over');
+            const finalScoreElement = document.getElementById('final-score');
+            const finalMatchesElement = document.getElementById('final-matches');
+            const avgTimeElement = document.getElementById('avg-time');
+            const startBtn = document.getElementById('start-btn');
+            const restartBtn = document.getElementById('restart-btn');
+
+            // 游戏核心参数
+            let gameRunning = false;
+            let score = 0;
+            let timeLeft = 60;
+            let matches = 0;
+            let cards = [];
+            let flippedCards = [];
+            let canFlip = true;
+            let timerInterval = null;
+            let matchTimes = [];
+            let lastFlipTime = 0;
+
+            // 游戏风格配色方案（随机生成配对）
+            const colorPalette = [
+                '#2563eb', // 蓝
+                '#ef4444', // 红
+                '#10b981', // 绿
+                '#f59e0b', // 黄
+                '#8b5cf6', // 紫
+                '#ec4899', // 粉
+                '#06b6d4', // 青
+                '#14b8a6'  // 绿蓝
+            ];
+
+            // 初始化游戏棋盘
+            function initBoard() {
+                // 清空棋盘
+                gameBoard.innerHTML = '';
+                cards = [];
+                flippedCards = [];
+                
+                // 随机选择8种颜色（生成16张卡片，8对）
+                const shuffledColors = [...colorPalette].sort(() => 0.5 - Math.random()).slice(0, 8);
+                const cardColors = [...shuffledColors, ...shuffledColors];
+                
+                // 打乱卡片顺序
+                const shuffledCards = cardColors.sort(() => 0.5 - Math.random());
+                
+                // 创建卡片
+                shuffledCards.forEach((color, index) => {
+                    const card = document.createElement('div');
+                    card.classList.add('card');
+                    card.dataset.index = index;
+                    card.dataset.color = color;
+                    
+                    const cardInner = document.createElement('div');
+                    cardInner.classList.add('card-inner');
+                    
+                    const cardFront = document.createElement('div');
+                    cardFront.classList.add('card-front');
+                    
+                    const cardBack = document.createElement('div');
+                    cardBack.classList.add('card-back');
+                    cardBack.style.backgroundColor = color;
+                    
+                    cardInner.appendChild(cardFront);
+                    cardInner.appendChild(cardBack);
+                    card.appendChild(cardInner);
+                    
+                    // 卡片点击事件
+                    card.addEventListener('click', () => flipCard(card));
+                    
+                    gameBoard.appendChild(card);
+                    cards.push(card);
+                });
+            }
+
+            // 翻转卡片
+            function flipCard(card) {
+                if (!gameRunning || !canFlip || card.classList.contains('flipped') || flippedCards.length >= 2) {
+                    return;
+                }
+
+                // 记录翻牌时间（用于计算平均配对耗时）
+                if (flippedCards.length === 0) {
+                    lastFlipTime = Date.now();
+                }
+
+                // 翻转卡片
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                // 检查配对
+                if (flippedCards.length === 2) {
+                    canFlip = false;
+                    checkMatch();
+                }
+            }
+
+            // 检查配对
+            function checkMatch() {
+                const [card1, card2] = flippedCards;
+                const isMatch = card1.dataset.color === card2.dataset.color;
+
+                if (isMatch) {
+                    // 配对成功
+                    matches++;
+                    score += Math.floor(timeLeft * 1.5); // 剩余时间越多得分越高
+                    const matchTime = (Date.now() - lastFlipTime) / 1000;
+                    matchTimes.push(matchTime);
+                    
+                    // 更新UI
+                    matchesElement.textContent = matches;
+                    scoreElement.textContent = score;
+                    
+                    // 配对成功提示
+                    matchIndicator.style.opacity = 1;
+                    setTimeout(() => {
+                        matchIndicator.style.opacity = 0;
+                    }, 800);
+                    
+                    // 禁用已配对卡片
+                    card1.style.pointerEvents = 'none';
+                    card2.style.pointerEvents = 'none';
+                    
+                    // 重置翻转数组
+                    flippedCards = [];
+                    canFlip = true;
+                    
+                    // 检查是否完成所有配对
+                    if (matches === 8) {
+                        // 提前结束游戏，奖励分数
+                        score += timeLeft * 5;
+                        scoreElement.textContent = score;
+                        endGame();
+                    }
+                } else {
+                    // 配对失败
+                    score = Math.max(0, score - 10); // 扣分
+                    scoreElement.textContent = score;
+                    
+                    // 翻回卡片
+                    setTimeout(() => {
+                        card1.classList.remove('flipped');
+                        card2.classList.remove('flipped');
+                        flippedCards = [];
+                        canFlip = true;
+                    }, 800);
+                }
+            }
+
+            // 倒计时
+            function startTimer() {
+                clearInterval(timerInterval);
+                timeLeft = 60;
+                timeElement.textContent = timeLeft;
+                
+                timerInterval = setInterval(() => {
+                    timeLeft--;
+                    timeElement.textContent = timeLeft;
+                    
+                    // 时间到结束游戏
+                    if (timeLeft <= 0) {
+                        clearInterval(timerInterval);
+                        endGame();
+                    }
+                }, 1000);
+            }
+
+            // 结束游戏
+            function endGame() {
+                gameRunning = false;
+                clearInterval(timerInterval);
+                
+                // 计算平均配对耗时
+                const avgTime = matchTimes.length > 0 
+                    ? (matchTimes.reduce((a, b) => a + b, 0) / matchTimes.length).toFixed(1) 
+                    : '0.0';
+                
+                // 更新结束面板
+                finalScoreElement.textContent = score;
+                finalMatchesElement.textContent = matches;
+                avgTimeElement.textContent = `${avgTime}s`;
+                
+                // 显示结束面板
+                gameOver.style.display = 'flex';
+            }
+
+            // 重置游戏
+            function resetGame() {
+                // 重置参数
+                score = 0;
+                matches = 0;
+                matchTimes = [];
+                flippedCards = [];
+                canFlip = true;
+                
+                // 更新UI
+                scoreElement.textContent = score;
+                matchesElement.textContent = matches;
+                
+                // 初始化棋盘
+                initBoard();
+                
+                // 开始计时
+                startTimer();
+                
+                // 标记游戏运行
+                gameRunning = true;
+            }
+
+            // 开始游戏
+            function startGame() {
+                gamePanel.style.display = 'none';
+                gameOver.style.display = 'none';
+                resetGame();
+            }
+
+            // 事件绑定
+            startBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', startGame);
+
+            // 初始化棋盘（预加载）
+            initBoard();
+        });
+    </script>
+</body>
+</html>
