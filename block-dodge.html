@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 极简方块闪避</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <style>
+        /* 全局极致简约风格 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: background-color 0.2s ease;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f9fafb;
+            color: #111827;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* 游戏容器 - 极致简约卡片 */
+        #game-container {
+            width: 100%;
+            max-width: 400px;
+            height: 600px;
+            background: #ffffff;
+            border-radius: 20px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            position: relative;
+            overflow: hidden;
+            /* 确保容器尺寸固定，无内边距干扰 */
+            padding: 0;
+            margin: 0;
+        }
+
+        /* 游戏信息区 - 悬浮极简设计 */
+        #game-info {
+            position: absolute;
+            top: 20px;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .info-item {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 4px 12px;
+            border-radius: 12px;
+            backdrop-filter: blur(4px);
+        }
+
+        .score-value {
+            color: #2563eb;
+        }
+
+        .speed-value {
+            color: #ef4444;
+        }
+
+        /* 玩家方块 - 核心交互元素 */
+        #player {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            background: #2563eb;
+            border-radius: 10px;
+            bottom: 30px;
+            /* 初始位置通过JS精确设置，避免CSS偏移 */
+            left: 0;
+            z-index: 5;
+            /* 禁止变形，确保尺寸精准 */
+            transform: none;
+        }
+
+        /* 障碍元素 - 极简几何形状 */
+        .obstacle {
+            position: absolute;
+            background: #e5e7eb;
+            border-radius: 8px;
+            z-index: 4;
+        }
+
+        /* 不同形状的障碍（增加视觉区分） */
+        .obs-rect {
+            width: 60px;
+            height: 20px;
+        }
+
+        .obs-square {
+            width: 40px;
+            height: 40px;
+        }
+
+        .obs-wide {
+            width: 80px;
+            height: 15px;
+        }
+
+        /* 成功/失败反馈 */
+        .feedback {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 36px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            z-index: 15;
+            animation: feedback-fade 0.6s ease-out forwards;
+        }
+
+        .feedback-score {
+            color: #2563eb;
+        }
+
+        .feedback-hit {
+            color: #ef4444;
+        }
+
+        @keyframes feedback-fade {
+            0% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            100% { opacity: 0; transform: translate(-50%, -50%) scale(1.2); }
+        }
+
+        /* 开始/结束面板 - 极简模态 */
+        #game-panel {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 20;
+        }
+
+        .panel-title {
+            font-size: 32px;
+            font-weight: 600;
+            color: #111827;
+        }
+
+        .panel-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+            max-width: 300px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        /* 按钮 - 现代极简风格 */
+        .btn {
+            padding: 14px 32px;
+            border-radius: 10px;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            background: #2563eb;
+            color: white;
+            min-width: 200px;
+        }
+
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-2px);
+            transition: transform 0.2s ease;
+        }
+
+        /* 结束面板 */
+        #game-over {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 20px;
+            z-index: 20;
+        }
+
+        .final-score {
+            font-size: 48px;
+            font-weight: 700;
+            color: #2563eb;
+        }
+
+        .final-stats {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        /* 响应式适配 */
+        @media (max-width: 400px) {
+            #game-container {
+                height: 500px;
+            }
+            
+            #player {
+                width: 40px;
+                height: 40px;
+            }
+            
+            .panel-title {
+                font-size: 28px;
+            }
+            
+            .final-score {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <!-- 游戏信息 -->
+        <div id="game-info">
+            <div class="info-item">得分: <span class="score-value" id="score">0</span></div>
+            <div class="info-item">速度: <span class="speed-value" id="speed">1x</span></div>
+        </div>
+
+        <!-- 玩家方块 -->
+        <div id="player"></div>
+
+        <!-- 反馈提示 -->
+        <div class="feedback feedback-score" id="score-feedback">+10</div>
+        <div class="feedback feedback-hit" id="hit-feedback">HIT!</div>
+
+        <!-- 开始面板 -->
+        <div id="game-panel">
+            <div class="panel-title">极简闪避</div>
+            <div class="panel-subtitle">滑动/点击左右移动方块，躲避下落的障碍。速度随得分递增，考验你的即时反应</div>
+            <button class="btn" id="start-btn">开始游戏</button>
+        </div>
+
+        <!-- 结束面板 -->
+        <div id="game-over">
+            <div class="panel-title">游戏结束</div>
+            <div class="final-score" id="final-score">0</div>
+            <div class="final-stats">最高速度: <span id="max-speed">1x</span></div>
+            <button class="btn" id="restart-btn">再来一局</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM元素
+            const gameContainer = document.getElementById('game-container');
+            const player = document.getElementById('player');
+            const scoreElement = document.getElementById('score');
+            const speedElement = document.getElementById('speed');
+            const scoreFeedback = document.getElementById('score-feedback');
+            const hitFeedback = document.getElementById('hit-feedback');
+            const gamePanel = document.getElementById('game-panel');
+            const gameOver = document.getElementById('game-over');
+            const finalScoreElement = document.getElementById('final-score');
+            const maxSpeedElement = document.getElementById('max-speed');
+            const startBtn = document.getElementById('start-btn');
+            const restartBtn = document.getElementById('restart-btn');
+
+            // 游戏核心参数
+            let gameRunning = false;
+            let score = 0;
+            let speedMultiplier = 1;
+            let maxSpeed = 1;
+            let playerX = 0; // 玩家X坐标（像素级精准）
+            let playerWidth = 50;
+            let playerHeight = 50;
+            let containerWidth = 0; // 容器宽度（实时获取）
+            let containerHeight = 0;
+            let obstacles = [];
+            let gameLoopId = null;
+            let obstacleSpawnTimer = null;
+            let touchStartX = 0;
+            let lastObstacleX = -100;
+            let minObstacleGap = 40;
+
+            // ========== 像素级精准初始化 ==========
+            function initDimensions() {
+                // 强制重绘，确保获取真实尺寸
+                gameContainer.style.display = 'none';
+                gameContainer.offsetHeight; // 触发重绘
+                gameContainer.style.display = '';
+
+                // 精确获取容器尺寸（不含内边距、边框）
+                containerWidth = gameContainer.clientWidth;
+                containerHeight = gameContainer.clientHeight;
+                
+                // 精确获取玩家尺寸（避免CSS变形）
+                playerWidth = player.offsetWidth;
+                playerHeight = player.offsetHeight;
+                
+                // 初始位置：绝对居中（像素级精准）
+                playerX = Math.floor((containerWidth - playerWidth) / 2);
+                // 使用left属性（px），避免transform偏移
+                player.style.left = `${playerX}px`;
+                
+                lastObstacleX = -100;
+                console.log(`初始化：容器宽${containerWidth}，玩家宽${playerWidth}，初始X${playerX}`);
+            }
+
+            // ========== 障碍生成 ==========
+            function spawnObstacle() {
+                if (!gameRunning) return;
+
+                const obstacleTypes = ['obs-rect', 'obs-square', 'obs-wide'];
+                const randomType = obstacleTypes[Math.floor(Math.random() * obstacleTypes.length)];
+                
+                let obstacleWidth, obstacleHeight;
+                if (randomType === 'obs-rect') {
+                    obstacleWidth = 60;
+                    obstacleHeight = 20;
+                } else if (randomType === 'obs-square') {
+                    obstacleWidth = 40;
+                    obstacleHeight = 40;
+                } else {
+                    obstacleWidth = 80;
+                    obstacleHeight = 15;
+                }
+                
+                const maxX = containerWidth - obstacleWidth;
+                let randomX;
+                
+                do {
+                    randomX = Math.floor(Math.random() * maxX);
+                } while (Math.abs(randomX - lastObstacleX) < minObstacleGap && lastObstacleX !== -100);
+                
+                lastObstacleX = randomX;
+                
+                if (obstacleWidth > containerWidth * 0.7) {
+                    randomX = Math.random() > 0.5 ? 0 : containerWidth - obstacleWidth;
+                }
+                
+                const obstacle = document.createElement('div');
+                obstacle.classList.add('obstacle', randomType);
+                obstacle.style.left = `${randomX}px`;
+                obstacle.style.top = `-40px`;
+                gameContainer.appendChild(obstacle);
+                
+                obstacles.push({
+                    el: obstacle,
+                    x: randomX,
+                    y: -40,
+                    width: obstacleWidth,
+                    height: obstacleHeight,
+                    speed: 3 * speedMultiplier
+                });
+
+                if (score % 100 === 0 && score > 0) {
+                    speedMultiplier = Math.min(2, speedMultiplier + 0.05);
+                    maxSpeed = Math.max(maxSpeed, speedMultiplier);
+                    speedElement.textContent = `${speedMultiplier.toFixed(1)}x`;
+                }
+            }
+
+            // ========== 游戏更新 ==========
+            function updateGame() {
+                if (!gameRunning) return;
+
+                for (let i = obstacles.length - 1; i >= 0; i--) {
+                    const obs = obstacles[i];
+                    obs.y += obs.speed;
+                    obs.el.style.top = `${obs.y}px`;
+
+                    if (obs.y > containerHeight) {
+                        score += 10;
+                        scoreElement.textContent = score;
+                        
+                        scoreFeedback.style.opacity = 1;
+                        setTimeout(() => scoreFeedback.style.opacity = 0, 600);
+                        
+                        obs.el.remove();
+                        obstacles.splice(i, 1);
+                        continue;
+                    }
+
+                    const playerRight = playerX + playerWidth;
+                    const playerBottom = containerHeight - 30;
+                    const playerTop = playerBottom - playerHeight;
+                    
+                    const obsRight = obs.x + obs.width;
+                    const obsBottom = obs.y + obs.height;
+                    const obsTop = obs.y;
+
+                    if (
+                        playerX < obsRight &&
+                        playerRight > obs.x &&
+                        playerTop < obsBottom &&
+                        playerBottom > obsTop
+                    ) {
+                        hitFeedback.style.opacity = 1;
+                        setTimeout(() => hitFeedback.style.opacity = 0, 600);
+                        endGame();
+                        return;
+                    }
+                }
+
+                gameLoopId = requestAnimationFrame(updateGame);
+            }
+
+            // ========== 玩家移动（像素级边界校验） ==========
+            function movePlayer(direction) {
+                if (!gameRunning) return;
+                
+                const moveStep = 15;
+                let newX = playerX;
+                
+                // 1. 先计算目标位置
+                if (direction === 'left') {
+                    newX = playerX - moveStep;
+                } else if (direction === 'right') {
+                    newX = playerX + moveStep;
+                }
+                
+                // 2. 像素级边界校验
+                // 左边界：绝对不能小于0
+                newX = Math.max(0, newX);
+                // 右边界：绝对不能超过 容器宽度 - 玩家宽度
+                newX = Math.min(newX, containerWidth - playerWidth);
+                
+                // 3. 强制取整，避免小数像素偏移
+                newX = Math.floor(newX);
+                
+                // 4. 更新位置
+                playerX = newX;
+                player.style.left = `${playerX}px`;
+                
+                // 调试：查看实时位置
+                console.log(`移动后X：${playerX}，右边界极限：${containerWidth - playerWidth}`);
+            }
+
+            // ========== 游戏结束/重置/开始 ==========
+            function endGame() {
+                gameRunning = false;
+                cancelAnimationFrame(gameLoopId);
+                clearInterval(obstacleSpawnTimer);
+                
+                finalScoreElement.textContent = score;
+                maxSpeedElement.textContent = `${maxSpeed.toFixed(1)}x`;
+                gameOver.style.display = 'flex';
+            }
+
+            function resetGame() {
+                obstacles.forEach(obs => obs.el.remove());
+                obstacles = [];
+                
+                score = 0;
+                speedMultiplier = 1;
+                maxSpeed = 1;
+                lastObstacleX = -100;
+                
+                scoreElement.textContent = score;
+                speedElement.textContent = `${speedMultiplier.toFixed(1)}x`;
+                
+                initDimensions();
+                
+                clearInterval(obstacleSpawnTimer);
+                obstacleSpawnTimer = setInterval(spawnObstacle, Math.max(1000, 2000 - (score / 20)));
+                
+                gameRunning = true;
+                updateGame();
+            }
+
+            function startGame() {
+                gamePanel.style.display = 'none';
+                gameOver.style.display = 'none';
+                resetGame();
+            }
+
+            // ========== 事件绑定 ==========
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowLeft') movePlayer('left');
+                if (e.key === 'ArrowRight') movePlayer('right');
+            });
+
+            gameContainer.addEventListener('click', (e) => {
+                const clickX = e.clientX - gameContainer.getBoundingClientRect().left;
+                const playerCenter = playerX + playerWidth / 2;
+                
+                if (clickX < playerCenter) {
+                    movePlayer('left');
+                } else {
+                    movePlayer('right');
+                }
+            });
+
+            gameContainer.addEventListener('touchstart', (e) => {
+                touchStartX = e.touches[0].clientX;
+            });
+
+            gameContainer.addEventListener('touchmove', (e) => {
+                if (!gameRunning) return;
+                const touchX = e.touches[0].clientX;
+                const diff = touchX - touchStartX;
+                
+                if (Math.abs(diff) > 10) {
+                    if (diff < 0) {
+                        movePlayer('left');
+                    } else {
+                        movePlayer('right');
+                    }
+                    touchStartX = touchX;
+                }
+            });
+
+            startBtn.addEventListener('click', startGame);
+            restartBtn.addEventListener('click', startGame);
+            window.addEventListener('resize', initDimensions);
+
+            // 初始化
+            initDimensions();
+        });
+    </script>
+</body>
+</html>
