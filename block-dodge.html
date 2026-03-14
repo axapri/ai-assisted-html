@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>Axapri | 极简方块闪避</title>
     <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
     <style>
@@ -72,6 +72,7 @@
             color: var(--text-primary);
             padding: 20px;
             overflow: hidden;
+            touch-action: none; /* 禁用默认触摸行为 */
         }
 
         #game-container {
@@ -85,6 +86,7 @@
             overflow: hidden;
             padding: 0;
             margin: 0;
+            touch-action: pan-x; /* 只允许水平滑动 */
         }
 
         #controls-panel {
@@ -103,7 +105,7 @@
             border: none;
             background: var(--card-bg);
             color: var(--text-primary);
-            font-size: 16px;
+            font-size: 16px; /* 优化图标字号 */
             font-weight: 600;
             cursor: pointer;
             display: flex;
@@ -111,6 +113,7 @@
             justify-content: center;
             backdrop-filter: blur(8px);
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+            -webkit-tap-highlight-color: transparent; /* 移除点击高亮 */
         }
 
         .control-btn:hover {
@@ -159,6 +162,7 @@
             z-index: 5;
             transform: none;
             box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            transition: left 0.08s ease-out; /* 玩家移动更丝滑 */
         }
 
         .obstacle {
@@ -234,16 +238,20 @@
             z-index: 20;
         }
 
+        /* 设置面板比例和PC端完全一致 */
         .settings-card {
             width: 90%;
             max-width: 330px;
             height: auto;
-            max-height: 78vh;
+            max-height: 78vh; /* 和PC端一致的高度比例 */
             background: var(--card-bg);
             border-radius: 20px;
             padding: 26px 22px;
             overflow-y: auto;
             scrollbar-width: none;
+            /* 强制保持宽高比 */
+            aspect-ratio: 330 / 580;
+            max-height: calc(100vw * (580/330));
         }
         .settings-card::-webkit-scrollbar {
             display: none;
@@ -289,6 +297,7 @@
             cursor: pointer;
             background: var(--btn-secondary);
             color: var(--text-primary);
+            -webkit-tap-highlight-color: transparent;
         }
 
         .theme-btn.active {
@@ -342,6 +351,7 @@
             font-weight: 500;
             cursor: pointer;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
         .upload-btn {
             border: 1px dashed var(--text-secondary);
@@ -383,6 +393,7 @@
             background: var(--btn-primary);
             color: #fff;
             text-align: center;
+            -webkit-tap-highlight-color: transparent;
         }
         .btn:hover {
             background: var(--btn-hover);
@@ -456,8 +467,8 @@
 
 <div id="game-container">
     <div id="controls-panel">
-        <button class="control-btn" id="pause-btn">⏸</button>
-        <button class="control-btn" id="settings-btn">⚙️</button>
+        <button class="control-btn" id="pause-btn">⏸</button> 
+        <button class="control-btn" id="settings-btn">⚙</button>
     </div>
 
     <div id="game-info">
@@ -495,9 +506,9 @@
                 <div class="slider-control">
                     <div class="slider-label">
                         <span>同时掉落数量</span>
-                        <span id="obstacle-count-value">3</span>
+                        <span id="obstacle-count-value">1</span>
                     </div>
-                    <input type="range" id="obstacle-count" min="1" max="3" value="3">
+                    <input type="range" id="obstacle-count" min="1" max="3" value="1"> 
                 </div>
                 <div class="slider-control">
                     <div class="slider-label">
@@ -592,10 +603,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoopId = null;
     let spawnTimer = null;
 
-    let customSpawnCount = 3;
-    let customFallSpeed = 1.0;
+    let customSpawnCount = 1; 
+    let customFallSpeed = 1.0; 
     let playStartTime = 0;
     let totalPlayTime = 0;
+
+    // 触摸滑动优化变量
+    let touchStartX = 0;
+    let touchCurrentX = 0;
+    let isDragging = false;
 
     const STORAGE = {
         settings: 'minimalDodge_settings',
@@ -620,7 +636,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const saved = localStorage.getItem(STORAGE.settings);
         if (saved) {
             const s = JSON.parse(saved);
-            customSpawnCount = s.spawnCount ?? 3;
+            customSpawnCount = s.spawnCount ?? 1; 
             customFallSpeed = s.fallSpeed ?? 1.0;
             setTheme(s.theme || 'normal');
 
@@ -634,6 +650,12 @@ document.addEventListener('DOMContentLoaded', () => {
             obstacleCountValue.textContent = customSpawnCount;
             fallSpeedSlider.value = customFallSpeed;
             fallSpeedValue.textContent = customFallSpeed.toFixed(1);
+        } else {
+            // 首次加载设置默认值到UI
+            obstacleCountSlider.value = 1;
+            obstacleCountValue.textContent = 1;
+            fallSpeedSlider.value = 1.0;
+            fallSpeedValue.textContent = 1.0;
         }
         // 初始化速度显示
         speedElement.textContent = (speedMultiplier * customFallSpeed).toFixed(1) + 'x';
@@ -795,11 +817,19 @@ document.addEventListener('DOMContentLoaded', () => {
         player.style.left = playerX + 'px';
     }
 
+    // 优化手机端滑动逻辑
+    function handleTouchMove(x) {
+        if (!gameRunning || gamePaused) return;
+        // 直接根据触摸位置设置玩家位置，更丝滑
+        playerX = Math.max(0, Math.min(containerWidth - playerWidth, x - playerWidth/2));
+        player.style.left = playerX + 'px';
+    }
+
     function pauseGame() {
         if (!gameRunning) return;
         gamePaused = true;
         pausePanel.style.display = 'flex';
-        pauseBtn.textContent = '▶';
+        pauseBtn.textContent = '▶'; 
         totalPlayTime += (Date.now() - playStartTime) / 1000 | 0;
     }
 
@@ -807,7 +837,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!gameRunning) return;
         gamePaused = false;
         pausePanel.style.display = 'none';
-        pauseBtn.textContent = '⏸';
+        pauseBtn.textContent = '⏸'; 
         playStartTime = Date.now();
     }
 
@@ -823,7 +853,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // 保存记录时传入当前的下落速度
         saveRecord(score, totalPlayTime | 0, maxSpeed * customFallSpeed, customFallSpeed);
         gameOver.style.display = 'flex';
-        pauseBtn.textContent = '⏸';
+        pauseBtn.textContent = '⏸'; // 恢复暂停图标
     }
 
     function resetGame() {
@@ -848,7 +878,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameOver.style.display = 'none';
         pausePanel.style.display = 'none';
         settingsPanel.style.display = 'none';
-        pauseBtn.textContent = '⏸';
+        pauseBtn.textContent = '⏸'; // 开始游戏后显示暂停图标
         resetGame();
         if (gameLoopId) cancelAnimationFrame(gameLoopId);
         gameLoopId = requestAnimationFrame(update);
@@ -861,10 +891,28 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.key === 'Escape') pauseGame();
     });
 
+    // 优化触摸事件
+    gameContainer.addEventListener('touchstart', e => {
+        e.preventDefault();
+        touchStartX = e.touches[0].clientX - gameContainer.getBoundingClientRect().left;
+        isDragging = true;
+    });
+
+    gameContainer.addEventListener('touchmove', e => {
+        if (!isDragging) return;
+        e.preventDefault();
+        touchCurrentX = e.touches[0].clientX - gameContainer.getBoundingClientRect().left;
+        handleTouchMove(touchCurrentX);
+    });
+
+    gameContainer.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    // 点击事件保留（兼容）
     gameContainer.addEventListener('click', e => {
         const cx = e.clientX - gameContainer.getBoundingClientRect().left;
-        if (cx < containerWidth / 2) move('left');
-        else move('right');
+        handleTouchMove(cx);
     });
 
     startBtn.onclick = startGame;
@@ -875,6 +923,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gamePaused = false;
         pausePanel.style.display = 'none';
         gamePanel.style.display = 'flex';
+        pauseBtn.textContent = '⏸'; // 退出后恢复暂停图标
     };
 
     pauseBtn.onclick = () => gamePaused ? resumeGame() : pauseGame();
