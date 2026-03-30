@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axapri | 加密解密工具箱</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/crypto-js@4.2.0/crypto-js.min.js"></script>
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF'
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .input-box {
+        @apply w-full p-4 rounded-xl border border-gray-200 bg-white/80 dark:bg-gray-800/80 
+               backdrop-blur-sm focus:border-primary focus:ring-2 focus:ring-primary/20 
+               outline-none transition-all resize-none text-sm;
+      }
+      .btn {
+        @apply px-4 py-2.5 rounded-xl font-medium transition-all hover:shadow-md 
+               active:scale-95 flex items-center gap-2 text-sm;
+      }
+      .btn-hover {
+        @apply hover:bg-primary hover:text-white;
+      }
+      .select-box {
+        @apply w-full p-3 rounded-xl border border-gray-200 bg-white/80 dark:bg-gray-800/80 
+               backdrop-blur-sm focus:border-primary focus:ring-2 focus:ring-primary/20 
+               outline-none;
+      }
+      .card {
+        @apply bg-white/85 dark:bg-gray-800/85 backdrop-blur-md rounded-2xl 
+               shadow-md p-6 transition-all;
+      }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen transition-colors duration-300 bg-gray-50 
+             dark:bg-gray-900 text-gray-800 dark:text-gray-200 
+             bg-center bg-cover bg-fixed" id="appBody">
+  <div class="max-w-3xl mx-auto px-4 py-10">
+    <!-- 标题区域 -->
+    <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+      <h1 class="text-[clamp(1.5rem,3vw,2rem)] font-bold flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-primary"></i>
+        加密解密工具箱
+      </h1>
+    </div>
+
+    <!-- 功能卡片 -->
+    <div class="card mb-6">
+      <!-- 加密类型选择 -->
+      <div class="mb-3">
+        <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
+          <i class="fa-solid fa-list-ul text-primary"></i> 加密方式
+        </label>
+        <select id="cryptoType" class="select-box" onchange="syncMode()">
+          <option value="base64">Base64 编码/解码</option>
+          <option value="aes">AES 加密解密（密钥）</option>
+          <option value="md5">MD5 哈希（不可逆）</option>
+          <option value="sha256">SHA256 哈希（不可逆）</option>
+          <option value="url">URL 编码/解码</option>
+          <option value="unicode">Unicode 编码/解码</option>
+          <option value="ascii">ASCII 编码/解码</option>
+        </select>
+      </div>
+
+      <!-- AES密钥输入框 -->
+      <div id="aesKeyBox" class="mb-3 hidden">
+        <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
+          <i class="fa-solid fa-key text-primary"></i> AES 密钥
+        </label>
+        <input type="text" id="aesKey" class="input-box" value="123456">
+      </div>
+
+      <!-- 输入区域 -->
+      <div class="mb-3">
+        <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
+          <i class="fa-solid fa-pen-to-square text-primary"></i> 输入内容
+        </label>
+        <textarea id="inputText" class="input-box" rows="4" placeholder="请输入内容"></textarea>
+      </div>
+
+      <!-- 操作按钮 -->
+      <div class="flex flex-wrap gap-2 justify-center mb-3">
+        <button onclick="doEncrypt()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+          <i class="fa-solid fa-lock"></i> 加密/编码
+        </button>
+        <button id="decBtn" onclick="doDecrypt()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+          <i class="fa-solid fa-unlock"></i> 解密/解码
+        </button>
+        <button onclick="clearAll()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+          <i class="fa-solid fa-trash-can"></i> 清空
+        </button>
+      </div>
+
+      <!-- 输出区域 -->
+      <div class="mb-3">
+        <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
+          <i class="fa-solid fa-file-code text-primary"></i> 处理结果
+        </label>
+        <textarea id="outputText" class="input-box bg-gray-50 dark:bg-gray-800" rows="4" readonly></textarea>
+      </div>
+    </div>
+
+    <!-- 历史记录卡片 -->
+    <div class="card">
+      <div class="flex justify-between items-center mb-3">
+        <h3 class="font-semibold flex items-center gap-2">
+          <i class="fa-solid fa-clock-rotate-left text-primary"></i> 历史记录
+        </h3>
+        <button onclick="clearHistory()" class="text-sm text-gray-500 hover:text-red-500">
+          清空记录
+        </button>
+      </div>
+      <div id="historyList" class="max-h-[260px] overflow-y-auto space-y-2.5"></div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== DOM 元素获取 ====================
+    const body = document.getElementById('appBody');
+    const cryptoType = document.getElementById('cryptoType');
+    const aesKeyBox = document.getElementById('aesKeyBox');
+    const decBtn = document.getElementById('decBtn');
+    const inputText = document.getElementById('inputText');
+    const outputText = document.getElementById('outputText');
+    const aesKey = document.getElementById('aesKey');
+    const historyList = document.getElementById('historyList');
+
+    // ==================== 加密类型映射 ====================
+    const typeMap = {
+      base64: 'Base64',
+      aes: 'AES',
+      md5: 'MD5',
+      sha256: 'SHA256',
+      url: 'URL',
+      unicode: 'Unicode',
+      ascii: 'ASCII'
+    };
+
+    // ==================== 模式同步（AES/不可逆加密） ====================
+    function syncMode() {
+      const type = cryptoType.value;
+      // 控制 AES 密钥框显示
+      aesKeyBox.classList.toggle('hidden', type !== 'aes');
+      
+      // 不可逆哈希算法，禁用解密按钮
+      const irreversibleTypes = ['md5', 'sha256'];
+      const isIrreversible = irreversibleTypes.includes(type);
+      
+      decBtn.disabled = isIrreversible;
+      decBtn.classList.toggle('opacity-50', isIrreversible);
+      decBtn.classList.toggle('cursor-not-allowed', isIrreversible);
+    }
+
+    // ==================== 保存历史记录 ====================
+    function saveHistory(type, input, result, typeText, key = '') {
+      const historyItem = {
+        id: Date.now(),
+        type: type,
+        input: input,
+        result: result,
+        time: new Date().toLocaleString(),
+        typeText: typeText,
+        key: key
+      };
+
+      let historyList = JSON.parse(localStorage.getItem('cryptoHistory') || '[]');
+      historyList.unshift(historyItem);
+
+      // 最多保存 30 条记录
+      if (historyList.length > 30) {
+        historyList = historyList.slice(0, 30);
+      }
+
+      localStorage.setItem('cryptoHistory', JSON.stringify(historyList));
+      renderHistory();
+    }
+
+    // ==================== 渲染历史记录 ====================
+    function renderHistory() {
+      const list = JSON.parse(localStorage.getItem('cryptoHistory') || '[]');
+      
+      historyList.innerHTML = list.map(item => `
+        <div class="p-3 bg-white/70 dark:bg-gray-700/70 rounded-xl text-sm">
+          <div class="flex justify-between text-xs text-gray-500 mb-1">
+            <span>${item.type === 'encrypt' ? '加密' : '解密'} · ${item.typeText}</span>
+            <span>${item.time}</span>
+          </div>
+          ${item.key ? `<div class="text-xs mb-1 text-gray-500">密钥：${item.key}</div>` : ''}
+          <div class="text-xs mb-1 truncate text-gray-600 dark:text-gray-300">输入：${item.input}</div>
+          <div class="text-xs font-mono truncate text-primary">结果：${item.result}</div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== 清空历史 ====================
+    function clearHistory() {
+      localStorage.removeItem('cryptoHistory');
+      renderHistory();
+    }
+
+    // ==================== 清空输入输出 ====================
+    function clearAll() {
+      inputText.value = '';
+      outputText.value = '';
+      inputText.focus();
+    }
+
+    // ==================== 加密操作 ====================
+    function doEncrypt() {
+      const type = cryptoType.value;
+      const text = inputText.value.trim();
+      
+      if (!text) return;
+
+      let result = '';
+      try {
+        switch (type) {
+          case 'base64':
+            result = btoa(encodeURIComponent(text));
+            break;
+          case 'aes':
+            result = CryptoJS.AES.encrypt(text, aesKey.value.trim() || '123456').toString();
+            break;
+          case 'md5':
+            result = CryptoJS.MD5(text).toString();
+            break;
+          case 'sha256':
+            result = CryptoJS.SHA256(text).toString();
+            break;
+          case 'url':
+            result = encodeURIComponent(text);
+            break;
+          case 'unicode':
+            result = unescape(encodeURIComponent(text))
+              .split('')
+              .map(c => '\\u' + c.charCodeAt(0).toString(16).padStart(4, '0'))
+              .join('');
+            break;
+          case 'ascii':
+            result = text.split('').map(c => c.charCodeAt(0)).join(' ');
+            break;
+        }
+
+        outputText.value = result;
+        const usedKey = type === 'aes' ? (aesKey.value.trim() || '123456') : '';
+        saveHistory('encrypt', text, result, typeMap[type], usedKey);
+        
+      } catch (error) {
+        outputText.value = '失败';
+      }
+    }
+
+    // ==================== 解密操作 ====================
+    function doDecrypt() {
+      const type = cryptoType.value;
+      const text = inputText.value.trim();
+      
+      if (!text) return;
+
+      let result = '';
+      try {
+        switch (type) {
+          case 'base64':
+            result = decodeURIComponent(atob(text));
+            break;
+          case 'aes':
+            result = CryptoJS.AES.decrypt(text, aesKey.value.trim() || '123456')
+              .toString(CryptoJS.enc.Utf8);
+            break;
+          case 'url':
+            result = decodeURIComponent(text);
+            break;
+          case 'unicode':
+            result = decodeURIComponent(escape(text.replace(/\\u/gi, '%')));
+            break;
+          case 'ascii':
+            result = text.split(' ').map(c => String.fromCharCode(c)).join('');
+            break;
+        }
+
+        outputText.value = result;
+        const usedKey = type === 'aes' ? (aesKey.value.trim() || '123456') : '';
+        saveHistory('decrypt', text, result, typeMap[type], usedKey);
+        
+      } catch (error) {
+        outputText.value = '失败';
+      }
+    }
+
+    // ==================== 页面初始化 ====================
+    window.onload = function () {
+      renderHistory();
+      syncMode();
+    };
+  </script>
+</body>
+</html>
