@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Axapri | 加密解密工具箱</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -26,7 +26,7 @@
   <style type="text/tailwindcss">
     @layer utilities {
       .input-box {
-        @apply w-full p-4 rounded-xl border border-gray-200 bg-white/80 dark:bg-gray-800/80 
+        @apply w-full p-4 rounded-xl border border-gray-200 bg-[#FEFDFB]
                backdrop-blur-sm focus:border-primary focus:ring-2 focus:ring-primary/20 
                outline-none transition-all resize-none text-sm;
       }
@@ -38,20 +38,19 @@
         @apply hover:bg-primary hover:text-white;
       }
       .select-box {
-        @apply w-full p-3 rounded-xl border border-gray-200 bg-white/80 dark:bg-gray-800/80 
+        @apply w-full p-3 rounded-xl border border-gray-200 bg-[#FEFDFB]
                backdrop-blur-sm focus:border-primary focus:ring-2 focus:ring-primary/20 
                outline-none;
       }
       .card {
-        @apply bg-white/85 dark:bg-gray-800/85 backdrop-blur-md rounded-2xl 
+        @apply bg-[#FEFDFB] backdrop-blur-md rounded-2xl 
                shadow-md p-6 transition-all;
       }
     }
   </style>
 </head>
 
-<body class="min-h-screen transition-colors duration-300 bg-gray-50 
-             dark:bg-gray-900 text-gray-800 dark:text-gray-200 
+<body class="min-h-screen transition-colors duration-300 bg-[#FEFDFB] text-gray-800 
              bg-center bg-cover bg-fixed" id="appBody">
   <div class="max-w-3xl mx-auto px-4 py-10">
     <!-- 标题区域 -->
@@ -85,7 +84,7 @@
         <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
           <i class="fa-solid fa-key text-primary"></i> AES 密钥
         </label>
-        <input type="text" id="aesKey" class="input-box" value="123456">
+        <input type="text" id="aKey" class="input-box" value="123456">
       </div>
 
       <!-- 输入区域 -->
@@ -98,13 +97,13 @@
 
       <!-- 操作按钮 -->
       <div class="flex flex-wrap gap-2 justify-center mb-3">
-        <button onclick="doEncrypt()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+        <button onclick="doEncrypt()" class="btn bg-gray-100 btn-hover">
           <i class="fa-solid fa-lock"></i> 加密/编码
         </button>
-        <button id="decBtn" onclick="doDecrypt()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+        <button id="decBtn" onclick="doDecrypt()" class="btn bg-gray-100 btn-hover">
           <i class="fa-solid fa-unlock"></i> 解密/解码
         </button>
-        <button onclick="clearAll()" class="btn bg-gray-100 dark:bg-gray-700 btn-hover">
+        <button onclick="clearAll()" class="btn bg-gray-100 btn-hover">
           <i class="fa-solid fa-trash-can"></i> 清空
         </button>
       </div>
@@ -114,7 +113,7 @@
         <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
           <i class="fa-solid fa-file-code text-primary"></i> 处理结果
         </label>
-        <textarea id="outputText" class="input-box bg-gray-50 dark:bg-gray-800" rows="4" readonly></textarea>
+        <textarea id="outputText" class="input-box bg-[#FEFDFB]" rows="4" readonly></textarea>
       </div>
     </div>
 
@@ -157,10 +156,8 @@
     // ==================== 模式同步（AES/不可逆加密） ====================
     function syncMode() {
       const type = cryptoType.value;
-      // 控制 AES 密钥框显示
       aesKeyBox.classList.toggle('hidden', type !== 'aes');
       
-      // 不可逆哈希算法，禁用解密按钮
       const irreversibleTypes = ['md5', 'sha256'];
       const isIrreversible = irreversibleTypes.includes(type);
       
@@ -184,7 +181,6 @@
       let historyList = JSON.parse(localStorage.getItem('cryptoHistory') || '[]');
       historyList.unshift(historyItem);
 
-      // 最多保存 30 条记录
       if (historyList.length > 30) {
         historyList = historyList.slice(0, 30);
       }
@@ -198,13 +194,13 @@
       const list = JSON.parse(localStorage.getItem('cryptoHistory') || '[]');
       
       historyList.innerHTML = list.map(item => `
-        <div class="p-3 bg-white/70 dark:bg-gray-700/70 rounded-xl text-sm">
+        <div class="p-3 bg-white rounded-xl text-sm">
           <div class="flex justify-between text-xs text-gray-500 mb-1">
             <span>${item.type === 'encrypt' ? '加密' : '解密'} · ${item.typeText}</span>
             <span>${item.time}</span>
           </div>
           ${item.key ? `<div class="text-xs mb-1 text-gray-500">密钥：${item.key}</div>` : ''}
-          <div class="text-xs mb-1 truncate text-gray-600 dark:text-gray-300">输入：${item.input}</div>
+          <div class="text-xs mb-1 truncate text-gray-600">输入：${item.input}</div>
           <div class="text-xs font-mono truncate text-primary">结果：${item.result}</div>
         </div>
       `).join('');
