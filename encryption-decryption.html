@@ -84,7 +84,7 @@
         <label class="text-sm font-medium flex items-center gap-2 mb-1.5">
           <i class="fa-solid fa-key text-primary"></i> AES 密钥
         </label>
-        <input type="text" id="aKey" class="input-box" value="123456">
+        <input type="text" id="aesKey" class="input-box" value="123456">
       </div>
 
       <!-- 输入区域 -->
@@ -118,7 +118,7 @@
     </div>
 
     <!-- 历史记录卡片 -->
-    <div class="card">
+    <div class="card mb-6">
       <div class="flex justify-between items-center mb-3">
         <h3 class="font-semibold flex items-center gap-2">
           <i class="fa-solid fa-clock-rotate-left text-primary"></i> 历史记录
@@ -128,6 +128,39 @@
         </button>
       </div>
       <div id="historyList" class="max-h-[260px] overflow-y-auto space-y-2.5"></div>
+    </div>
+
+    <!-- 加密方式说明卡片 -->
+    <div class="card">
+      <h3 class="font-semibold flex items-center gap-2 mb-4">
+        <i class="fa-solid fa-circle-info text-primary"></i> 加密方式说明
+      </h3>
+      <div class="text-sm space-y-3 text-gray-700">
+        <div>
+          <strong class="text-primary">Base64</strong>：把文字/图片转成字符串，方便传输<br>
+          <span class="text-xs text-gray-500">✅ 可编码、可解码 · ❌ 不算加密，人人可解</span>
+        </div>
+        <div>
+          <strong class="text-primary">AES</strong>：最安全的加密，必须用密钥才能解开<br>
+          <span class="text-xs text-gray-500">✅ 可加密、可解密 · ✅ 安全级别最高</span>
+        </div>
+        <div>
+          <strong class="text-primary">MD5 / SHA256</strong>：单向加密，只能加密，永远解不回去<br>
+          <span class="text-xs text-gray-500">✅ 常用于密码、校验 · ❌ 无法解密</span>
+        </div>
+        <div>
+          <strong class="text-primary">URL</strong>：把网址里的中文/符号转成可识别字符<br>
+          <span class="text-xs text-gray-500">✅ 复制链接必备 · 可编码可解码</span>
+        </div>
+        <div>
+          <strong class="text-primary">Unicode</strong>：把文字转成 \uXXXX 格式，解决乱码<br>
+          <span class="text-xs text-gray-500">✅ 多语言通用 · 可编码可解码</span>
+        </div>
+        <div>
+          <strong class="text-primary">ASCII</strong>：把英文/符号转成数字，最基础编码<br>
+          <span class="text-xs text-gray-500">✅ 仅支持英文 · 可编码可解码</span>
+        </div>
+      </div>
     </div>
   </div>
 
