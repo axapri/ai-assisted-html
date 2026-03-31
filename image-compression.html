@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <!-- 视口设置：确保响应式在各种设备上正常显示 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axapri | 智能图片压缩工具</title>
+  <!-- 引入 Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Tailwind 配置：自定义主题颜色 -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#165DFF',
+            danger: '#FF4D4F',
+            success: '#00B42A',
+          },
+        },
+      }
+    }
+  </script>
+
+  <!-- 自定义工具类：统一页面样式规范 -->
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .upload-box { @apply border-2 border-dashed border-gray-200 rounded-xl p-10 text-center cursor-pointer hover:border-primary transition-all duration-300 bg-gray-50; }
+      .btn-primary { @apply bg-primary text-white px-6 py-2.5 rounded-lg hover:bg-primary/90 disabled:bg-gray-200 disabled:cursor-not-allowed transition-all font-medium; }
+      .btn-secondary { @apply px-6 py-2.5 border border-gray-200 rounded-lg hover:bg-gray-50 transition-all font-medium text-gray-600; }
+      .card { @apply bg-white rounded-xl shadow-sm p-6 mb-5 border border-gray-100; }
+      .tip-text { @apply text-xs text-gray-400 mt-1.5; }
+      .error-tip { @apply text-xs text-danger mt-1.5; }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen p-4 md:p-10">
+  <div class="max-w-6xl mx-auto">
+    <!-- 页面标题 -->
+    <div class="text-center mb-10">
+      <h1 class="text-3xl font-bold text-gray-800 mb-2">图片压缩处理工具</h1>
+      <p class="text-gray-400">自由组合功能 | 精准压缩至指定体积</p>
+    </div>
+
+    <!-- 主布局：左侧功能区 + 右侧固定预览区 -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <!-- ===================== 左侧功能区 ===================== -->
+      <div class="lg:col-span-2 space-y-5">
+        <!-- 上传图片模块 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">上传图片</h2>
+          <div id="uploadBox" class="upload-box">
+            <input type="file" id="fileInput" accept="image/*" class="hidden">
+            <p class="text-gray-600 text-sm">点击或拖拽图片至此处</p>
+            <p class="tip-text">支持 JPG / PNG 格式</p>
+          </div>
+          <div id="imageInfo" class="mt-4 hidden">
+            <p class="text-sm text-gray-600">原图信息</p>
+            <p id="originalSize" class="text-danger font-medium text-sm mt-1"></p>
+            <p id="originalDim" class="tip-text mt-0.5"></p>
+          </div>
+        </div>
+
+        <!-- 体积压缩设置 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">体积压缩设置</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">图片最小体积 (KB)</label>
+              <input type="number" id="minSize" min="1" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary">
+            </div>
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">图片最大体积 (KB)</label>
+              <input type="number" id="maxSize" min="1" class="w-full px-3 py-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-1 focus:ring-primary">
+            </div>
+          </div>
+          <p id="sizeTip" class="error-tip hidden">最大体积必须小于原图体积</p>
+          <p class="tip-text">不填写则随机压缩体积，填写合理后压缩至指定范围</p>
+        </div>
+
+        <!-- 尺寸设置 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">尺寸设置</h2>
+          <div class="flex gap-5 mb-4 flex-wrap">
+            <label class="flex items-center text-sm text-gray-600">
+              <input type="radio" name="sizeType" value="original" checked class="mr-1.5"> 保持原图尺寸
+            </label>
+            <label class="flex items-center text-sm text-gray-600">
+              <input type="radio" name="sizeType" value="custom" class="mr-1.5"> 自定义尺寸
+            </label>
+            <label class="flex items-center text-sm text-gray-600">
+              <input type="radio" name="sizeType" value="standard" class="mr-1.5"> 标准证件照
+            </label>
+          </div>
+
+          <div id="customSize" class="hidden grid-cols-2 gap-4">
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">宽度 (px)</label>
+              <input type="number" id="customWidth" min="1" value="800" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+            </div>
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">高度 (px)</label>
+              <input type="number" id="customHeight" min="1" value="800" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+            </div>
+          </div>
+
+          <div id="standardSize" class="hidden">
+            <label class="text-sm text-gray-600 mb-1.5 block">选择证件照类型</label>
+            <select id="standardSelect" class="w-full px-3 py-2 border border-gray-200 rounded-lg">
+              <option value="295,413">一寸照 (295×413px)</option>
+              <option value="390,567">二寸照 (390×567px)</option>
+              <option value="413,626">小二寸照 (413×626px)</option>
+              <option value="330,480">护照/签证 (330×480px)</option>
+              <option value="260,320">身份证头像 (260×320px)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- 背景色与文件名 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">背景色与文件命名</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">背景颜色</label>
+              <div class="flex gap-4">
+                <label class="flex flex-col items-center cursor-pointer">
+                  <input type="radio" name="bgColor" value="white" checked class="hidden peer">
+                  <span class="w-8 h-8 bg-white border border-gray-200 rounded-lg peer-checked:ring-4 peer-checked:ring-primary/20 peer-checked:border-primary"></span>
+                  <span class="text-xs mt-1 text-gray-500 peer-checked:font-bold">白色</span>
+                </label>
+                <label class="flex flex-col items-center cursor-pointer">
+                  <input type="radio" name="bgColor" value="#FF4D4F" class="hidden peer">
+                  <span class="w-8 h-8 bg-danger border border-gray-200 rounded-lg peer-checked:ring-4 peer-checked:ring-primary/20 peer-checked:border-primary"></span>
+                  <span class="text-xs mt-1 text-gray-500 peer-checked:font-bold">红色</span>
+                </label>
+                <label class="flex flex-col items-center cursor-pointer">
+                  <input type="radio" name="bgColor" value="#1677FF" class="hidden peer">
+                  <span class="w-8 h-8 bg-primary/80 border border-gray-200 rounded-lg peer-checked:ring-4 peer-checked:ring-primary/20 peer-checked:border-primary"></span>
+                  <span class="text-xs mt-1 text-gray-500 peer-checked:font-bold">蓝色</span>
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="text-sm text-gray-600 mb-1.5 block">自定义文件名</label>
+              <input type="text" id="fileName" class="w-full px-3 py-2 border border-gray-200 rounded-lg" value="compressed_image">
+            </div>
+          </div>
+        </div>
+
+        <!-- 操作按钮 -->
+        <div class="flex gap-4 justify-center mt-6">
+          <button id="compressBtn" class="btn-primary" disabled>开始处理</button>
+          <button id="clearRecordBtn" class="btn-secondary">清空记录</button>
+        </div>
+      </div>
+
+      <!-- ===================== 右侧固定悬浮预览区 ===================== -->
+      <!-- 规范修复 sticky：self-start + h-fit 确保 Grid 布局下粘性定位生效 -->
+      <div class="sticky top-10 self-start h-fit space-y-5">
+        <!-- 实时预览 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">实时预览</h2>
+          <div class="w-full h-64 border border-gray-100 rounded-lg flex items-center justify-center bg-gray-50 overflow-hidden">
+            <img id="previewImg" class="max-w-full max-h-full object-contain hidden" alt="预览">
+            <p id="previewTip" class="tip-text">上传图片后即可预览</p>
+          </div>
+          <div id="resultInfo" class="mt-4 hidden">
+            <p class="text-sm text-gray-600">最终大小：<span id="compressedSize" class="font-medium text-primary"></span></p>
+            <p id="failTip" class="error-tip hidden">已达到图片物理压缩极限，建议缩小尺寸后重试</p>
+          </div>
+        </div>
+
+        <!-- 下载区域 -->
+        <div id="downloadArea" class="card hidden">
+          <button id="downloadBtn" class="btn-primary w-full">下载图片</button>
+        </div>
+
+        <!-- 历史记录 -->
+        <div class="card">
+          <h2 class="text-lg font-semibold text-gray-700 mb-4">使用记录</h2>
+          <div id="recordList" class="max-h-80 overflow-y-auto space-y-3 text-sm">
+            <p class="tip-text text-center">暂无处理记录</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==================== 全局 DOM 元素获取（规范命名） ====================
+    const fileInput = document.getElementById('fileInput');
+    const uploadBox = document.getElementById('uploadBox');
+    const imageInfo = document.getElementById('imageInfo');
+    const originalSize = document.getElementById('originalSize');
+    const originalDim = document.getElementById('originalDim');
+    const minSize = document.getElementById('minSize');
+    const maxSize = document.getElementById('maxSize');
+    const sizeTip = document.getElementById('sizeTip');
+    const compressBtn = document.getElementById('compressBtn');
+    const previewImg = document.getElementById('previewImg');
+    const previewTip = document.getElementById('previewTip');
+    const downloadArea = document.getElementById('downloadArea');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const compressedSize = document.getElementById('compressedSize');
+    const resultInfo = document.getElementById('resultInfo');
+    const failTip = document.getElementById('failTip');
+    const sizeTypeRadios = document.querySelectorAll('input[name="sizeType"]');
+    const customSize = document.getElementById('customSize');
+    const standardSize = document.getElementById('standardSize');
+    const standardSelect = document.getElementById('standardSelect');
+    const fileName = document.getElementById('fileName');
+    const recordList = document.getElementById('recordList');
+    const clearRecordBtn = document.getElementById('clearRecordBtn');
+
+    // 全局状态变量
+    let originalFile = null;             // 原始图片文件
+    let originalFileSizeKB = 0;          // 原始图片大小（KB）
+    let originalImgWidth = 0;            // 原始图片宽度
+    let originalImgHeight = 0;           // 原始图片高度
+    let processedBlob = null;            // 处理后的图片 Blob 数据
+
+    // ==================== 初始化交互事件 ====================
+    // 点击上传区域触发文件选择
+    uploadBox.addEventListener('click', () => fileInput.click());
+
+    // 尺寸类型切换显示对应模块
+    sizeTypeRadios.forEach(radio => {
+      radio.addEventListener('change', () => {
+        customSize.classList.add('hidden');
+        standardSize.classList.add('hidden');
+        if (radio.value === 'custom') customSize.classList.remove('hidden');
+        if (radio.value === 'standard') standardSize.classList.remove('hidden');
+      });
+    });
+
+    // ==================== 图片上传与预览 ====================
+    fileInput.addEventListener('change', async (e) => {
+      const file = e.target.files[0];
+      if (!file || !file.type.startsWith('image/')) {
+        alert('请选择有效图片！');
+        return;
+      }
+
+      // 保存原始文件信息
+      originalFile = file;
+      originalFileSizeKB = (file.size / 1024).toFixed(2);
+
+      // 加载图片获取宽高
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        originalImgWidth = img.width;
+        originalImgHeight = img.height;
+        // 显示原图信息
+        imageInfo.classList.remove('hidden');
+        originalSize.textContent = `大小：${originalFileSizeKB} KB`;
+        originalDim.textContent = `尺寸：${originalImgWidth} × ${originalImgHeight} px`;
+        // 显示预览图
+        previewImg.src = img.src;
+        previewImg.classList.remove('hidden');
+        previewTip.classList.add('hidden');
+      };
+
+      compressBtn.disabled = false;
+      checkSizeValid();
+    });
+
+    // ==================== 体积合法性校验 ====================
+    maxSize.addEventListener('input', checkSizeValid);
+    function checkSizeValid() {
+      if (!originalFile || !maxSize.value) {
+        sizeTip.classList.add('hidden');
+        return;
+      }
+      const max = Number(maxSize.value);
+      sizeTip.classList.toggle('hidden', max < originalFileSizeKB && max > 0);
+    }
+
+    // ==================== 核心：精准压缩到目标体积 ====================
+    async function compressToTargetSize(canvas, minKB, maxKB) {
+      if (!maxKB) return new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.9));
+      
+      const minBytes = (minKB || 1) * 1024;
+      const maxBytes = maxKB * 1024;
+      let low = 0.01, high = 0.95, bestBlob = null;
+
+      // 二分法精准匹配质量
+      for (let i = 0; i < 20; i++) {
+        const quality = (low + high) / 2;
+        const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+        
+        if (blob.size >= minBytes && blob.size <= maxBytes) {
+          bestBlob = blob;
+          break;
+        }
+        blob.size > maxBytes ? (high = quality) : (low = quality);
+      }
+      
+      return bestBlob || await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.01));
+    }
+
+    // ==================== 图片处理主逻辑 ====================
+    compressBtn.addEventListener('click', async () => {
+      if (!originalFile) return;
+      if (!sizeTip.classList.contains('hidden')) {
+        alert('请填写合法的体积范围！');
+        return;
+      }
+
+      // 按钮加载状态
+      compressBtn.disabled = true;
+      compressBtn.textContent = '处理中...';
+      failTip.classList.add('hidden');
+
+      try {
+        // 获取用户配置
+        const targetMinKB = Number(minSize.value);
+        const targetMaxKB = Number(maxSize.value);
+        const sizeType = document.querySelector('input[name="sizeType"]:checked').value;
+        const bgColor = document.querySelector('input[name="bgColor"]:checked').value;
+        const outputName = fileName.value.trim() || 'compressed_image';
+
+        // 计算目标尺寸
+        let targetW = originalImgWidth, targetH = originalImgHeight;
+        if (sizeType === 'custom') {
+          targetW = Number(document.getElementById('customWidth').value) || originalImgWidth;
+          targetH = Number(document.getElementById('customHeight').value) || originalImgHeight;
+        }
+        if (sizeType === 'standard') {
+          [targetW, targetH] = standardSelect.value.split(',').map(Number);
+        }
+
+        // 创建画布并绘制
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = await new Promise(resolve => {
+          const i = new Image();
+          i.onload = () => resolve(i);
+          i.src = URL.createObjectURL(originalFile);
+        });
+
+        canvas.width = targetW;
+        canvas.height = targetH;
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, targetW, targetH);
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+
+        // 压缩并获取结果
+        processedBlob = await compressToTargetSize(canvas, targetMinKB, targetMaxKB);
+        const resultSize = (processedBlob.size / 1024).toFixed(2);
+        
+        // 达到压缩极限提示
+        if (targetMaxKB && resultSize > targetMaxKB) {
+          failTip.classList.remove('hidden');
+        }
+
+        // 更新预览与结果
+        compressedSize.textContent = `${resultSize} KB`;
+        previewImg.src = URL.createObjectURL(processedBlob);
+        downloadArea.classList.remove('hidden');
+        resultInfo.classList.remove('hidden');
+
+        // 保存记录
+        saveRecord({
+          name: outputName,
+          size: `${targetW}×${targetH}`,
+          original: originalFileSizeKB,
+          compressed: resultSize,
+          time: new Date().toLocaleString()
+        });
+
+      } catch (e) {
+        alert('处理失败：' + e.message);
+      } finally {
+        // 恢复按钮状态
+        compressBtn.disabled = false;
+        compressBtn.textContent = '开始处理';
+      }
+    });
+
+    // ==================== 下载图片 ====================
+    downloadBtn.addEventListener('click', () => {
+      if (!processedBlob) return;
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(processedBlob);
+      a.download = `${fileName.value || 'compressed_image'}.jpg`;
+      a.click();
+    });
+
+    // ==================== 本地记录管理 ====================
+    function saveRecord(record) {
+      let records = JSON.parse(localStorage.getItem('imgRecords') || '[]');
+      records.unshift(record);
+      if (records.length > 30) records = records.slice(0, 30);
+      localStorage.setItem('imgRecords', JSON.stringify(records));
+      renderRecords();
+    }
+
+    function renderRecords() {
+      const records = JSON.parse(localStorage.getItem('imgRecords') || '[]');
+      if (records.length === 0) {
+        recordList.innerHTML = '<p class="tip-text text-center">暂无处理记录</p>';
+        return;
+      }
+      recordList.innerHTML = records.map((item, i) => `
+        <div class="p-3 border-b border-gray-50 rounded hover:bg-gray-50 transition-all">
+          <p class="font-medium text-gray-700 text-sm">${i+1}. ${item.name}</p>
+          <p class="text-xs text-gray-400 mt-1">${item.time}</p>
+          <p class="text-xs text-gray-500 mt-0.5">${item.original}KB → ${item.compressed}KB | ${item.size}</p>
+        </div>
+      `).join('');
+    }
+
+    // 清空记录
+    clearRecordBtn.addEventListener('click', () => {
+      if (confirm('确定清空所有本地记录？')) {
+        localStorage.removeItem('imgRecords');
+        renderRecords();
+      }
+    });
+
+    // 页面加载时渲染记录
+    window.addEventListener('load', renderRecords);
+  </script>
+</body>
+</html>
