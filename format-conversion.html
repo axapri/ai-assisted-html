@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 文件格式转换</title>
+    <!-- 引入外部依赖库 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/file-saver@2.0.5/dist/FileSaver.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mammoth@1.4.18/mammoth.browser.min.js"></script>
+
+    <!-- Tailwind 主题配置 -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#3b82f6',
+                        success: '#10b981',
+                        danger: '#ef4444',
+                    },
+                }
+            }
+        }
+    </script>
+
+    <!-- 自定义样式 -->
+    <style>
+        /* 弹窗遮罩层 */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        /* 弹窗内容框 */
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 320px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col items-center py-10 px-4">
+    <!-- 提示弹窗 -->
+    <div id="modal" class="modal-backdrop">
+        <div class="modal-box">
+            <p id="modalMsg" class="text-gray-700 text-lg mb-4"></p>
+            <button onclick="closeModal()" class="bg-primary text-white px-6 py-2 rounded-xl">确定</button>
+        </div>
+    </div>
+
+    <!-- 页面标题 -->
+    <div class="w-full max-w-2xl mx-auto text-center mb-8">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">🔁 万能文件格式转换</h1>
+        <p class="text-gray-500">本地处理 · 安全隐私 · 一键转换</p>
+    </div>
+
+    <!-- 转换主容器 -->
+    <div class="w-full max-w-2xl bg-white rounded-2xl shadow-md p-8 space-y-6">
+        <!-- 转换类型选择 -->
+        <div>
+            <label class="block text-gray-700 font-medium mb-2">选择转换类型</label>
+            <select id="convertType" class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/50">
+                <option value="pdf2img">PDF 转 图片(JPG)</option>
+                <option value="img2pdf">图片 转 PDF</option>
+                <option value="jpg2png">JPG 转 PNG</option>
+                <option value="png2jpg">PNG 转 JPG</option>
+                <option value="word2pdf">Word 转 PDF</option>
+                <option value="txt2pdf">TXT 转 PDF</option>
+            </select>
+        </div>
+
+        <!-- 文件上传区域 -->
+        <div>
+            <label class="block text-gray-700 font-medium mb-2">上传文件</label>
+            <div id="dropArea" class="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-primary transition-colors">
+                <input type="file" id="fileInput" class="hidden">
+                <i class="fa fa-file-o text-4xl text-gray-400 mb-3"></i>
+                <p class="text-gray-500 mb-1">点击或拖拽文件上传</p>
+                <p id="fileInfo" class="text-sm text-gray-400">未选择文件</p>
+            </div>
+        </div>
+
+        <!-- 转换按钮 -->
+        <button id="convertBtn" class="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 disabled:bg-gray-200">
+            <i class="fa fa-exchange mr-2"></i>开始转换
+        </button>
+
+        <!-- 转换结果区域（转换完成后显示） -->
+        <div id="resultArea" class="hidden border-t pt-6 space-y-4">
+            <h3 class="font-medium text-gray-700">✅ 转换完成</h3>
+            <div id="preview" class="mb-2"></div>
+
+            <!-- 自定义重命名 -->
+            <div>
+                <label class="block text-gray-700 font-medium mb-2">自定义新文件名（文件名称默认为“转换文件”，无需输入后缀）</label>
+                <input id="newFileName" type="text" placeholder="例如：我的文件" 
+                       class="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/50">
+            </div>
+
+            <!-- 下载按钮 -->
+            <button id="downloadBtn" class="bg-success text-white px-6 py-2.5 rounded-xl hover:bg-success/90 w-full">
+                <i class="fa fa-download mr-2"></i>下载文件
+            </button>
+        </div>
+    </div>
+
+    <!-- 底部说明 -->
+    <div class="text-gray-400 text-sm mt-8 text-center">
+        文件格式在浏览器本地处理 • 不上传到服务器
+    </div>
+
+<script>
+    /**
+     * 全局变量定义
+     * @type {File|null} selectedFile - 用户选择的文件
+     * @type {Blob|null} convertedBlob - 转换后的文件Blob对象
+     */
+    let selectedFile = null;
+    let convertedBlob = null;
+    const { jsPDF } = window.jspdf;
+
+    /**
+     * DOM 元素获取
+     */
+    const dropArea = document.getElementById('dropArea');
+    const fileInput = document.getElementById('fileInput');
+    const fileInfo = document.getElementById('fileInfo');
+    const convertBtn = document.getElementById('convertBtn');
+    const downloadBtn = document.getElementById('downloadBtn');
+    const resultArea = document.getElementById('resultArea');
+    const preview = document.getElementById('preview');
+    const convertType = document.getElementById('convertType');
+    const newFileName = document.getElementById('newFileName');
+    const modal = document.getElementById('modal');
+    const modalMsg = document.getElementById('modalMsg');
+
+    // PDF.js 配置
+    const pdfjsLib = window['pdfjs-dist/build/pdf'];
+    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdn.jsdelivr.net/npm/pdfjs-dist@3.4.120/build/pdf.worker.min.js';
+
+    /**
+     * 事件绑定
+     */
+    // 点击上传区域触发文件选择
+    dropArea.onclick = () => fileInput.click();
+    // 文件选择完成
+    fileInput.onchange = (e) => {
+        selectedFile = e.target.files[0];
+        updateFileInfo();
+    };
+    // 转换按钮点击事件
+    convertBtn.onclick = startConvert;
+    // 下载按钮点击事件
+    downloadBtn.onclick = downloadFile;
+
+    // 拖拽上传事件处理
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropArea.addEventListener(eventName, (e) => e.preventDefault());
+    });
+    dropArea.ondrop = (e) => {
+        selectedFile = e.dataTransfer.files[0];
+        updateFileInfo();
+    };
+
+    /**
+     * 更新文件信息显示
+     */
+    function updateFileInfo() {
+        if (selectedFile) {
+            fileInfo.textContent = `已选：${selectedFile.name} (${formatFileSize(selectedFile.size)})`;
+            convertBtn.disabled = false;
+        }
+    }
+
+    /**
+     * 格式化文件大小单位
+     * @param {number} bytes - 字节数
+     * @returns {string} 格式化后的文件大小
+     */
+    function formatFileSize(bytes) {
+        if (bytes === 0) return '0B';
+        const unit = 1024;
+        const sizeUnits = ['B', 'KB', 'MB'];
+        const index = Math.floor(Math.log(bytes) / Math.log(unit));
+        return (bytes / Math.pow(unit, index)).toFixed(1) + sizeUnits[index];
+    }
+
+    /**
+     * 显示提示弹窗
+     * @param {string} message - 提示信息
+     */
+    function showModal(message) {
+        modalMsg.innerText = message;
+        modal.style.display = 'flex';
+    }
+
+    /**
+     * 关闭提示弹窗
+     */
+    function closeModal() {
+        modal.style.display = 'none';
+    }
+
+    /**
+     * 校验文件格式与转换类型是否匹配
+     * @returns {boolean} 校验结果
+     */
+    function validateFileType() {
+        const type = convertType.value;
+        const fileName = selectedFile.name.toLowerCase();
+        let isValid = false;
+
+        switch (type) {
+            case 'pdf2img':
+                isValid = fileName.endsWith('.pdf');
+                break;
+            case 'img2pdf':
+                isValid = fileName.match(/\.(jpg|jpeg|png)$/);
+                break;
+            case 'jpg2png':
+                isValid = fileName.match(/\.(jpg|jpeg)$/);
+                break;
+            case 'png2jpg':
+                isValid = fileName.endsWith('.png');
+                break;
+            case 'word2pdf':
+                isValid = fileName.endsWith('.docx');
+                break;
+            case 'txt2pdf':
+                isValid = fileName.endsWith('.txt');
+                break;
+        }
+
+        if (!isValid) {
+            showModal('文件格式与转换类型不匹配，请重新选择！');
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * 开始转换文件
+     */
+    async function startConvert() {
+        // 校验文件是否存在
+        if (!selectedFile) return;
+        // 校验文件格式
+        if (!validateFileType()) return;
+
+        // 按钮状态切换
+        convertBtn.disabled = true;
+        convertBtn.innerHTML = '<i class="fa fa-circle-o-notch fa-spin mr-2"></i>处理中...';
+        // 清空预览区域 & 隐藏结果区域
+        preview.innerHTML = '';
+        resultArea.classList.add('hidden');
+
+        try {
+            const type = convertType.value;
+            // 根据转换类型执行对应方法
+            switch (type) {
+                case 'pdf2img':
+                    await pdfToImage();
+                    break;
+                case 'img2pdf':
+                    await imageToPdf();
+                    break;
+                case 'jpg2png':
+                    await convertImageFormat('png');
+                    break;
+                case 'png2jpg':
+                    await convertImageFormat('jpeg');
+                    break;
+                case 'word2pdf':
+                    await wordToPdf();
+                    break;
+                case 'txt2pdf':
+                    await txtToPdf();
+                    break;
+            }
+            // 转换完成，显示结果区域
+            resultArea.classList.remove('hidden');
+        } catch (error) {
+            showModal('转换失败：' + error.message);
+            console.error('转换异常：', error);
+        } finally {
+            // 恢复按钮状态
+            convertBtn.disabled = false;
+            convertBtn.innerHTML = '<i class="fa fa-exchange mr-2"></i>开始转换';
+        }
+    }
+
+    /**
+     * PDF 转 JPG 图片
+     */
+    async function pdfToImage() {
+        const arrayBuffer = await selectedFile.arrayBuffer();
+        const pdfDoc = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+        const page = await pdfDoc.getPage(1);
+        const viewport = page.getViewport({ scale: 1.2 });
+        
+        // 创建画布
+        const canvas = document.createElement('canvas');
+        canvas.width = viewport.width;
+        canvas.height = viewport.height;
+        
+        // 渲染PDF页面到画布
+        await page.render({
+            canvasContext: canvas.getContext('2d'),
+            viewport: viewport
+        }).promise;
+
+        preview.appendChild(canvas);
+        convertedBlob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', 0.85));
+    }
+
+    /**
+     * 图片转 PDF
+     */
+    async function imageToPdf() {
+        const img = new Image();
+        img.src = URL.createObjectURL(selectedFile);
+        await new Promise(resolve => img.onload = resolve);
+
+        // 创建PDF文档
+        const pdf = new jsPDF(
+            img.width > img.height ? 'landscape' : 'portrait',
+            'mm',
+            [img.width / 3, img.height / 3]
+        );
+        pdf.addImage(img.src, 'JPEG', 0, 0, img.width / 3, img.height / 3);
+        
+        preview.innerHTML = `<img src="${img.src}" class="max-h-[200px] rounded">`;
+        convertedBlob = pdf.output('blob');
+    }
+
+    /**
+     * 图片格式互转（JPG ↔ PNG）
+     * @param {string} format - 目标格式 (png / jpeg)
+     */
+    async function convertImageFormat(format) {
+        const img = new Image();
+        img.src = URL.createObjectURL(selectedFile);
+        await new Promise(resolve => img.onload = resolve);
+
+        // 创建画布绘制图片
+        const canvas = document.createElement('canvas');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        canvas.getContext('2d').drawImage(img, 0, 0);
+
+        preview.innerHTML = `<img src="${img.src}" class="max-h-[200px] rounded">`;
+        convertedBlob = await new Promise(resolve => canvas.toBlob(resolve, `image/${format}`, 0.9));
+    }
+
+    /**
+     * Word文档（.docx）转 PDF
+     */
+    async function wordToPdf() {
+        try {
+            const arrayBuffer = await selectedFile.arrayBuffer();
+            const result = await mammoth.convertToHtml({ arrayBuffer });
+            
+            // 创建A4尺寸PDF
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'mm',
+                format: 'a4'
+            });
+
+            const pageWidth = 210;
+            const margin = 10;
+            const maxTextWidth = pageWidth - margin * 2;
+            let yPosition = 10;
+
+            // 提取纯文本内容
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = result.value;
+            const textContent = tempDiv.innerText || '';
+
+            // 自动换行与分页
+            const lines = pdf.splitTextToSize(textContent, maxTextWidth);
+            lines.forEach(line => {
+                if (yPosition > 287) {
+                    pdf.addPage();
+                    yPosition = 10;
+                }
+                pdf.text(line, margin, yPosition);
+                yPosition += 7;
+            });
+
+            convertedBlob = pdf.output('blob');
+            preview.innerHTML = `<div class="p-3 bg-gray-100 rounded">✅ Word 转 PDF 成功</div>`;
+        } catch (error) {
+            throw new Error('Word文档解析失败，请使用标准 .docx 文件');
+        }
+    }
+
+    /**
+     * TXT 文本转 PDF
+     */
+    async function txtToPdf() {
+        const text = await selectedFile.text();
+        const pdf = new jsPDF();
+        pdf.text(text.split('\n'), 10, 10);
+        
+        convertedBlob = pdf.output('blob');
+        preview.innerHTML = `<div class="p-3 bg-gray-100 rounded">TXT → PDF 成功</div>`;
+    }
+
+    /**
+     * 下载转换后的文件
+     */
+    function downloadFile() {
+        if (!convertedBlob) return;
+
+        // 根据转换类型确定文件后缀
+        const type = convertType.value;
+        let extension = 'pdf';
+        if (type === 'pdf2img') extension = 'jpg';
+        if (type === 'jpg2png') extension = 'png';
+        if (type === 'png2jpg') extension = 'jpg';
+
+        // 获取用户输入的文件名
+        const fileName = newFileName.value.trim() || '转换文件';
+        const finalFileName = `${fileName}.${extension}`;
+
+        // 下载文件
+        saveAs(convertedBlob, finalFileName);
+        // 下载完成后清空输入框
+        newFileName.value = '';
+    }
+</script>
+</body>
+</html>
