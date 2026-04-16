@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Axapri | 本地备忘录</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+
+    body {
+      background: #f2f4f8;
+      max-width: 800px;
+      margin: 40px auto;
+      padding: 0 20px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    h1 {
+      font-size: 26px;
+      color: #222;
+      font-weight: 600;
+    }
+
+    #input {
+      width: 100%;
+      height: 140px;
+      padding: 18px;
+      border-radius: 16px;
+      border: 1px solid #e1e4ea;
+      font-size: 16px;
+      resize: none;
+      background: white;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+      transition: 0.2s;
+    }
+
+    #input:focus {
+      outline: none;
+      border-color: #4e6ef2;
+      box-shadow: 0 0 0 3px rgba(78, 110, 242, 0.1);
+    }
+
+    button {
+      padding: 12px 20px;
+      background: #4e6ef2;
+      color: white;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 500;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.92;
+      transform: translateY(-1px);
+    }
+
+    .save-btn {
+      background: #10b981;
+    }
+
+    .del-btn {
+      background: #ef4444;
+    }
+
+    .records {
+      margin-top: 32px;
+    }
+
+    .record {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border: 2px solid transparent;
+    }
+
+    .record.active {
+      border-color: #4e6ef2;
+      box-shadow: 0 4px 12px rgba(78, 110, 242, 0.12);
+    }
+
+    .record .time {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 10px;
+    }
+
+    .view-content {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #333;
+      padding: 4px;
+    }
+
+    .edit-area {
+      width: 100%;
+      min-height: 80px;
+      padding: 14px;
+      border: 1px solid #e1e4ea;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.5;
+      display: none;
+      background: #fafbfc;
+    }
+
+    .btns {
+      display: none;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 60px 20px;
+      color: #999;
+      font-size: 16px;
+    }
+
+    .toast {
+      position: fixed;
+      top: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 24px;
+      background: rgba(0, 0, 0, 0.75);
+      color: white;
+      border-radius: 12px;
+      z-index: 9999;
+      opacity: 0;
+      transition: all 0.3s ease;
+      font-size: 15px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      top: 34px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <h1>📒 生活备忘录</h1>
+    <button onclick="saveRecord()">添加新记录</button>
+  </div>
+
+  <textarea id="input" placeholder="写下你的想法，保存后会出现在下方列表..."></textarea>
+  <div class="records" id="recordsList"></div>
+  <div class="toast" id="toast"></div>
+
+  <script>
+    // 全局数据
+    let records = JSON.parse(localStorage.getItem('allRecords')) || [];
+    let currentEditIndex = -1;
+
+    // 初始化
+    showRecords();
+
+    /**
+     * 优雅提示弹窗
+     * @param {string} msg - 提示文字
+     */
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 1800);
+    }
+
+    /**
+     * 保存新记录
+     */
+    function saveRecord() {
+      const content = document.getElementById('input').value.trim();
+      if (!content) return showToast('请输入内容');
+
+      records.unshift({
+        time: new Date().toLocaleString(),
+        content: content
+      });
+
+      saveToLocal();
+      document.getElementById('input').value = '';
+      showRecords();
+      showToast('添加成功！');
+    }
+
+    /**
+     * 渲染记录列表
+     */
+    function showRecords() {
+      const el = document.getElementById('recordsList');
+
+      if (records.length === 0) {
+        el.innerHTML = '<div class="empty">暂无记录，开始写第一条吧～</div>';
+        return;
+      }
+
+      el.innerHTML = '';
+      records.forEach((item, index) => {
+        el.innerHTML += `
+          <div class="record" onclick="toggleRecord(${index})">
+            <div class="time">${item.time}</div>
+            <div class="view-content" id="view${index}">${item.content}</div>
+            <textarea class="edit-area" id="edit${index}">${item.content}</textarea>
+            <div class="btns" id="btns${index}">
+              <button class="save-btn" onclick="updateRecord(${index})">保存修改</button>
+              <button class="del-btn" onclick="delRecord(${index})">删除</button>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    /**
+     * 切换记录的编辑状态
+     * @param {number} index - 记录索引
+     */
+    function toggleRecord(index) {
+      const view = document.getElementById(`view${index}`);
+      const edit = document.getElementById(`edit${index}`);
+      const btns = document.getElementById(`btns${index}`);
+      const record = edit.parentElement;
+
+      // 关闭其他正在编辑的项
+      if (currentEditIndex !== -1 && currentEditIndex !== index) {
+        document.getElementById(`view${currentEditIndex}`).style.display = 'block';
+        document.getElementById(`edit${currentEditIndex}`).style.display = 'none';
+        document.getElementById(`btns${currentEditIndex}`).style.display = 'none';
+        document.querySelectorAll('.record')[currentEditIndex].classList.remove('active');
+      }
+
+      // 切换当前项
+      if (edit.style.display === 'block') {
+        view.style.display = 'block';
+        edit.style.display = 'none';
+        btns.style.display = 'none';
+        record.classList.remove('active');
+        currentEditIndex = -1;
+      } else {
+        view.style.display = 'none';
+        edit.style.display = 'block';
+        btns.style.display = 'flex';
+        record.classList.add('active');
+        currentEditIndex = index;
+      }
+    }
+
+    /**
+     * 更新记录
+     * @param {number} index - 记录索引
+     */
+    function updateRecord(index) {
+      const newContent = document.getElementById(`edit${index}`).value.trim();
+      if (!newContent) return showToast('内容不能为空');
+
+      records[index].content = newContent;
+      records[index].time = new Date().toLocaleString();
+      saveToLocal();
+      showToast('修改成功！');
+    }
+
+    /**
+     * 删除记录
+     * @param {number} index - 记录索引
+     */
+    function delRecord(index) {
+      if (!confirm('确定删除这条记录？')) return;
+
+      records.splice(index, 1);
+      saveToLocal();
+      currentEditIndex = -1;
+      showToast('删除成功');
+    }
+
+    /**
+     * 保存到本地存储
+     */
+    function saveToLocal() {
+      localStorage.setItem('allRecords', JSON.stringify(records));
+      showRecords();
+    }
+  </script>
+</body>
+</html>
