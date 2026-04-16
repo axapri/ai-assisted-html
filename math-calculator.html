@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <title>Axapri | 智能数学计算器</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f7f8fa;
+            --card: #ffffff;
+            --main: #007aff;
+            --red: #ff3b30;
+            --gray: #8e8e93;
+            --light: #f2f2f7;
+            --rad: 12px;
+            --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+        }
+
+        body {
+            background: var(--bg);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            -webkit-text-size-adjust: 100%;
+            touch-action: manipulation;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 460px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
+        .header {
+            grid-column: 1 / 3;
+            text-align: center;
+            padding: 6px 0 10px;
+        }
+
+        .header h1 {
+            font-size: 18px;
+            color: #222;
+        }
+
+        .item {
+            background: var(--card);
+            border-radius: var(--rad);
+            padding: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .item-title {
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: #222;
+            text-align: center;
+        }
+
+        .input-line {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
+            font-size: 12px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        input {
+            width: 48px;
+            height: 34px;
+            border: 1px solid #e1e1e2;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 12px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input:focus {
+            border-color: var(--main);
+        }
+
+        .btns {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 5px;
+        }
+
+        button {
+            flex: 1;
+            height: 32px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn-calc {
+            background: var(--main);
+            color: #fff;
+        }
+
+        .btn-reset {
+            background: var(--light);
+            color: var(--red);
+        }
+
+        .tip {
+            font-size: 10px;
+            color: var(--gray);
+            text-align: center;
+            line-height: 1.2;
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.25);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 999;
+        }
+
+        .modal-box {
+            background: #fff;
+            width: 260px;
+            padding: 24px 20px;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-size: 14px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+
+        .modal-result {
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--main);
+            margin-bottom: 18px;
+            word-break: break-all;
+        }
+
+        .modal-close {
+            background: var(--main);
+            color: #fff;
+            border: none;
+            width: 100px;
+            height: 36px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- 结果弹窗 -->
+    <div class="modal" id="modal">
+        <div class="modal-box">
+            <div class="modal-title">计算结果</div>
+            <div class="modal-result" id="modalResult">0</div>
+            <button class="modal-close" onclick="closeModal()">确定</button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>📐 全学段智能数学计算器</h1>
+        </div>
+
+        <!-- 小学模块 -->
+        <div class="item">
+            <div class="item-title">一元一次方程</div>
+            <div class="input-line"><input id="a1">x+<input id="b1">=<input id="c1"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal1()">计算</button>
+                <button class="btn-reset" onclick="reset1()">清空</button>
+            </div>
+            <div class="tip">ax+b=c → 求x</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">解比例</div>
+            <div class="input-line"><input id="a2">:<input id="b2">=<input id="c2">:x</div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal2()">计算</button>
+                <button class="btn-reset" onclick="reset2()">清空</button>
+            </div>
+            <div class="tip">a:b=c:x → 交叉相乘</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">长方形</div>
+            <div class="input-line">长<input id="a3"> 宽<input id="b3"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal3()">计算</button>
+                <button class="btn-reset" onclick="reset3()">清空</button>
+            </div>
+            <div class="tip">周长=2(长+宽) 面积=长×宽</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">圆形</div>
+            <div class="input-line">半径<input id="r4"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal4()">计算</button>
+                <button class="btn-reset" onclick="reset4()">清空</button>
+            </div>
+            <div class="tip">周长=2πr 面积=πr²</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">路程问题</div>
+            <div class="input-line">速度<input id="v5"> 时间<input id="t5"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal5()">计算</button>
+                <button class="btn-reset" onclick="reset5()">清空</button>
+            </div>
+            <div class="tip">路程=速度×时间</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">百分数</div>
+            <div class="input-line"><input id="n6"> 的 <input id="p6">%</div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal6()">计算</button>
+                <button class="btn-reset" onclick="reset6()">清空</button>
+            </div>
+            <div class="tip">求一个数的百分之几</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">三角形面积</div>
+            <div class="input-line">底<input id="base9"> 高<input id="high9"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal9()">计算</button>
+                <button class="btn-reset" onclick="reset9()">清空</button>
+            </div>
+            <div class="tip">面积=底×高÷2</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">和差问题</div>
+            <div class="input-line">和<input id="sum10"> 差<input id="diff10"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal10()">求数</button>
+                <button class="btn-reset" onclick="reset10()">清空</button>
+            </div>
+            <div class="tip">已知和差求大数、小数</div>
+        </div>
+
+        <!-- 初中模块 -->
+        <div class="item">
+            <div class="item-title">勾股定理</div>
+            <div class="input-line">a<input id="a7"> b<input id="b7"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal7()">求斜边</button>
+                <button class="btn-reset" onclick="reset7()">清空</button>
+            </div>
+            <div class="tip">c²=a²+b²</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">一元二次方程</div>
+            <div class="input-line"><input id="a8">x²+<input id="b8">x+<input id="c8">=0</div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal8()">求根</button>
+                <button class="btn-reset" onclick="reset8()">清空</button>
+            </div>
+            <div class="tip">求x1、x2</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">正方体</div>
+            <div class="input-line">棱长<input id="l11"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal11()">计算</button>
+                <button class="btn-reset" onclick="reset11()">清空</button>
+            </div>
+            <div class="tip">表面积=6a² 体积=a³</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">和倍问题</div>
+            <div class="input-line">和<input id="sum12"> 倍<input id="bei12"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal12()">求数</button>
+                <button class="btn-reset" onclick="reset12()">清空</button>
+            </div>
+            <div class="tip">已知和与倍数求两数</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">差倍问题</div>
+            <div class="input-line">差<input id="cha13"> 倍<input id="bei13"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal13()">求数</button>
+                <button class="btn-reset" onclick="reset13()">清空</button>
+            </div>
+            <div class="tip">已知差与倍数求两数</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">圆柱体积</div>
+            <div class="input-line">半径<input id="r17"> 高<input id="h17"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal17()">计算</button>
+                <button class="btn-reset" onclick="reset17()">清空</button>
+            </div>
+            <div class="tip">体积=πr²h</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">圆锥体积</div>
+            <div class="input-line">半径<input id="r18"> 高<input id="h18"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal18()">计算</button>
+                <button class="btn-reset" onclick="reset18()">清空</button>
+            </div>
+            <div class="tip">体积=1/3πr²h</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">梯形面积</div>
+            <div class="input-line">上底<input id="a19">下底<input id="b19">高<input id="h19"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal19()">计算</button>
+                <button class="btn-reset" onclick="reset19()">清空</button>
+            </div>
+            <div class="tip">面积=(上底+下底)×高÷2</div>
+        </div>
+
+        <!-- 高中模块 -->
+        <div class="item">
+            <div class="item-title">等差数列</div>
+            <div class="input-line">a1<input id="a30">d<input id="d30">n<input id="n30"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal30()">求和</button>
+                <button class="btn-reset" onclick="reset30()">清空</button>
+            </div>
+            <div class="tip">Sn=n(2a1+(n-1)d)/2</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">等比数列</div>
+            <div class="input-line">a1<input id="a31">q<input id="q31">n<input id="n31"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal31()">求和</button>
+                <button class="btn-reset" onclick="reset31()">清空</button>
+            </div>
+            <div class="tip">Sn=a1(qⁿ-1)/(q-1)</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">点到直线距离</div>
+            <div class="input-line">x0<input id="x32">y0<input id="y32">A<input id="A32">B<input id="B32">C<input id="C32"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal32()">计算</button>
+                <button class="btn-reset" onclick="reset32()">清空</button>
+            </div>
+            <div class="tip">d=|Ax0+By0+C|/√(A²+B²)</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">正弦定理求边</div>
+            <div class="input-line">a<input id="a33">A<input id="A33">B<input id="B33"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal33()">求b</button>
+                <button class="btn-reset" onclick="reset33()">清空</button>
+            </div>
+            <div class="tip">a/sinA = b/sinB</div>
+        </div>
+
+        <!-- 大学模块 -->
+        <div class="item">
+            <div class="item-title">阶乘</div>
+            <div class="input-line">n<input id="n40"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal40()">计算</button>
+                <button class="btn-reset" onclick="reset40()">清空</button>
+            </div>
+            <div class="tip">n! = 1×2×...×n</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">排列 P(n,r)</div>
+            <div class="input-line">n<input id="n41">r<input id="r41"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal41()">计算</button>
+                <button class="btn-reset" onclick="reset41()">清空</button>
+            </div>
+            <div class="tip">P=n!/(n-r)!</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">组合 C(n,r)</div>
+            <div class="input-line">n<input id="n42">r<input id="r42"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal42()">计算</button>
+                <button class="btn-reset" onclick="reset42()">清空</button>
+            </div>
+            <div class="tip">C=n!/(r!(n-r)!)</div>
+        </div>
+
+        <div class="item">
+            <div class="item-title">向量模长</div>
+            <div class="input-line">x<input id="x43">y<input id="y43">z<input id="z43"></div>
+            <div class="btns">
+                <button class="btn-calc" onclick="cal43()">计算</button>
+                <button class="btn-reset" onclick="reset43()">清空</button>
+            </div>
+            <div class="tip">|v|=√(x²+y²+z²)</div>
+        </div>
+
+    </div>
+
+    <script>
+        // 格式化结果：保留3位小数，去除末尾.000
+        function formatResult(value) {
+            return parseFloat(value).toFixed(3).replace(/\.000$/, '');
+        }
+
+        // 弹窗控制
+        const modal = document.getElementById('modal');
+        const modalResult = document.getElementById('modalResult');
+
+        function showResult(text) {
+            modalResult.innerText = text;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+        }
+
+        // ===================== 小学 =====================
+        function cal1() {
+            const a = +document.getElementById('a1').value || 0;
+            const b = +document.getElementById('b1').value || 0;
+            const c = +document.getElementById('c1').value || 0;
+            if (a === 0) return showResult("系数不能为0");
+            showResult("x=" + formatResult((c - b) / a));
+        }
+        function reset1() {
+            document.getElementById('a1').value = '';
+            document.getElementById('b1').value = '';
+            document.getElementById('c1').value = '';
+        }
+
+        function cal2() {
+            const a = +document.getElementById('a2').value || 1;
+            const b = +document.getElementById('b2').value || 1;
+            const c = +document.getElementById('c2').value || 1;
+            showResult("x=" + formatResult((b * c) / a));
+        }
+        function reset2() {
+            document.getElementById('a2').value = '';
+            document.getElementById('b2').value = '';
+            document.getElementById('c2').value = '';
+        }
+
+        function cal3() {
+            const a = +document.getElementById('a3').value || 0;
+            const b = +document.getElementById('b3').value || 0;
+            showResult("周长:" + formatResult(2 * (a + b)) + " 面积:" + formatResult(a * b));
+        }
+        function reset3() {
+            document.getElementById('a3').value = '';
+            document.getElementById('b3').value = '';
+        }
+
+        function cal4() {
+            const r = +document.getElementById('r4').value || 0;
+            showResult("周长:" + formatResult(2 * Math.PI * r) + " 面积:" + formatResult(Math.PI * r * r));
+        }
+        function reset4() {
+            document.getElementById('r4').value = '';
+        }
+
+        function cal5() {
+            const v = +document.getElementById('v5').value || 0;
+            const t = +document.getElementById('t5').value || 0;
+            showResult("路程=" + formatResult(v * t));
+        }
+        function reset5() {
+            document.getElementById('v5').value = '';
+            document.getElementById('t5').value = '';
+        }
+
+        function cal6() {
+            const n = +document.getElementById('n6').value || 0;
+            const p = +document.getElementById('p6').value || 0;
+            showResult(formatResult(n * p / 100));
+        }
+        function reset6() {
+            document.getElementById('n6').value = '';
+            document.getElementById('p6').value = '';
+        }
+
+        function cal7() {
+            const a = +document.getElementById('a7').value || 0;
+            const b = +document.getElementById('b7').value || 0;
+            showResult("c=" + formatResult(Math.sqrt(a * a + b * b)));
+        }
+        function reset7() {
+            document.getElementById('a7').value = '';
+            document.getElementById('b7').value = '';
+        }
+
+        function cal8() {
+            const a = +document.getElementById('a8').value || 0;
+            const b = +document.getElementById('b8').value || 0;
+            const c = +document.getElementById('c8').value || 0;
+            if (a === 0) return showResult("a≠0");
+            const dt = b * b - 4 * a * c;
+            if (dt < 0) return showResult("无实根");
+            const x1 = (-b + Math.sqrt(dt)) / (2 * a);
+            const x2 = (-b - Math.sqrt(dt)) / (2 * a);
+            showResult("x1=" + formatResult(x1) + " x2=" + formatResult(x2));
+        }
+        function reset8() {
+            document.getElementById('a8').value = '';
+            document.getElementById('b8').value = '';
+            document.getElementById('c8').value = '';
+        }
+
+        function cal9() {
+            const base = +document.getElementById('base9').value || 0;
+            const high = +document.getElementById('high9').value || 0;
+            showResult("面积=" + formatResult(base * high / 2));
+        }
+        function reset9() {
+            document.getElementById('base9').value = '';
+            document.getElementById('high9').value = '';
+        }
+
+        function cal10() {
+            const sum = +document.getElementById('sum10').value || 0;
+            const diff = +document.getElementById('diff10').value || 0;
+            showResult("大数=" + formatResult((sum + diff) / 2) + " 小数=" + formatResult((sum - diff) / 2));
+        }
+        function reset10() {
+            document.getElementById('sum10').value = '';
+            document.getElementById('diff10').value = '';
+        }
+
+        function cal11() {
+            const l = +document.getElementById('l11').value || 0;
+            showResult("表面积:" + formatResult(6 * l * l) + " 体积:" + formatResult(l * l * l));
+        }
+        function reset11() {
+            document.getElementById('l11').value = '';
+        }
+
+        function cal12() {
+            const sum = +document.getElementById('sum12').value || 0;
+            const bei = +document.getElementById('bei12').value || 1;
+            const s = sum / (bei + 1);
+            showResult("小数=" + formatResult(s) + " 大数=" + formatResult(sum - s));
+        }
+        function reset12() {
+            document.getElementById('sum12').value = '';
+            document.getElementById('bei12').value = '';
+        }
+
+        function cal13() {
+            const cha = +document.getElementById('cha13').value || 0;
+            const bei = +document.getElementById('bei13').value || 1;
+            const s = cha / (bei - 1);
+            showResult("小数=" + formatResult(s) + " 大数=" + formatResult(s * bei));
+        }
+        function reset13() {
+            document.getElementById('cha13').value = '';
+            document.getElementById('bei13').value = '';
+        }
+
+        function cal17() {
+            const r = +document.getElementById('r17').value || 0;
+            const h = +document.getElementById('h17').value || 0;
+            showResult("体积=" + formatResult(Math.PI * r * r * h));
+        }
+        function reset17() {
+            document.getElementById('r17').value = '';
+            document.getElementById('h17').value = '';
+        }
+
+        function cal18() {
+            const r = +document.getElementById('r18').value || 0;
+            const h = +document.getElementById('h18').value || 0;
+            showResult("体积=" + formatResult(Math.PI * r * r * h / 3));
+        }
+        function reset18() {
+            document.getElementById('r18').value = '';
+            document.getElementById('h18').value = '';
+        }
+
+        function cal19() {
+            const a = +document.getElementById('a19').value || 0;
+            const b = +document.getElementById('b19').value || 0;
+            const h = +document.getElementById('h19').value || 0;
+            showResult("面积=" + formatResult((a + b) * h / 2));
+        }
+        function reset19() {
+            document.getElementById('a19').value = '';
+            document.getElementById('b19').value = '';
+            document.getElementById('h19').value = '';
+        }
+
+        // ===================== 高中 =====================
+        function cal30() {
+            const a1 = +document.getElementById('a30').value || 0;
+            const d = +document.getElementById('d30').value || 0;
+            const n = +document.getElementById('n30').value || 1;
+            const sn = n * (2 * a1 + (n - 1) * d) / 2;
+            showResult("S" + n + "=" + formatResult(sn));
+        }
+        function reset30() {
+            document.getElementById('a30').value = '';
+            document.getElementById('d30').value = '';
+            document.getElementById('n30').value = '';
+        }
+
+        function cal31() {
+            const a1 = +document.getElementById('a31').value || 0;
+            const q = +document.getElementById('q31').value || 1;
+            const n = +document.getElementById('n31').value || 1;
+            const sn = a1 * (Math.pow(q, n) - 1) / (q - 1);
+            showResult("S" + n + "=" + formatResult(sn));
+        }
+        function reset31() {
+            document.getElementById('a31').value = '';
+            document.getElementById('q31').value = '';
+            document.getElementById('n31').value = '';
+        }
+
+        function cal32() {
+            const x0 = +document.getElementById('x32').value || 0;
+            const y0 = +document.getElementById('y32').value || 0;
+            const A = +document.getElementById('A32').value || 0;
+            const B = +document.getElementById('B32').value || 0;
+            const C = +document.getElementById('C32').value || 0;
+            const up = Math.abs(A * x0 + B * y0 + C);
+            const down = Math.sqrt(A * A + B * B);
+            if (down === 0) return showResult("输入无效");
+            showResult("d=" + formatResult(up / down));
+        }
+        function reset32() {
+            document.getElementById('x32').value = '';
+            document.getElementById('y32').value = '';
+            document.getElementById('A32').value = '';
+            document.getElementById('B32').value = '';
+            document.getElementById('C32').value = '';
+        }
+
+        function cal33() {
+            const a = +document.getElementById('a33').value || 0;
+            const A = +document.getElementById('A33').value || 0;
+            const B = +document.getElementById('B33').value || 0;
+            const b = (a * Math.sin(B * Math.PI / 180)) / Math.sin(A * Math.PI / 180);
+            showResult("b=" + formatResult(b));
+        }
+        function reset33() {
+            document.getElementById('a33').value = '';
+            document.getElementById('A33').value = '';
+            document.getElementById('B33').value = '';
+        }
+
+        // ===================== 大学 =====================
+        function factorial(n) {
+            let result = 1;
+            for (let i = 2; i <= n; i++) {
+                result *= i;
+            }
+            return result;
+        }
+
+        function cal40() {
+            const n = +document.getElementById('n40').value || 0;
+            if (n < 0) return showResult("n≥0");
+            showResult(n + "! = " + formatResult(factorial(n)));
+        }
+        function reset40() {
+            document.getElementById('n40').value = '';
+        }
+
+        function cal41() {
+            const n = +document.getElementById('n41').value || 0;
+            const r = +document.getElementById('r41').value || 0;
+            if (r > n || r < 0) return showResult("输入错误");
+            showResult("P=" + formatResult(factorial(n) / factorial(n - r)));
+        }
+        function reset41() {
+            document.getElementById('n41').value = '';
+            document.getElementById('r41').value = '';
+        }
+
+        function cal42() {
+            const n = +document.getElementById('n42').value || 0;
+            const r = +document.getElementById('r42').value || 0;
+            if (r > n || r < 0) return showResult("输入错误");
+            showResult("C=" + formatResult(factorial(n) / (factorial(r) * factorial(n - r))));
+        }
+        function reset42() {
+            document.getElementById('n42').value = '';
+            document.getElementById('r42').value = '';
+        }
+
+        function cal43() {
+            const x = +document.getElementById('x43').value || 0;
+            const y = +document.getElementById('y43').value || 0;
+            const z = +document.getElementById('z43').value || 0;
+            showResult("|v|=" + formatResult(Math.sqrt(x * x + y * y + z * z)));
+        }
+        function reset43() {
+            document.getElementById('x43').value = '';
+            document.getElementById('y43').value = '';
+            document.getElementById('z43').value = '';
+        }
+    </script>
+</body>
+</html>
