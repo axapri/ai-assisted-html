@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 计算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+
+        :root {
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --btn: #f7f8fc;
+            --btn-active: #e6e8ee;
+            --accent: #007aff;
+            --red: #ff3b30;
+            --text: #111;
+            --gray: #8a8a8e;
+        }
+
+        body {
+            background: var(--bg);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 12px;
+        }
+
+        .calculator {
+            width: 100%;
+            max-width: 400px;
+            background: var(--card);
+            border-radius: 30px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.07);
+            padding: 36px 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+        }
+
+        .display {
+            width: 100%;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            justify-content: flex-end;
+            gap: 12px;
+            padding: 8px;
+        }
+
+        .input {
+            font-size: 26px;
+            color: var(--gray);
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .result {
+            font-size: 54px;
+            font-weight: 500;
+            color: var(--text);
+            word-break: break-all;
+            text-align: right;
+        }
+
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+        }
+
+        button {
+            height: 66px;
+            border-radius: 18px;
+            border: none;
+            font-size: 24px;
+            background: var(--btn);
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background: var(--btn-active);
+        }
+
+        .func {
+            color: var(--red);
+            font-weight: 500;
+        }
+
+        .op {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .equal {
+            grid-column: span 2;
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .equal:active {
+            background: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <!-- 显示区域 -->
+        <div class="display">
+            <div id="input">0</div>
+            <div id="result">0</div>
+        </div>
+
+        <!-- 按键区域 -->
+        <div class="buttons">
+            <button class="func" onclick="clearAll()">AC</button>
+            <button class="func" onclick="backspace()">⌫</button>
+            <button class="op" onclick="append('%')">%</button>
+            <button class="op" onclick="append('/')">÷</button>
+
+            <button onclick="append('7')">7</button>
+            <button onclick="append('8')">8</button>
+            <button onclick="append('9')">9</button>
+            <button class="op" onclick="append('*')">×</button>
+
+            <button onclick="append('4')">4</button>
+            <button onclick="append('5')">5</button>
+            <button onclick="append('6')">6</button>
+            <button class="op" onclick="append('-')">−</button>
+
+            <button onclick="append('1')">1</button>
+            <button onclick="append('2')">2</button>
+            <button onclick="append('3')">3</button>
+            <button class="op" onclick="append('+')">+</button>
+
+            <button onclick="append('0')">0</button>
+            <button onclick="append('.')">.</button>
+            <button class="equal" onclick="calculate()">=</button>
+        </div>
+    </div>
+
+<script>
+    // 全局状态
+    let inputStr = "0";
+    let resultStr = "0";
+
+    /**
+     * 更新页面显示内容
+     */
+    function update() {
+        document.getElementById("input").innerText = inputStr;
+        document.getElementById("result").innerText = resultStr;
+    }
+
+    /**
+     * 追加输入内容
+     * @param {string} val - 要追加的字符
+     */
+    function append(val) {
+        if (inputStr === "0" && val !== ".") {
+            inputStr = val;
+        } else {
+            inputStr += val;
+        }
+        update();
+    }
+
+    /**
+     * 清空所有输入和结果
+     */
+    function clearAll() {
+        inputStr = "0";
+        resultStr = "0";
+        update();
+    }
+
+    /**
+     * 退格删除最后一位
+     */
+    function backspace() {
+        inputStr = inputStr.length === 1 ? "0" : inputStr.slice(0, -1);
+        update();
+    }
+
+    /**
+     * 计算表达式结果
+     */
+    function calculate() {
+        try {
+            // 替换显示符号为计算符号
+            const exp = inputStr
+                .replace(/×/g, "*")
+                .replace(/÷/g, "/")
+                .replace(/−/g, "-");
+            
+            let res = eval(exp);
+
+            // 异常值判断
+            if (isNaN(res) || !isFinite(res)) {
+                resultStr = "错误";
+            } else {
+                // 格式化结果：整数直接显示，小数保留6位并去尾零
+                res = Number.isInteger(res) 
+                    ? res 
+                    : res.toFixed(6).replace(/\.?0*$/, "");
+                resultStr = res;
+            }
+        } catch {
+            resultStr = "错误";
+        }
+        
+        update();
+    }
+</script>
+</body>
+</html>
