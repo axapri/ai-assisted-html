@@ -1,269 +1,298 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Axapri | 本地备忘录</title>
-<style>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Axapri | 本地备忘录</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-body {
-  max-width: 700px;
-  margin: 40px auto;
-  padding: 0 20px;
-  background: #f8f9fa;
-}
+    body {
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+      background: #f8f9fa;
+    }
 
-/* 顶部标题 */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
+    /* 头部样式 */
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
 
-h1 {
-  font-size: 26px;
-  font-weight: 600;
-  color: #222;
-}
+    h1 {
+      font-size: 26px;
+      font-weight: 600;
+      color: #222;
+    }
 
-/* 输入框 */
-textarea {
-  width: 100%;
-  height: 130px;
-  padding: 16px;
-  border-radius: 12px;
-  border: 1px solid #e1e4e8;
-  background: #fff;
-  font-size: 16px;
-  resize: none;
-  outline: none;
-  transition: all 0.2s;
-  margin-bottom: 12px;
-  line-height: 1.5;
-}
+    /* 输入框样式 */
+    textarea {
+      width: 100%;
+      height: 130px;
+      padding: 16px;
+      border-radius: 12px;
+      border: 1px solid #e1e4e8;
+      background: #fff;
+      font-size: 16px;
+      resize: none;
+      outline: none;
+      transition: all 0.2s;
+      margin-bottom: 12px;
+      line-height: 1.5;
+    }
 
-textarea:focus {
-  border-color: #4e6ef2;
-  box-shadow: 0 0 0 3px rgba(78, 110, 242, 0.1);
-}
+    textarea:focus {
+      border-color: #4e6ef2;
+      box-shadow: 0 0 0 3px rgba(78, 110, 242, 0.1);
+    }
 
-/* 按钮通用 */
-button {
-  padding: 10px 18px;
-  border-radius: 8px;
-  border: none;
-  font-size: 15px;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
+    /* 按钮通用样式 */
+    button {
+      padding: 10px 18px;
+      border-radius: 8px;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
 
-button:hover {
-  opacity: 0.9;
-}
+    button:hover {
+      opacity: 0.9;
+    }
 
-/* 保存按钮 */
-button:first-child {
-  background: #4e6ef2;
-  color: white;
-}
+    /* 保存按钮 */
+    .btn-save {
+      background: #4e6ef2;
+      color: #fff;
+    }
 
-/* 取消按钮 */
-.btn-cancel {
-  background: #e5e7eb;
-  color: #555;
-  display: none;
-  margin-left: 8px;
-}
+    /* 取消按钮 */
+    .btn-cancel {
+      background: #e5e7eb;
+      color: #555;
+      display: none;
+      margin-left: 8px;
+    }
 
-/* 记录列表 */
-.records {
-  margin-top: 32px;
-}
+    /* 记录列表 */
+    .records {
+      margin-top: 32px;
+    }
 
-.record {
-  background: white;
-  border-radius: 12px;
-  padding: 18px;
-  margin-bottom: 10px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-  transition: transform 0.15s ease;
-  position: relative;
-}
+    /* 单条记录 */
+    .record {
+      background: #fff;
+      border-radius: 12px;
+      padding: 18px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.15s ease;
+      position: relative;
+    }
 
-.record:hover {
-  transform: translateY(-1px);
-}
+    .record:hover {
+      transform: translateY(-1px);
+    }
 
-/* 时间 + 操作栏 */
-.record .time {
-  font-size: 12px;
-  color: #999;
-  margin-bottom: 10px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+    /* 时间栏 */
+    .record .time {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
-/* 内容 */
-.record .content {
-  font-size: 15px;
-  line-height: 1.6;
-  color: #333;
-  white-space: pre-wrap;
-}
+    /* 记录内容 */
+    .record .content {
+      font-size: 15px;
+      line-height: 1.6;
+      color: #333;
+      white-space: pre-wrap;
+    }
 
-/* 操作按钮组：默认隐藏 */
-.record .opts {
-  display: flex;
-  gap: 8px;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
+    /* 操作按钮组 */
+    .record .opts {
+      display: flex;
+      gap: 8px;
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
 
-/*  hover 显示 */
-.record:hover .opts {
-  opacity: 1;
-}
+    .record:hover .opts {
+      opacity: 1;
+    }
 
-/* 修改按钮 */
-.btn-edit {
-  background: #52c41a;
-  color: white;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
+    /* 修改按钮 */
+    .btn-edit {
+      background: #52c41a;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
 
-/* 删除按钮（统一美化，和修改一样样式） */
-.btn-del {
-  background: #ff4d4f;
-  color: white;
-  font-size: 12px;
-  padding: 4px 10px;
-  border-radius: 6px;
-  border: none;
-  cursor: pointer;
-}
+    /* 删除按钮 */
+    .btn-del {
+      background: #ff4d4f;
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+    }
 
-/* 空状态 */
-.empty {
-  text-align: center;
-  color: #aaa;
-  padding: 50px 20px;
-  font-size: 15px;
-}
-</style>
+    /* 空状态 */
+    .empty {
+      text-align: center;
+      color: #aaa;
+      padding: 50px 20px;
+      font-size: 15px;
+    }
+  </style>
 </head>
 <body>
 
-<div class="header">
-  <h1>📒 本地备忘录</h1>
-  <div>
-    <button onclick="saveRecord()">保存记录</button>
-    <button class="btn-cancel" id="cancelBtn" onclick="cancelEdit()">取消修改</button>
+  <!-- 头部 -->
+  <div class="header">
+    <h1>📒 本地备忘录</h1>
+    <div>
+      <button class="btn-save" onclick="saveRecord()">保存记录</button>
+      <button class="btn-cancel" id="cancelBtn" onclick="cancelEdit()">取消修改</button>
+    </div>
   </div>
-</div>
 
-<textarea id="input" placeholder="在这里写下你的想法..."></textarea>
+  <!-- 输入区域 -->
+  <textarea id="input" placeholder="在这里写下你的想法..."></textarea>
 
-<div class="records" id="recordsList"></div>
+  <!-- 记录列表 -->
+  <div class="records" id="recordsList"></div>
 
-<script>
-// 读取本地存储
-let records = JSON.parse(localStorage.getItem('allRecords')) || [];
-let editIndex = -1;
-showRecords();
+  <script>
+    // 全局变量
+    let records = JSON.parse(localStorage.getItem('allRecords')) || [];
+    let editIndex = -1;
 
-// 保存 / 修改
-function saveRecord() {
-  const content = document.getElementById('input').value.trim();
-  if (!content) return alert('请输入内容');
+    // 初始化渲染
+    showRecords();
 
-  if (editIndex >= 0) {
-    records[editIndex].content = content;
-    records[editIndex].time = new Date().toLocaleString();
-    editIndex = -1;
-    document.getElementById('cancelBtn').style.display = 'none';
-    alert('✅ 修改成功');
-  } else {
-    records.unshift({
-      time: new Date().toLocaleString(),
-      content: content
-    });
-    alert('✅ 保存成功');
-  }
+    /**
+     * 保存 / 修改记录
+     */
+    function saveRecord() {
+      const content = document.getElementById('input').value.trim();
+      if (!content) {
+        alert('请输入内容');
+        return;
+      }
 
-  localStorage.setItem('allRecords', JSON.stringify(records));
-  document.getElementById('input').value = '';
-  showRecords();
-}
+      if (editIndex >= 0) {
+        // 修改模式
+        records[editIndex].content = content;
+        records[editIndex].time = new Date().toLocaleString();
+        editIndex = -1;
+        document.getElementById('cancelBtn').style.display = 'none';
+        alert('✅ 修改成功');
+      } else {
+        // 新增模式
+        records.unshift({
+          time: new Date().toLocaleString(),
+          content: content
+        });
+        alert('✅ 保存成功');
+      }
 
-// 渲染列表
-function showRecords() {
-  const el = document.getElementById('recordsList');
-  if (records.length === 0) {
-    el.innerHTML = '<div class="empty">暂无记录，开始写第一条吧～</div>';
-    return;
-  }
+      // 保存到本地并刷新
+      localStorage.setItem('allRecords', JSON.stringify(records));
+      document.getElementById('input').value = '';
+      showRecords();
+    }
 
-  el.innerHTML = '';
-  records.forEach((item, index) => {
-    el.innerHTML += `
-      <div class="record">
-        <div class="time">
-          <span>${item.time}</span>
-          <div class="opts">
-            <button class="btn-edit" onclick="editRecord(${index})">修改</button>
-            <button class="btn-del" onclick="delRecord(${index})">删除</button>
+    /**
+     * 渲染记录列表
+     */
+    function showRecords() {
+      const listEl = document.getElementById('recordsList');
+
+      if (records.length === 0) {
+        listEl.innerHTML = '<div class="empty">暂无记录，开始写第一条吧～</div>';
+        return;
+      }
+
+      let html = '';
+      records.forEach((item, index) => {
+        html += `
+          <div class="record">
+            <div class="time">
+              <span>${item.time}</span>
+              <div class="opts">
+                <button class="btn-edit" onclick="editRecord(${index})">修改</button>
+                <button class="btn-del" onclick="delRecord(${index})">删除</button>
+              </div>
+            </div>
+            <div class="content">${escapeHtml(item.content)}</div>
           </div>
-        </div>
-        <div class="content">${escapeHtml(item.content)}</div>
-      </div>
-    `;
-  });
-}
+        `;
+      });
 
-// 编辑
-function editRecord(index) {
-  editIndex = index;
-  document.getElementById('input').value = records[index].content;
-  document.getElementById('cancelBtn').style.display = 'inline-block';
-  window.scrollTo({top:0, behavior:'smooth'});
-}
+      listEl.innerHTML = html;
+    }
 
-// 取消
-function cancelEdit() {
-  editIndex = -1;
-  document.getElementById('input').value = '';
-  document.getElementById('cancelBtn').style.display = 'none';
-}
+    /**
+     * 编辑记录
+     */
+    function editRecord(index) {
+      editIndex = index;
+      document.getElementById('input').value = records[index].content;
+      document.getElementById('cancelBtn').style.display = 'inline-block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
 
-// 删除
-function delRecord(index) {
-  if (!confirm('确定删除这条记录吗？')) return;
-  records.splice(index, 1);
-  localStorage.setItem('allRecords', JSON.stringify(records));
-  showRecords();
-}
+    /**
+     * 取消编辑
+     */
+    function cancelEdit() {
+      editIndex = -1;
+      document.getElementById('input').value = '';
+      document.getElementById('cancelBtn').style.display = 'none';
+    }
 
-// 安全转义
-function escapeHtml(str) {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
-}
-</script>
+    /**
+     * 删除单条记录
+     */
+    function delRecord(index) {
+      if (!confirm('确定删除这条记录吗？')) return;
+      records.splice(index, 1);
+      localStorage.setItem('allRecords', JSON.stringify(records));
+      showRecords();
+    }
+
+    /**
+     * HTML安全转义（防XSS）
+     */
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
 </body>
 </html>
