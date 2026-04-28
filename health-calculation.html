@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Axapri | BMI 健康计算</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f5f9ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #5a7b9c;
+            overflow-y: scroll;
+            scrollbar-width: none;
+        }
+        body::-webkit-scrollbar {
+            display: none;
+        }
+        .wrap {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 6px;
+            color: #5a7b9c;
+        }
+        .sub {
+            font-size: 14px;
+            color: #89a4c2;
+            margin-bottom: 30px;
+        }
+        .input-box {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 14px 18px;
+            border-radius: 16px;
+            border: 1px solid #cadcf0;
+            font-size: 16px;
+            text-align: center;
+            margin-bottom: 12px;
+            outline: none;
+            background: #fff;
+            color: #3b78c2;
+        }
+        input::placeholder {
+            color: #89a4c2;
+        }
+        .result-box {
+            background: #fff;
+            border-radius: 18px;
+            padding: 18px;
+            font-size: 15px;
+            line-height: 1.6;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(90,123,156,0.08);
+            margin-bottom: 26px;
+            min-height: 80px;
+            color: #5a7b9c;
+        }
+        .btn-box {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+            flex: 1;
+        }
+        .start-btn {
+            background: #3b78c2;
+            color: #fff;
+        }
+        .pause-btn {
+            background: #cadcf0;
+            color: #3b78c2;
+        }
+        .rule {
+            background: #fff;
+            border-radius: 18px;
+            padding: 18px;
+            font-size: 13px;
+            line-height: 1.7;
+            text-align: left;
+            box-shadow: 0 6px 20px rgba(90,123,156,0.08);
+            color: #5a7b9c;
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrap">
+    <h2 class="title">BMI 健康指数评估</h2>
+    <p class="sub">中国成人标准 · 医学级健康分析</p>
+
+    <div class="input-box">
+        <input id="h" placeholder="身高(m) 例如：1.75">
+        <input id="w" placeholder="体重(kg) 例如：65">
+    </div>
+
+    <div class="result-box" id="result">
+        请输入身高体重开始评估
+    </div>
+
+    <div class="btn-box">
+        <button class="start-btn" onclick="calcBMI()">开始评估</button>
+        <button class="pause-btn" onclick="clearAll()">清空重置</button>
+    </div>
+
+    <div class="rule">
+        <strong>📘 数据仅供参考，请遵循医生嘱咐</strong><br>
+        • BMI ＜ 18.5：偏瘦｜免疫力偏低、营养不足<br>
+        • 18.5 ≤ BMI ＜ 24：标准｜健康状态良好<br>
+        • 24 ≤ BMI ＜ 28：超重｜三高、脂肪肝风险提升<br>
+        • BMI ≥ 28：肥胖｜心脑血管、关节负担风险高
+    </div>
+</div>
+
+<script>
+const result = document.getElementById('result');
+const h = document.getElementById('h');
+const w = document.getElementById('w');
+
+function calcBMI() {
+    let height = parseFloat(h.value);
+    let weight = parseFloat(w.value);
+
+    if (!h.value || !w.value) {
+        result.innerText = "⚠️ 请输入身高和体重";
+        return;
+    }
+    if (height <= 0 || height > 2.5 || height < 0.5) {
+        result.innerText = "⚠️ 身高输入不正确，请输入 0.5~2.5 米";
+        return;
+    }
+    if (weight <= 0 || weight > 300 || weight < 10) {
+        result.innerText = "⚠️ 体重输入不正确，请输入 10~300 公斤";
+        return;
+    }
+
+    let bmi = (weight / (height * height)).toFixed(1);
+    let level;
+
+    if (bmi < 18.5) {
+        level = "偏瘦（低体重）";
+    } else if (bmi >= 18.5 && bmi < 24) {
+        level = "正常（健康体重）";
+    } else if (bmi >= 24 && bmi < 28) {
+        level = "超重（前期风险）";
+    } else {
+        level = "肥胖（高度风险）";
+    }
+
+    result.innerText = `BMI 指数：${bmi}\n身体等级：${level}`;
+}
+
+function clearAll() {
+    h.value = "";
+    w.value = "";
+    result.innerText = "请输入身高体重开始评估";
+}
+</script>
+</body>
+</html>
