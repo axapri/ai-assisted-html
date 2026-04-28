@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Axapri | 自由进制转换</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --dark: #1e293b;
+            --gray: #94a3b8;
+            --radius: 14px;
+        }
+
+        body {
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .card {
+            background: #fff;
+            width: 100%;
+            max-width: 580px;
+            border-radius: 22px;
+            padding: 32px 28px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 23px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+
+        .title i {
+            color: var(--primary);
+            font-size: 21px;
+        }
+
+        .label-row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--gray);
+            padding: 0 4px;
+        }
+        .label-row span {
+            flex: 1;
+        }
+
+        .select-row {
+            display: flex;
+            gap: 14px;
+            margin-bottom: 18px;
+        }
+
+        select {
+            flex: 1;
+            padding: 16px 14px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            background: #fafbfc;
+            font-size: 15px;
+            outline: none;
+        }
+        select:focus {
+            border-color: var(--primary);
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 18px 20px;
+            font-size: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            background: #fafbfc;
+            outline: none;
+            color: var(--dark);
+            margin-bottom: 20px;
+        }
+        .input-box:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 20px;
+            transition: 0.2s;
+        }
+        .btn:hover {
+            background: #4f46e5;
+        }
+
+        .result {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            font-size: 15px;
+            color: var(--dark);
+            min-height: 50px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            align-items: center;
+            justify-content: center;
+            font-weight: 500;
+            word-break: break-all;
+        }
+
+        .tip {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <div class="title">
+        <i class="fa fa-calculator"></i> 自由进制转换
+    </div>
+
+    <div class="label-row">
+        <span>源进制</span>
+        <span>目标进制</span>
+    </div>
+
+    <div class="select-row">
+        <select id="from">
+            <option value="2">二进制</option>
+            <option value="8">八进制</option>
+            <option value="10" selected>十进制</option>
+            <option value="16">十六进制</option>
+        </select>
+        <select id="to">
+            <option value="2">二进制</option>
+            <option value="8">八进制</option>
+            <option value="10">十进制</option>
+            <option value="16" selected>十六进制</option>
+        </select>
+    </div>
+
+    <input type="text" class="input-box" id="input" placeholder="输入数字">
+    
+    <button class="btn" onclick="convert()">开始转换</button>
+
+    <div class="result" id="result">结果将显示在这里</div>
+
+    <div class="tip">支持 2/8/10/16 任意互相转换 · 本地计算</div>
+</div>
+
+<script>
+const inputEl = document.getElementById('input');
+const resultEl = document.getElementById('result');
+
+inputEl.addEventListener('input', function() {
+    if (this.value.trim() === '') {
+        resultEl.innerText = '结果将显示在这里';
+    }
+});
+
+function convert() {
+    const from = parseInt(document.getElementById('from').value);
+    const to = parseInt(document.getElementById('to').value);
+    const val = inputEl.value.trim();
+
+    if (!val) {
+        resultEl.innerText = '请输入内容';
+        return;
+    }
+
+    try {
+        const dec = parseInt(val, from);
+        const res = dec.toString(to).toUpperCase();
+        resultEl.innerText = res;
+    } catch (e) {
+        resultEl.innerText = '输入格式错误';
+    }
+}
+</script>
+</body>
+</html>
