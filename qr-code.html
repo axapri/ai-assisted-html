@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Axapri | 二维码生成器</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --dark: #1e293b;
+            --gray: #94a3b8;
+            --radius: 12px;
+        }
+
+        body {
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .card {
+            background: #fff;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            padding: 32px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 24px;
+        }
+
+        .title i {
+            color: var(--primary);
+        }
+
+        textarea {
+            width: 100%;
+            height: 130px;
+            padding: 16px 18px;
+            font-size: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            background: #fafbfc;
+            outline: none;
+            color: var(--dark);
+            resize: none;
+            margin-bottom: 20px;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .generate {
+            width: 100%;
+            padding: 16px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .generate:hover {
+            background: #4f46e5;
+        }
+
+        #qrcode {
+            margin: 28px auto;
+            width: 220px;
+            height: 220px;
+            background: #fafbfc;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .tip {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="title">
+            <i class="fa fa-qrcode"></i> 二维码生成器
+        </div>
+
+        <textarea id="content" placeholder="输入文字、链接、内容"></textarea>
+
+        <button class="generate" onclick="makeCode()">生成二维码</button>
+
+        <div id="qrcode"></div>
+        <div class="tip">本地生成，安全无上传</div>
+    </div>
+
+    <script src="https://cdn.staticfile.org/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script>
+        let qrcode = new QRCode(document.getElementById("qrcode"), {
+            width: 200,
+            height: 200,
+            colorDark: "#6366f1",
+            colorLight: "#ffffff",
+        });
+
+        function makeCode() {
+            let text = document.getElementById("content").value.trim();
+            if (!text) {
+                alert("请输入内容");
+                return;
+            }
+            qrcode.makeCode(text);
+        }
+    </script>
+</body>
+</html>
