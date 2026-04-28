@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 记忆顺序</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f7f8fa;
+            color: #1f2937;
+            padding: 20px;
+        }
+
+        #game {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 22px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 17px;
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .label {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        .value {
+            font-weight: 600;
+            color: #374151;
+        }
+        .score { color: #3b82f6; }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+
+        .card {
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            cursor: pointer;
+            background: #e5e7eb;
+            position: relative;
+        }
+
+        .card.active {
+            background: #93c5fd;
+            transform: scale(0.96);
+        }
+
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.97);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            z-index: 99;
+        }
+
+        .title {
+            font-size: 30px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .desc {
+            font-size: 15px;
+            color: #6b7280;
+            max-width: 360px;
+            text-align: center;
+            line-height: 1.5;
+        }
+
+        .btn {
+            padding: 14px 36px;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+
+        .end {
+            display: none;
+        }
+
+        .final {
+            font-size: 44px;
+            font-weight: 700;
+            color: #3b82f6;
+        }
+    </style>
+</head>
+<body>
+
+<div id="game">
+    <div class="stats">
+        <div class="stat">
+            <span class="label">得分</span>
+            <span class="value score" id="score">0</span>
+        </div>
+        <div class="stat">
+            <span class="label">关卡</span>
+            <span class="value" id="level">1</span>
+        </div>
+        <div class="stat">
+            <span class="label">状态</span>
+            <span class="value" id="tip">等待开始</span>
+        </div>
+    </div>
+
+    <div class="board" id="board"></div>
+</div>
+
+<div class="overlay" id="start">
+    <div class="title">温柔光影 · 记忆顺序</div>
+    <div class="desc">记住色块亮起的顺序，按顺序点击。越往后越难，治愈又解压～</div>
+    <button class="btn" onclick="start()">开始游戏</button>
+</div>
+
+<div class="overlay end" id="over">
+    <div class="title">游戏结束</div>
+    <div class="final" id="final">0</div>
+    <button class="btn" onclick="restart()">再来一局</button>
+</div>
+
+<script>
+const board = document.getElementById('board');
+const scoreEl = document.getElementById('score');
+const levelEl = document.getElementById('level');
+const tipEl = document.getElementById('tip');
+const startOverlay = document.getElementById('start');
+const overOverlay = document.getElementById('over');
+
+const count = 9;
+let sequence = [];
+let player = [];
+let score = 0;
+let level = 1;
+let playing = false;
+
+// 创建九宫格
+function createBoard() {
+    board.innerHTML = '';
+    for(let i=0;i<count;i++){
+        const c = document.createElement('div');
+        c.className = 'card';
+        c.onclick = () => tap(i);
+        board.appendChild(c);
+    }
+}
+
+// 开始游戏
+function start() {
+    startOverlay.style.display = 'none';
+    overOverlay.style.display = 'none';
+    sequence = [];
+    player = [];
+    score = 0;
+    level = 1;
+    update();
+    next();
+}
+
+// 下一关
+function next() {
+    player = [];
+    sequence.push(Math.floor(Math.random()*count));
+    tipEl.textContent = '记忆顺序';
+    show();
+}
+
+// 展示顺序
+async function show() {
+    playing = false;
+    const cards = board.querySelectorAll('.card');
+    for(let n of sequence) {
+        await new Promise(r => setTimeout(r, 600));
+        cards[n].classList.add('active');
+        await new Promise(r => setTimeout(r, 500));
+        cards[n].classList.remove('active');
+    }
+    tipEl.textContent = '请点击';
+    playing = true;
+}
+
+// 玩家点击
+function tap(i) {
+    if(!playing) return;
+    player.push(i);
+    const cards = board.querySelectorAll('.card');
+    cards[i].classList.add('active');
+    setTimeout(()=>cards[i].classList.remove('active'),200);
+
+    if(player[player.length-1] !== sequence[player.length-1]){
+        end();
+        return;
+    }
+
+    if(player.length === sequence.length){
+        score += level * 10;
+        level++;
+        update();
+        setTimeout(next,800);
+    }
+}
+
+function update() {
+    scoreEl.textContent = score;
+    levelEl.textContent = level;
+}
+
+function end() {
+    playing = false;
+    document.getElementById('final').textContent = score;
+    overOverlay.style.display = 'flex';
+}
+
+function restart() { start(); }
+
+createBoard();
+</script>
+</body>
+</html>
