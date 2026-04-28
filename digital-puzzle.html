@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 数字拼图</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f7f8fa;
+            color: #1f2937;
+            padding: 20px;
+        }
+        #game {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 22px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.04);
+            padding: 36px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 17px;
+        }
+        .stat {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .label {
+            font-size: 13px;
+            color: #9ca3af;
+        }
+        .value {
+            font-weight: 600;
+            color: #374151;
+        }
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+        }
+        .item {
+            aspect-ratio: 1/1;
+            border-radius: 14px;
+            background: #e5e7eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 600;
+            color: #374151;
+            cursor: pointer;
+        }
+        .item.empty {
+            background: transparent;
+        }
+        .overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.97);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            z-index: 99;
+        }
+        .title {
+            font-size: 30px;
+            font-weight: 600;
+        }
+        .desc {
+            font-size: 15px;
+            color: #6b7280;
+            text-align: center;
+            max-width: 360px;
+        }
+        .btn {
+            padding: 14px 36px;
+            border-radius: 12px;
+            background: #3b82f6;
+            color: #fff;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .end {display: none;}
+    </style>
+</head>
+<body>
+<div id="game">
+    <div class="stats">
+        <div class="stat"><span class="label">步数</span><span class="value" id="step">0</span></div>
+        <div class="stat"><span class="label">状态</span><span class="value" id="tip">进行中</span></div>
+    </div>
+    <div class="board" id="board"></div>
+</div>
+
+<div class="overlay" id="start">
+    <div class="title">温柔光影 · 数字拼图</div>
+    <div class="desc">点击相邻方块移动，将数字按 1–8 顺序排列即可通关</div>
+    <button class="btn" onclick="initGame()">开始游戏</button>
+</div>
+<div class="overlay end" id="over">
+    <div class="title">拼图完成 ✨</div>
+    <div class="desc">总步数：<span id="finalStep">0</span></div>
+    <button class="btn" onclick="initGame()">再来一局</button>
+</div>
+
+<script>
+const board = document.getElementById('board');
+const stepEl = document.getElementById('step');
+const tipEl = document.getElementById('tip');
+const startOverlay = document.getElementById('start');
+const overOverlay = document.getElementById('over');
+
+let arr = [], emptyIdx = 8, step = 0;
+const target = [1,2,3,4,5,6,7,8,0];
+
+function initGame(){
+    startOverlay.style.display = 'none';
+    overOverlay.style.display = 'none';
+    step = 0;
+    stepEl.innerText = 0;
+    tipEl.innerText = '进行中';
+    arr = [1,2,3,4,5,6,7,8,0];
+    // 随机打乱
+    for(let i=0;i<30;i++){
+        const dirs = getMoveable(emptyIdx);
+        const r = dirs[Math.floor(Math.random()*dirs.length)];
+        [arr[emptyIdx], arr[r]] = [arr[r], arr[emptyIdx]];
+        emptyIdx = r;
+    }
+    render();
+}
+function getMoveable(idx){
+    let list = [];
+    let x = idx%3, y = Math.floor(idx/3);
+    if(y>0) list.push(idx-3);
+    if(y<2) list.push(idx+3);
+    if(x>0) list.push(idx-1);
+    if(x<2) list.push(idx+1);
+    return list;
+}
+function render(){
+    board.innerHTML = '';
+    arr.forEach((num,i)=>{
+        const d = document.createElement('div');
+        d.className = 'item' + (num===0?' empty':'');
+        d.innerText = num||'';
+        d.onclick = ()=>move(i);
+        board.appendChild(d);
+    });
+}
+function move(i){
+    const can = getMoveable(emptyIdx);
+    if(!can.includes(i)) return;
+    [arr[emptyIdx], arr[i]] = [arr[i], arr[emptyIdx]];
+    emptyIdx = i;
+    step++;
+    stepEl.innerText = step;
+    render();
+    checkWin();
+}
+function checkWin(){
+    if(arr.join('') === target.join('')){
+        tipEl.innerText = '已通关';
+        document.getElementById('finalStep').innerText = step;
+        setTimeout(()=>overOverlay.style.display='flex',400);
+    }
+}
+</script>
+</body>
+</html>
