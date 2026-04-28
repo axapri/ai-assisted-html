@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+    <title>Axapri | 字数统计</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --primary: #6366f1;
+            --dark: #1e293b;
+            --gray: #94a3b8;
+            --radius: 14px;
+        }
+
+        body {
+            background: #f1f5f9;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .card {
+            background: #fff;
+            width: 100%;
+            max-width: 580px;
+            border-radius: 22px;
+            padding: 32px 28px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.07);
+        }
+
+        .title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 23px;
+            font-weight: 600;
+            color: var(--dark);
+            margin-bottom: 12px;
+        }
+
+        .title i {
+            color: var(--primary);
+            font-size: 21px;
+        }
+
+        .word-limit {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 2px;
+        }
+        .over {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        textarea {
+            width: 100%;
+            height: 200px;
+            padding: 18px 20px;
+            font-size: 16px;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            background: #fafbfc;
+            outline: none;
+            color: var(--dark);
+            resize: none;
+            margin-bottom: 20px;
+            line-height: 1.5;
+
+            overflow: auto;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        textarea::-webkit-scrollbar {
+            display: none;
+        }
+
+        textarea:focus {
+            border-color: var(--primary);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 17px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: var(--radius);
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-bottom: 16px;
+            transition: 0.2s;
+        }
+
+        .btn:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        .result {
+            background: #fafbfc;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--radius);
+            padding: 14px 18px;
+            font-size: 14px;
+            color: var(--dark);
+            min-height: 40px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px 16px;
+            align-items: center;
+            justify-content: flex-start;
+        }
+
+        .result span {
+            white-space: nowrap;
+        }
+
+        .tip {
+            text-align: center;
+            font-size: 12px;
+            color: var(--gray);
+            margin-top: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="card">
+        <div class="title">
+            <i class="fa fa-file-text-o"></i> 字数统计工具
+        </div>
+
+        <div class="word-limit">
+            <span>已输入：<span id="current">0</span></span>
+            <span>上限：10000 字</span>
+        </div>
+
+        <textarea id="text" placeholder="粘贴或输入文字，最多 10000 字"></textarea>
+
+        <button class="btn" onclick="count()">开始统计</button>
+
+        <div class="result" id="result">统计结果将显示在这里</div>
+
+        <div class="tip">本地统计 · 10000字封顶 · 安全无上传</div>
+    </div>
+
+    <script>
+        const maxLimit = 10000;
+        const textEl = document.getElementById('text');
+        const currentEl = document.getElementById('current');
+
+        textEl.addEventListener('input', function () {
+            let val = textEl.value;
+            if (val.length > maxLimit) {
+                val = val.substring(0, maxLimit);
+                textEl.value = val;
+            }
+            currentEl.innerText = val.length;
+
+            if (val.length >= maxLimit) {
+                currentEl.classList.add('over');
+            } else {
+                currentEl.classList.remove('over');
+            }
+        });
+
+        function count() {
+            let str = textEl.value;
+            if (!str.trim()) {
+                document.getElementById("result").innerText = "请输入内容";
+                return;
+            }
+
+            let total = str.length;
+            let chinese = (str.match(/[\u4e00-\u9fa5]/g) || []).length;
+            let english = (str.match(/[a-zA-Z]/g) || []).length;
+            let number = (str.match(/[0-9]/g) || []).length;
+            let noSpace = str.replace(/\s/g, "").length;
+
+            document.getElementById("result").innerHTML = `
+                <span>全部字符：${total}</span>
+                <span>不含空格：${noSpace}</span>
+                <span>中文字符：${chinese}</span>
+                <span>英文字符：${english}</span>
+                <span>数字字符：${number}</span>
+            `;
+        }
+    </script>
+</body>
+</html>
