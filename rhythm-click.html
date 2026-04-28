@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 节奏点击</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f7f8fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        #game {
+            width:100%;
+            max-width:580px;
+            background:#fff;
+            border-radius:22px;
+            box-shadow:0 8px 30px rgba(0,0,0,0.04);
+            padding:36px;
+            display:flex;
+            flex-direction:column;
+            gap:30px;
+        }
+        .stats {
+            display:flex;
+            justify-content:space-between;
+        }
+        .s-label {font-size:13px;color:#9ca3af;}
+        .s-val {font-weight:600;color:#374151;}
+        .grid {
+            display:grid;
+            grid-template-columns:repeat(3,1fr);
+            gap:14px;
+        }
+        .dot {
+            aspect-ratio:1/1;
+            background:#e5e7eb;
+            border-radius:14px;
+            transition:0.25s;
+            cursor:pointer;
+        }
+        .dot.active {
+            background:#93c5fd;
+            transform:scale(0.96);
+        }
+        .overlay {
+            position:fixed;
+            inset:0;
+            background:rgba(255,255,255,0.97);
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            gap:24px;
+            z-index:99;
+        }
+        .btn {
+            padding:14px 36px;
+            background:#3b82f6;
+            color:#fff;
+            border:none;
+            border-radius:12px;
+            font-size:16px;
+        }
+        .end {display:none;}
+    </style>
+</head>
+<body>
+<div id="game">
+    <div class="stats">
+        <div><div class="s-label">得分</div><div class="s-val" id="score">0</div></div>
+        <div><div class="s-label">剩余时间</div><div class="s-val" id="time">30</div></div>
+    </div>
+    <div class="grid" id="grid"></div>
+</div>
+
+<div class="overlay" id="start">
+    <div style="font-size:30px;font-weight:600">节奏点击</div>
+    <div style="color:#6b7280;max-width:360px;text-align:center">快速点击亮起的方块，30秒内尽可能拿高分</div>
+    <button class="btn" onclick="startGame()">开始游戏</button>
+</div>
+<div class="overlay end" id="over">
+    <div style="font-size:30px;font-weight:600">游戏结束</div>
+    <div style="font-size:24px;color:#3b82f6">最终得分：<span id="f-score">0</span></div>
+    <button class="btn" onclick="startGame()">再来一局</button>
+</div>
+
+<script>
+const grid = document.getElementById('grid');
+let score = 0, time = 30;
+let timer, clickTimer;
+
+function initGrid(){
+    grid.innerHTML = '';
+    for(let i=0;i<9;i++){
+        const d = document.createElement('div');
+        d.className = 'dot';
+        d.onclick = ()=>hit(d);
+        grid.appendChild(d);
+    }
+}
+function startGame(){
+    document.getElementById('start').style.display='none';
+    document.getElementById('over').style.display='none';
+    score = 0; time = 30;
+    document.getElementById('score').innerText = score;
+    document.getElementById('time').innerText = time;
+    initGrid();
+    timer = setInterval(()=>{
+        time--;
+        document.getElementById('time').innerText = time;
+        if(time<=0) gameOver();
+    },1000);
+    loopLight();
+}
+function loopLight(){
+    const dots = document.querySelectorAll('.dot');
+    dots.forEach(d=>d.classList.remove('active'));
+    const r = Math.floor(Math.random()*9);
+    dots[r].classList.add('active');
+    clickTimer = setTimeout(loopLight, 700);
+}
+function hit(el){
+    if(el.classList.contains('active')){
+        score+=5;
+        document.getElementById('score').innerText = score;
+        el.classList.remove('active');
+    }
+}
+function gameOver(){
+    clearInterval(timer);
+    clearTimeout(clickTimer);
+    document.getElementById('f-score').innerText = score;
+    document.getElementById('over').style.display='flex';
+}
+initGrid();
+</script>
+</body>
+</html>
