@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Axapri | 金额大写转换</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: system-ui, -apple-system, sans-serif; }
+        body { background:#f5f9ff; min-height:100vh; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:20px; color:#5a7b9c; overflow-y:scroll; scrollbar-width:none; }
+        body::-webkit-scrollbar { display:none; }
+        .wrap { width:100%; max-width:440px; text-align:center; padding-bottom:20px; }
+        .title { font-size:22px; font-weight:500; margin-bottom:6px; color:#5a7b9c; }
+        .sub { font-size:14px; color:#89a4c2; margin-bottom:30px; }
+        input { width:100%; padding:14px 18px; border-radius:16px; border:1px solid #cadcf0; font-size:16px; text-align:center; margin-bottom:12px; outline:none; background:#fff; color:#3b78c2; }
+        input::placeholder { color:#89a4c2; }
+        .result-box { background:#fff; border-radius:18px; padding:18px; font-size:15px; line-height:1.6; text-align:center; box-shadow:0 6px 20px rgba(90,123,156,0.08); margin-bottom:26px; min-height:80px; color:#5a7b9c; }
+        .btn-box { display:flex; gap:15px; justify-content:center; margin-bottom:30px; }
+        button { padding:12px 28px; border-radius:30px; border:none; font-size:16px; cursor:pointer; transition:0.2s; flex:1; }
+        .start-btn { background:#3b78c2; color:#fff; }
+        .pause-btn { background:#cadcf0; color:#3b78c2; }
+        .rule { background:#fff; border-radius:18px; padding:18px; font-size:13px; line-height:1.7; text-align:left; box-shadow:0 6px 20px rgba(90,123,156,0.08); color:#5a7b9c; }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <h2 class="title">金额大写转换</h2>
+    <p class="sub">财务报销 / 填写票据专用</p>
+    <input id="num" placeholder="输入金额 例如：1234.56" type="number">
+    <div class="result-box" id="result">请输入金额</div>
+    <div class="btn-box">
+        <button class="start-btn" onclick="toUpper()">转换大写</button>
+        <button class="pause-btn" onclick="clearAll()">清空重置</button>
+    </div>
+    <div class="rule">
+        <strong>📘 财务专用工具</strong><br>
+        • 支持整数、小数自动转换<br>
+        • 适用于发票、支票、报销单填写<br>
+        • 结果标准规范，直接复制使用
+    </div>
+</div>
+<script>
+function toUpper(){
+    const digit = ['零','壹','贰','叁','肆','伍','陆','柒','捌','玖'];
+    let val = document.getElementById('num').value.trim();
+    val = parseFloat(val);
+    if(isNaN(val) || val < 0){
+        document.getElementById('result').innerText = '⚠️ 请输入正确金额';
+        return;
+    }
+
+    let yuan = Math.floor(val);
+    let jiao = Math.floor(val * 10 % 10);
+    let fen = Math.floor(val * 100 % 10);
+    let str = yuan.toString();
+    let res = '';
+
+    // 整数部分转换
+    for(let i=0;i<str.length;i++){
+        let n = str[i];
+        let u = str.length - i - 1;
+        let unit = '';
+        if(u === 0) unit = '元';
+        else if(u === 1) unit = '拾';
+        else if(u === 2) unit = '佰';
+        else if(u === 3) unit = '仟';
+        else if(u === 4) unit = '万';
+        res += digit[n] + unit;
+    }
+    if(yuan === 0) res = '零元';
+
+    // 小数部分
+    if(jiao === 0 && fen === 0){
+        res += '整';
+    }else{
+        if(jiao !== 0) res += digit[jiao] + '角';
+        else res += '零';
+        if(fen !== 0) res += digit[fen] + '分';
+    }
+
+    document.getElementById('result').innerText = res;
+}
+function clearAll(){
+    document.getElementById('num').value = '';
+    document.getElementById('result').innerText = '请输入金额';
+}
+</script>
+</body>
+</html>
