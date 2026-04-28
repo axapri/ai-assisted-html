@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Axapri | 肺部呼吸训练</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        body {
+            background: #f5f9ff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #5a7b9c;
+            overflow-y: scroll;
+            scrollbar-width: none; 
+        }
+        body::-webkit-scrollbar {
+            display: none; 
+        }
+        .wrap {
+            width: 100%;
+            max-width: 440px;
+            text-align: center;
+            padding-bottom: 20px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .sub {
+            font-size: 14px;
+            color: #89a4c2;
+            margin-bottom: 30px;
+        }
+        .breath-ball {
+            width: 240px;
+            height: 240px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #c0dfff, #a1c8f5);
+            box-shadow: 0 0 40px rgba(161, 200, 245, 0.45);
+            margin: 0 auto 30px;
+        }
+        .breath-ball.run {
+            animation: breathLoop 12s linear infinite;
+        }
+        @keyframes breathLoop {
+            0%   { transform: scale(0.82); }
+            33%  { transform: scale(1.15); }
+            50%  { transform: scale(1.15); }
+            100% { transform: scale(0.82); }
+        }
+        .guide-text {
+            font-size: 26px;
+            font-weight: 500;
+            margin-bottom: 10px;
+        }
+        .count-num {
+            font-size: 38px;
+            color: #3b78c2;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+        .btn-box {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        button {
+            padding: 12px 28px;
+            border-radius: 30px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .start-btn {
+            background: #3b78c2;
+            color: #fff;
+        }
+        .pause-btn {
+            background: #cadcf0;
+            color: #3b78c2;
+        }
+        .time-info {
+            display: flex;
+            justify-content: space-around;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .time-info span {
+            display: block;
+            font-size: 19px;
+            font-weight: 600;
+            color: #3b78c2;
+        }
+        .rule {
+            background: #fff;
+            border-radius: 18px;
+            padding: 18px;
+            font-size: 13px;
+            line-height: 1.7;
+            text-align: left;
+            box-shadow: 0 6px 20px rgba(90,123,156,0.08);
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <h2 class="title">肺部康复 · 科学呼吸训练</h2>
+        <p class="sub">医学标准 4-2-6 专业呼吸法</p>
+
+        <div class="breath-ball" id="ball"></div>
+
+        <div class="guide-text" id="guideTxt">准备开始</div>
+        <div class="count-num" id="countNum">--</div>
+
+        <div class="btn-box">
+            <button class="start-btn" id="startBtn">开始训练</button>
+            <button class="pause-btn" id="pauseBtn">暂停</button>
+        </div>
+
+        <div class="time-info">
+            <div>本轮周期<span id="roundTime">00:00</span></div>
+            <div>总训练时长<span id="totalTime">00:00</span></div>
+        </div>
+
+        <div class="rule">
+            <strong>📘 系网络查询，请遵循医生嘱咐</strong><br>
+            1. 坐姿端正、放松肩颈、用鼻子缓慢吸气<br>
+            2. 球体放大：<strong>吸气 4秒</strong>，腹部自然隆起<br>
+            3. 球体静止：<strong>屏息 2秒</strong>，让氧气充分交换<br>
+            4. 球体缩小：<strong>呼气 6秒</strong>，彻底排空肺部残气<br>
+            ✅ 功效：提升肺活量、改善气短、舒缓焦虑、助眠<br>
+            ⚠️ 禁忌：哮喘发作、严重心肺疾病请勿练习
+        </div>
+    </div>
+
+    <script>
+        const ball = document.getElementById('ball');
+        const guideTxt = document.getElementById('guideTxt');
+        const countNum = document.getElementById('countNum');
+        const roundTime = document.getElementById('roundTime');
+        const totalTime = document.getElementById('totalTime');
+
+        let timer = null;
+        let totalTimer = null;
+        let isRun = false;
+        let totalSec = 0;
+        let curSec = 0;
+
+        const IN = 4;
+        const HOLD = 2;
+        const OUT = 6;
+        const CYCLE = IN + HOLD + OUT;
+
+        function fmtTime(s) {
+            let m = Math.floor(s / 60);
+            let ss = s % 60;
+            return `${String(m).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+        }
+
+        function breathLoop() {
+            let left;
+            if (curSec < IN) {
+                guideTxt.innerText = "🌬️ 吸气 4秒";
+                left = IN - curSec;
+            } else if (curSec < IN + HOLD) {
+                guideTxt.innerText = "⏸️ 屏息 2秒";
+                left = IN + HOLD - curSec;
+            } else {
+                guideTxt.innerText = "💨 呼气 6秒";
+                left = CYCLE - curSec;
+            }
+            
+            countNum.innerText = left;
+            roundTime.innerText = fmtTime(curSec);
+
+            curSec++;
+            if (curSec >= CYCLE) {
+                curSec = 0;
+            }
+        }
+
+        function start() {
+            if (isRun) return;
+            isRun = true;
+
+            // 完全重置从头开始
+            curSec = 0;
+
+            ball.classList.add('run');
+            breathLoop();
+            timer = setInterval(breathLoop, 1000);
+            totalTimer = setInterval(() => {
+                totalSec++;
+                totalTime.innerText = fmtTime(totalSec);
+            }, 1000);
+        }
+
+        function pause() {
+            isRun = false;
+            ball.classList.remove('run');
+            clearInterval(timer);
+            clearInterval(totalTimer);
+            guideTxt.innerText = "已暂停";
+            countNum.innerText = "--";
+        }
+
+        document.getElementById('startBtn').addEventListener('click', start);
+        document.getElementById('pauseBtn').addEventListener('click', pause);
+    </script>
+</body>
+</html>
