@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axapri | 页面索引</title>
+    <title>Axapri | 个人导航</title>
     <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <!-- 引入图标库 -->
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -18,41 +20,93 @@
             line-height: 1.6;
             color: #24292f;
             background-color: #ffffff;
-            max-width: 720px;
+            max-width: 800px;
             margin: 0 auto;
             padding: 60px 20px;
         }
 
-        h1 {
+        .header {
+            margin-bottom: 40px;
+        }
+
+        .main-title {
             font-size: 2em;
-            font-weight: 600;
+            font-weight: 700;
+            color: #ae3333;
             margin-bottom: 8px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #ae3333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .main-title i {
+            font-size: 1.1em;
         }
 
         .subtitle {
             color: #6b7280;
-            margin-bottom: 32px;
             font-size: 1em;
         }
 
-        ul {
-            list-style: none;
+        /* 分类容器 */
+        .category {
             margin-bottom: 40px;
         }
 
-        li {
-            margin-bottom: 12px;
+        /* 分类标题 + 图标 */
+        .category-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 4px solid #ae3333;
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        /* 图标颜色 */
+        .category-title i {
+            color: #ae3333;
+            font-size: 1.1rem;
+            width: 16px;
+            text-align: center;
+        }
+
+        /* 网格布局 */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px 20px;
+        }
+
+        .grid li {
+            list-style: none;
+            margin: 0;
+        }
+
+        /* 链接样式 */
         a {
-            color: #0969da;
+            color: #ae3333;
             text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
         }
 
         a:hover {
             text-decoration: underline;
+        }
+
+        /* 链接小图标 */
+        a i {
+            font-size: 0.85rem;
+            color: #ae3333;
+            opacity: 0.8;
         }
 
         footer {
@@ -60,46 +114,76 @@
             font-size: 0.875em;
             padding-top: 24px;
             border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>个人页面索引</h1>
-    <p class="subtitle">以下是我的学习与展示页面列表</p>
+    <!-- 文艺干净风标题 -->
+    <div class="header">
+        <h1 class="main-title">
+            <i class="fa-solid fa-folder-open"></i>个人导航页
+        </h1>
+        <p class="subtitle">记录学习与创作的小站</p>
+    </div>
 
-    <ul>
-        <li><a href="digital-piano.html">Axapri | 数字钢琴</a></li>
-        <li><a href="start-page.html">Axapri | 极简起始页</a></li>
-        <li><a href="birthday-wishes.html">Axapri | 生日祝福</a></li>
-        <li><a href="color-block-matching.html">Axapri | 色块配对</a></li>
-        <li><a href="block-dodge.html">Axapri | 方块闪避</a></li>
-        <li><a href="memory-sequence.html">Axapri | 记忆顺序</a></li>
-        <li><a href="digital-puzzle.html">Axapri | 数字拼图</a></li>
-        <li><a href="rhythm-click.html">Axapri | 节奏点击</a></li>
-        <li><a href="tic-tac-toe.html">Axapri | 井字棋</a></li>
-        <li><a href="gomoku.html">Axapri | 五子棋</a></li>
-        <li><a href="reversi.html">Axapri | 黑白棋</a></li>
-        <li><a href="minesweeper.html">Axapri | 扫雷</a></li>
-        <li><a href="chinese-chess.html">Axapri | 中国象棋</a></li>
-        <li><a href="encryption-decryption.html">Axapri | 加密解密</a></li>
-        <li><a href="password-generation.html">Axapri | 密码生成</a></li>
-        <li><a href="image-compression.html">Axapri | 图片压缩</a></li>
-        <li><a href="compression-decompression.html">Axapri | 压缩解压</a></li>
-        <li><a href="format-conversion.html">Axapri | 格式转换</a></li>
-        <li><a href="calculator.html">Axapri | 计算器</a></li>
-        <li><a href="math-calculator.html">Axapri | 数学计算器</a></li> 
-        <li><a href="qr-code.html">Axapri | 二维码生成</a></li> 
-        <li><a href="word-count.html">Axapri | 字数统计</a></li> 
-        <li><a href="base-conversion.html">Axapri | 进制转换</a></li> 
-        <li><a href="countdown-timer.html">Axapri | 倒计时器</a></li> 
-        <li><a href="age-calculator.html">Axapri | 年龄计算器</a></li> 
-        <li><a href="random-draw.html">Axapri | 随机抽签器</a></li> 
-         <li><a href="renminbi-conversion.html">Axapri | 金额大写转换</a></li> 
-        <li><a href="breathing-training.html">Axapri | 肺部呼吸训练</a></li>
-        <li><a href="health-calculation.html">Axapri | BMI 健康计算</a></li>
-        <li><a href="https://axapri.rth1.xyz/">Axapri | 网址测试</a></li>
-        <li><a href="404.html">Axapri | 页面失踪</a></li>
-    </ul>
+    <!-- 日常工具 -->
+    <div class="category">
+        <div class="category-title">
+            <i class="fa-solid fa-screwdriver-wrench"></i>日常工具
+        </div>
+        <ul class="grid">
+			<li><a href="start-page.html"><i class="fa-solid fa-house"></i>极简起始页</a></li>
+            <li><a href="calculator.html"><i class="fa-solid fa-calculator"></i>计算器</a></li>
+            <li><a href="math-calculator.html"><i class="fa-solid fa-square-root-variable"></i>数学计算器</a></li>
+            <li><a href="qr-code.html"><i class="fa-solid fa-qrcode"></i>二维码生成</a></li>
+            <li><a href="word-count.html"><i class="fa-solid fa-file-lines"></i>字数统计</a></li>
+            <li><a href="base-conversion.html"><i class="fa-solid fa-exchange"></i>进制转换</a></li>
+            <li><a href="countdown-timer.html"><i class="fa-solid fa-hourglass-half"></i>倒计时器</a></li>
+            <li><a href="age-calculator.html"><i class="fa-solid fa-cake-candles"></i>年龄计算器</a></li>
+            <li><a href="random-draw.html"><i class="fa-solid fa-shuffle"></i>随机抽签器</a></li>
+            <li><a href="renminbi-conversion.html"><i class="fa-solid fa-money-bill"></i>金额大写转换</a></li>
+            <li><a href="encryption-decryption.html"><i class="fa-solid fa-lock"></i>加密解密</a></li>
+            <li><a href="password-generation.html"><i class="fa-solid fa-key"></i>密码生成</a></li>
+            <li><a href="image-compression.html"><i class="fa-solid fa-image"></i>图片压缩</a></li>
+            <li><a href="compression-decompression.html"><i class="fa-solid fa-file-zipper"></i>压缩解压</a></li>
+            <li><a href="format-conversion.html"><i class="fa-solid fa-file"></i>格式转换</a></li>
+            <li><a href="breathing-training.html"><i class="fa-solid fa-lungs"></i>肺部呼吸训练</a></li>
+            <li><a href="health-calculation.html"><i class="fa-solid fa-heart-pulse"></i>BMI 健康计算</a></li>
+			<li><a href="birthday-wishes.html"><i class="fa-solid fa-gift"></i>生日祝福</a></li>
+        </ul>
+    </div>
+
+    <!-- 解压游戏 -->
+    <div class="category">
+        <div class="category-title">
+            <i class="fa-solid fa-gamepad"></i>解压游戏
+        </div>
+        <ul class="grid">
+            <li><a href="digital-piano.html"><i class="fa-solid fa-music"></i>数字钢琴</a></li>
+            <li><a href="color-block-matching.html"><i class="fa-solid fa-palette"></i>色块配对</a></li>
+            <li><a href="block-dodge.html"><i class="fa-solid fa-person-running"></i>方块闪避</a></li>
+            <li><a href="memory-sequence.html"><i class="fa-solid fa-brain"></i>记忆顺序</a></li>
+            <li><a href="digital-puzzle.html"><i class="fa-solid fa-puzzle-piece"></i>数字拼图</a></li>
+            <li><a href="rhythm-click.html"><i class="fa-solid fa-hand-pointer"></i>节奏点击</a></li>
+            <li><a href="tic-tac-toe.html"><i class="fa-solid fa-grip"></i>井字棋</a></li>
+            <li><a href="gomoku.html"><i class="fa-solid fa-chess-board"></i>五子棋</a></li>
+            <li><a href="reversi.html"><i class="fa-solid fa-circle"></i>黑白棋</a></li>
+            <li><a href="minesweeper.html"><i class="fa-solid fa-bomb"></i>扫雷</a></li>
+            <li><a href="chinese-chess.html"><i class="fa-solid fa-chess-knight"></i>中国象棋</a></li>
+        </ul>
+    </div>
+
+    <!-- 网站开发 -->
+    <div class="category">
+        <div class="category-title">
+            <i class="fa-solid fa-code"></i>网站开发
+        </div>
+        <ul class="grid">
+            <li><a href="https://axapri.rth1.xyz/"><i class="fa-solid fa-link"></i>网址测试</a></li>
+            <li><a href="404.html"><i class="fa-solid fa-triangle-exclamation"></i>页面失踪</a></li>
+        </ul>
+    </div>
 
     <footer>
         <p>© 2026 个人学习使用</p>
