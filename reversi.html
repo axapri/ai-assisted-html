@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 黑白棋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: all 0.2s ease;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f9fafb;
+            padding: 20px;
+        }
+        #game {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #status {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+        #board {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 2px;
+        }
+        .cell {
+            aspect-ratio: 1;
+            background: #e5e7eb;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+        }
+        .cell:hover:not(.black):not(.white) {
+            background: #d1d5db;
+            transform: scale(1.05);
+        }
+        .black {
+            background: #222 !important;
+        }
+        .white {
+            background: white !important;
+            border: 1px solid #d1d5db;
+        }
+        .btn {
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        #start {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 100;
+        }
+        .title {
+            font-size: 32px;
+            font-weight: 600;
+        }
+        /* 规则样式 */
+        .rule {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+            text-align: left;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div id="game">
+    <div id="status">轮到：黑棋</div>
+    <div id="board"></div>
+    <button class="btn" onclick="restart()">重新开始</button>
+
+    <!-- 游戏规则 直接写在界面上 -->
+    <div class="rule">
+    <strong>黑白棋规则：</strong><br>
+    1. 黑棋先行，必须下在能夹住对方棋子的位置<br>
+    2. 横/竖/斜夹住的对方棋子会全部翻转成你的颜色<br>
+    3. 无可落子位置则自动跳过回合<br>
+    4. 棋盘下满或双方无子可下时，棋子多的一方获胜
+    </div>
+</div>
+
+<div id="start">
+    <div class="title">黑白棋</div>
+    <button class="btn" onclick="startGame()">开始游戏</button>
+</div>
+
+<script>
+let size = 8;
+let board, player, gameOver;
+
+function $(id) { return document.getElementById(id); }
+
+function startGame() {
+    $("start").style.display = "none";
+    init();
+}
+
+function init() {
+    board = Array(size * size).fill(null);
+    const mid = size / 2 - 1;
+    board[mid * size + mid] = "white";
+    board[mid * size + (mid + 1)] = "black";
+    board[(mid + 1) * size + mid] = "black";
+    board[(mid + 1) * size + (mid + 1)] = "white";
+    player = "black";
+    gameOver = false;
+    update();
+    render();
+}
+
+function render() {
+    let b = $("board");
+    b.innerHTML = "";
+    board.forEach((v, i) => {
+        let c = document.createElement("div");
+        c.classList.add("cell");
+        if (v) c.classList.add(v);
+        c.onclick = () => click(i);
+        b.appendChild(c);
+    });
+}
+
+function update() {
+    let b = board.filter(x => x === "black").length;
+    let w = board.filter(x => x === "white").length;
+    $("status").innerText = gameOver
+        ? `结束 | 黑：${b} 白：${w} | 胜利：${b > w ? "黑棋" : "白棋"}`
+        : `轮到：${player === "black" ? "黑棋" : "白棋"} | 黑：${b} 白：${w}`;
+}
+
+function click(i) {
+    if (gameOver || board[i]) return;
+    let flipped = getFlipped(i);
+    if (flipped.length === 0) return;
+
+    board[i] = player;
+    flipped.forEach(x => board[x] = player);
+
+    player = player === "black" ? "white" : "black";
+    if (getAllMoves(player).length === 0) {
+        player = player === "black" ? "white" : "black";
+        if (getAllMoves(player).length === 0) {
+            gameOver = true;
+        }
+    }
+    update();
+    render();
+}
+
+function getFlipped(idx) {
+    let res = [];
+    const x = idx % size;
+    const y = Math.floor(idx / size);
+    const dirs = [[-1,-1],[-1,0],[-1,1],[0,-1],[0,1],[1,-1],[1,0],[1,1]];
+    for (let [dx, dy] of dirs) {
+        let cx = x + dx, cy = y + dy;
+        let temp = [];
+        while (cx >= 0 && cx < size && cy >= 0 && cy < size) {
+            let i = cy * size + cx;
+            if (!board[i]) break;
+            if (board[i] === player) {
+                res.push(...temp); break;
+            }
+            temp.push(i);
+            cx += dx; cy += dy;
+        }
+    }
+    return res;
+}
+
+function getAllMoves(p) {
+    return board.map((_, i) => getFlipped(i).length > 0 ? i : -1).filter(x => x !== -1);
+}
+
+function restart() {
+    location.reload();
+}
+</script>
+</body>
+</html>
