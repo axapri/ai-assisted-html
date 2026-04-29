@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 中国象棋</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+            transition: all 0.2s ease;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f9fafb;
+            padding: 20px;
+        }
+        #game {
+            width: 100%;
+            max-width: 400px;
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.04);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #status {
+            text-align: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: #2563eb;
+        }
+
+        /* 主棋盘容器：上下分块 + 楚河汉界 */
+        #board {
+            display: flex;
+            flex-direction: column;
+            background: #d7b97e;
+            padding: 6px;
+            border-radius: 8px;
+            gap: 6px;
+        }
+
+        /* 上半区（黑方）*/
+        .board-top {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+        }
+
+        /* 楚河汉界分隔条 */
+        .river {
+            height: 26px;
+            background: #e6c992;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #6d4c41;
+            font-weight: 600;
+            letter-spacing: 6px;
+        }
+
+        /* 下半区（红方）*/
+        .board-bottom {
+            display: grid;
+            grid-template-columns: repeat(9, 1fr);
+            gap: 2px;
+        }
+
+        /* ✅ 经典象棋棋盘配色 */
+        .cell {
+            aspect-ratio: 1;
+            background: #fdf6e9;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 16px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .cell:nth-child(2n) {
+            background: #f5e8c9;
+        }
+        .cell:hover:not(.selected) {
+            background: #fff1d7 !important;
+        }
+        .cell.selected {
+            background: #2563eb !important;
+            color: white !important;
+        }
+        .red { color: #e53935; }
+        .black { color: #222; }
+        .btn {
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: #2563eb;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background: #1d4ed8;
+            transform: translateY(-1px);
+        }
+        #start {
+            position: fixed;
+            inset: 0;
+            background: rgba(255,255,255,0.98);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 24px;
+            z-index: 100;
+        }
+        .title {
+            font-size: 32px;
+            font-weight: 600;
+        }
+        .rule {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.5;
+            text-align: left;
+            padding-top: 8px;
+        }
+    </style>
+</head>
+<body>
+<div id="game">
+    <div id="status">轮到：红方</div>
+    <div id="board"></div>
+    <button class="btn" onclick="restart()">重新开始</button>
+
+    <div class="rule">
+    <strong>完整象棋规则：</strong><br>
+    1. 红先黑后，点击棋子选中，再点击目标位置移动<br>
+    2. 帅/将仅在九宫中心可斜走，其他位置只能横竖走一格<br>
+    3. 帅将不可直接对面<br>
+    4. 马走日（蹩马腿）、象走田（塞象眼）<br>
+    5. 炮移动同车，吃子必须隔一子<br>
+    6. 兵未过河只能前走，过河可左右走，不可后退<br>
+    7. 将死对方帅/将 或 对方困毙 → 获胜
+    </div>
+</div>
+
+<div id="start">
+    <div class="title">中国象棋</div>
+    <button class="btn" onclick="startGame()">开始游戏</button>
+</div>
+
+<script>
+const ROWS = 10;
+const COLS = 9;
+let board = [];
+let currentPlayer = "red";
+let selected = null;
+let gameOver = false;
+
+function $(id) { return document.getElementById(id); }
+
+const RED_LIST = ["帥", "仕", "相", "傌", "俥", "炮", "兵"];
+const BLACK_LIST = ["將", "士", "象", "馬", "車", "砲", "卒"];
+
+function startGame() {
+    $("start").style.display = "none";
+    initBoard();
+    render();
+}
+
+function initBoard() {
+    board = Array(ROWS * COLS).fill('　');
+    
+    // 黑方（上方）
+    board[0] = "車"; board[1] = "馬"; board[2] = "象"; board[3] = "士"; board[4] = "將"; board[5] = "士"; board[6] = "象"; board[7] = "馬"; board[8] = "車";
+    board[2*9 + 1] = "砲"; board[2*9 + 7] = "砲";
+    board[3*9 + 0] = "卒"; board[3*9 + 2] = "卒"; board[3*9 + 4] = "卒"; board[3*9 + 6] = "卒"; board[3*9 + 8] = "卒";
+
+    // 红方（下方）
+    board[9*9 + 0] = "俥"; board[9*9 + 1] = "傌"; board[9*9 + 2] = "相"; board[9*9 + 3] = "仕"; board[9*9 + 4] = "帥"; board[9*9 + 5] = "仕"; board[9*9 + 6] = "相"; board[9*9 + 7] = "傌"; board[9*9 + 8] = "俥";
+    board[7*9 + 1] = "炮"; board[7*9 + 7] = "炮";
+    board[6*9 + 0] = "兵"; board[6*9 + 2] = "兵"; board[6*9 + 4] = "兵"; board[6*9 + 6] = "兵"; board[6*9 + 8] = "兵";
+}
+
+// 带楚河汉界的渲染
+function render() {
+    const b = $("board");
+    b.innerHTML = "";
+
+    // 上半部分 5行
+    const top = document.createElement("div");
+    top.className = "board-top";
+    for (let i = 0; i < 5 * 9; i++) addCell(top, i);
+    b.appendChild(top);
+
+    // 楚河汉界
+    const river = document.createElement("div");
+    river.className = "river";
+    river.textContent = "楚 河 汉 界";
+    b.appendChild(river);
+
+    // 下半部分 5行
+    const bottom = document.createElement("div");
+    bottom.className = "board-bottom";
+    for (let i = 5 * 9; i < 10 * 9; i++) addCell(bottom, i);
+    b.appendChild(bottom);
+}
+
+function addCell(container, i) {
+    const c = document.createElement("div");
+    c.classList.add("cell");
+    if (selected === i) c.classList.add("selected");
+    c.textContent = board[i];
+    if (board[i] !== '　') {
+        c.classList.add(RED_LIST.includes(board[i]) ? "red" : "black");
+    }
+    c.onclick = () => click(i);
+    container.appendChild(c);
+}
+
+function click(i) {
+    if (gameOver) return;
+    const p = board[i];
+
+    if (!selected) {
+        if (p === '　') return;
+        const isRed = RED_LIST.includes(p);
+        if ((currentPlayer === "red" && !isRed) || (currentPlayer === "black" && isRed)) return;
+        selected = i;
+        render();
+        return;
+    }
+
+    if (isValidMove(selected, i)) {
+        const target = board[i];
+        board[i] = board[selected];
+        board[selected] = '　';
+
+        if (target === "將" || target === "帥") {
+            gameOver = true;
+        }
+        currentPlayer = currentPlayer === "red" ? "black" : "red";
+        checkLossByNoMove();
+    }
+
+    selected = null;
+    updateStatus();
+    render();
+}
+
+function isValidMove(from, to) {
+    const f = board[from];
+    const t = board[to];
+    const fx = from % COLS, fy = Math.floor(from / COLS);
+    const tx = to % COLS, ty = Math.floor(to / COLS);
+    const isRed = RED_LIST.includes(f);
+
+    if (t !== '　') {
+        const tIsRed = RED_LIST.includes(t);
+        if (isRed === tIsRed) return false;
+    }
+
+    let ok = false;
+    switch (f) {
+        case '帥': case '將': {
+            const palaceY = isRed ? [7,8,9] : [0,1,2];
+            if (![3,4,5].includes(tx) || !palaceY.includes(ty)) return false;
+            const dx = Math.abs(fx - tx);
+            const dy = Math.abs(fy - ty);
+            if (fx === 4 && fy === (isRed ? 8 : 1)) {
+                if (dx <= 1 && dy <= 1) ok = true;
+            } else {
+                if ((dx === 1 && dy === 0) || (dx === 0 && dy === 1)) ok = true;
+            }
+            break;
+        }
+        case '仕': case '士': {
+            const py = isRed ? [7,9] : [0,2];
+            if ((tx !== 3 && tx !== 5) || !py.includes(ty)) return false;
+            if (Math.abs(fx-tx)!==1 || Math.abs(fy-ty)!==1) return false;
+            ok = true;
+            break;
+        }
+        case '相': case '象': {
+            if (isRed && ty > 4) return false;
+            if (!isRed && ty < 5) return false;
+            if (Math.abs(fx-tx)!==2 || Math.abs(fy-ty)!==2) return false;
+            const mx = (fx+tx)/2, my = (fy+ty)/2;
+            if (board[my*COLS + mx] !== '　') return false;
+            ok = true;
+            break;
+        }
+        case '傌': case '馬': {
+            const dx = Math.abs(fx-tx), dy = Math.abs(fy-ty);
+            if (!((dx===2&&dy===1) || (dx===1&&dy===2))) return false;
+            let bx = fx, by = fy;
+            if (dx === 2) bx += tx > fx ? 1 : -1;
+            else by += ty > fy ? 1 : -1;
+            if (board[by*COLS + bx] !== '　') return false;
+            ok = true;
+            break;
+        }
+        case '俥': case '車': {
+            if (fx !== tx && fy !== ty) return false;
+            ok = clearLine(fx, fy, tx, ty);
+            break;
+        }
+        case '炮': case '砲': {
+            if (fx !== tx && fy !== ty) return false;
+            const cnt = countBetween(fx, fy, tx, ty);
+            if (t === '　') ok = (cnt === 0);
+            else ok = (cnt === 1);
+            break;
+        }
+        case '兵': case '卒': {
+            if (isRed) {
+                if (ty > fy) return false;
+                if (fy >= 5) { if (fy - ty !== 1 || fx !== tx) return false; }
+                else { if (!((fy-ty === 1 && fx === tx) || (fy === ty && Math.abs(fx-tx) === 1))) return false; }
+            } else {
+                if (ty < fy) return false;
+                if (fy <= 4) { if (ty - fy !== 1 || fx !== tx) return false; }
+                else { if (!((ty-fy === 1 && fx === tx) || (fy === ty && Math.abs(fx-tx) === 1))) return false; }
+            }
+            ok = true;
+            break;
+        }
+        default: return false;
+    }
+
+    if (!ok) return false;
+
+    const oldF = board[from], oldT = board[to];
+    board[to] = board[from];
+    board[from] = '　';
+
+    let redKing = -1, blackKing = -1;
+    for (let i = 0; i < board.length; i++) {
+        if (board[i] === "帥") redKing = i;
+        if (board[i] === "將") blackKing = i;
+    }
+
+    let safe = true;
+    if (redKing !== -1 && blackKing !== -1) {
+        const rx = redKing % COLS, bx = blackKing % COLS;
+        if (rx === bx) {
+            const ry = Math.floor(redKing / COLS), by = Math.floor(blackKing / COLS);
+            if (clearLine(rx, ry, bx, by)) safe = false;
+        }
+    }
+
+    board[from] = oldF;
+    board[to] = oldT;
+
+    return safe;
+}
+
+function clearLine(fx, fy, tx, ty) {
+    if (fx === tx) {
+        const min = Math.min(fy, ty) + 1;
+        const max = Math.max(fy, ty);
+        for (let y = min; y < max; y++) {
+            if (board[y*COLS + fx] !== '　') return false;
+        }
+    } else {
+        const min = Math.min(fx, tx) + 1;
+        const max = Math.max(fx, tx);
+        for (let x = min; x < max; x++) {
+            if (board[fy*COLS + x] !== '　') return false;
+        }
+    }
+    return true;
+}
+
+function countBetween(fx, fy, tx, ty) {
+    let c = 0;
+    if (fx === tx) {
+        const min = Math.min(fy, ty)+1;
+        const max = Math.max(fy, ty);
+        for (let y=min; y<max; y++) if (board[y*COLS+fx] !== '　') c++;
+    } else {
+        const min = Math.min(fx, tx)+1;
+        const max = Math.max(fx, tx);
+        for (let x=min; x<max; x++) if (board[fy*COLS+x] !== '　') c++;
+    }
+    return c;
+}
+
+function checkLossByNoMove(){
+    const player = currentPlayer;
+    for(let from=0;from<board.length;from++){
+        const p=board[from];
+        if(p==='　') continue;
+        const isRed = RED_LIST.includes(p);
+        if((player==="red"&&!isRed)||(player==="black"&&isRed)) continue;
+        for(let to=0;to<board.length;to++){
+            if(isValidMove(from,to)) return;
+        }
+    }
+    gameOver=true;
+}
+
+function updateStatus() {
+    $("status").innerText = gameOver
+        ? (currentPlayer === "red" ? "红方困毙！黑方胜利！" : "黑方困毙！红方胜利！")
+        : "轮到：" + (currentPlayer === "red" ? "红方" : "黑方");
+}
+
+function restart() {
+    currentPlayer = "red";
+    selected = null;
+    gameOver = false;
+    initBoard();
+    updateStatus();
+    render();
+}
+</script>
+</body>
+</html>
