@@ -10,34 +10,30 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Inter', system-ui, sans-serif;
+            font-family: "Inter", "PingFang SC", "微软雅黑", sans-serif;
         }
 
         body {
+            background: #f9f7f5;
+            min-height: 100vh;
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            background: #fafafa;
             padding: 20px;
-            flex-direction: column;
-            position: relative;
-            padding-bottom: 70px; 
+            overflow-x: hidden;
         }
 
         .wish-card {
-            width: 100%;
-            max-width: 500px;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
-            padding: 32px 24px;
-            display: flex;
-            flex-direction: column;
-            gap: 22px;
-            text-align: center;
+            background: #ffffff;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 24px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+            padding: 60px 40px;
             position: relative;
             overflow: hidden;
+            text-align: center;
         }
 
         .card-decoration {
@@ -66,25 +62,28 @@
         }
 
         .birthday-title {
-            font-size: 32px;
+            font-size: 42px;
             font-weight: 600;
             color: #2d3748;
             margin-bottom: 16px;
+            letter-spacing: 0.5px;
+            transition: all 0.5s ease; /* 新增：文字动画过渡 */
         }
 
         .birthday-title span {
-            color: #ae3333;
+            color: #e53e3e;
         }
 
         .wish-text {
-            font-size: 16px;
+            font-size: 18px;
             line-height: 1.8;
             color: #4a5568;
-            margin-bottom: 20px;
+            margin-bottom: 32px;
+            font-weight: 400;
         }
 
         .signature {
-            font-size: 14px;
+            font-size: 16px;
             color: #718096;
             font-style: italic;
         }
@@ -93,48 +92,48 @@
             position: absolute;
             width: 8px;
             height: 8px;
-            background: #ae3333;
+            background: #e53e3e;
             opacity: 0;
             animation: confetti-fall 6s linear infinite;
             z-index: 0;
         }
 
         @keyframes confetti-fall {
-            0% { transform: translateY(-10px) rotate(0deg); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(600px) rotate(720deg); opacity: 0; }
+            0% {
+                transform: translateY(-10px) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(600px) rotate(720deg);
+                opacity: 0;
+            }
         }
 
         @keyframes title-pulse {
             0% { transform: scale(1); }
-            50% { transform: scale(1.08); }
+            50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
 
-        .bottom-group {
-            position: fixed;
-            left: 0;
-            right: 0;
-            bottom: 20px;
-            text-align: center;
-            font-size: 14px;
-        }
-        .back-home {
-            color: #ae3333;
-            text-decoration: none;
-            margin-bottom: 6px;
-            display: block;
-        }
-        .back-home:hover {
-            text-decoration: underline;
-        }
-        .copyright {
-            color: #999;
+        @media (max-width: 480px) {
+            .wish-card {
+                padding: 40px 20px;
+            }
+            .birthday-title {
+                font-size: 32px;
+            }
+            .wish-text {
+                font-size: 16px;
+            }
         }
     </style>
 </head>
-
 <body>
     <div class="wish-card">
         <div class="card-decoration decor-left"></div>
@@ -153,13 +152,9 @@
         </div>
     </div>
 
-    <div class="bottom-group">
-        <a href="index.html" class="back-home">首页</a>
-        <div class="copyright">© 2026 Axapri · 记录学习与创作</div>
-    </div>
-
     <script>
         window.addEventListener('load', () => {
+            // 1. 卡片入场动画
             const card = document.querySelector('.wish-card');
             card.style.opacity = 0;
             card.style.transform = 'translateY(20px)';
@@ -168,26 +163,33 @@
             setTimeout(() => {
                 card.style.opacity = 1;
                 card.style.transform = 'translateY(0)';
+
+                // 2. 入场动画完成后，自动启动彩屑和文字动画
                 startSurprise();
             }, 300);
         });
 
+        // 彩屑生成函数
         function createConfetti() {
             const confetti = document.createElement('div');
             confetti.classList.add('confetti');
-            const colors = ['#ae3333','#ed8936','#48bb78','#4299e1','#9f7aea'];
-            confetti.style.background = colors[Math.floor(Math.random()*colors.length)];
-            confetti.style.left = `${Math.random()*100}%`;
-            confetti.style.width = `${Math.random()*6+4}px`;
-            confetti.style.height = `${Math.random()*6+4}px`;
-            confetti.style.animationDuration = `${Math.random()*4+4}s`;
+            const colors = ['#e53e3e', '#ed8936', '#48bb78', '#4299e1', '#9f7aea'];
+            confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+            confetti.style.left = `${Math.random() * 100}%`;
+            confetti.style.width = `${Math.random() * 6 + 4}px`;
+            confetti.style.height = `${Math.random() * 6 + 4}px`;
+            confetti.style.animationDuration = `${Math.random() * 4 + 4}s`;
             
             document.querySelector('.wish-card').appendChild(confetti);
-            setTimeout(()=>confetti.remove(),6000);
+            setTimeout(() => confetti.remove(), 6000);
         }
 
+        // 启动惊喜效果（自动运行）
         function startSurprise() {
-            setInterval(createConfetti,50);
+            // 3. 循环生成彩屑（持续飘落）
+            setInterval(createConfetti, 50);
+            
+            // 4. 文字脉冲动画（循环播放）
             const title = document.querySelector('.birthday-title');
             title.style.animation = 'title-pulse 2s ease-in-out infinite';
         }
