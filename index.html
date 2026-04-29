@@ -76,11 +76,18 @@
             text-align: center;
         }
 
-        /* 网格布局 */
+        /* 网格布局 —— 手机自动2列，电脑3列 */
         .grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 12px 20px;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 16px;
+        }
+
+        /* 电脑屏幕 ≥ 500px 时变成 3 列 */
+        @media (min-width: 500px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         .grid li {
@@ -180,7 +187,7 @@
             <i class="fa-solid fa-code"></i>网站开发
         </div>
         <ul class="grid">
-            <li><a href="https://axapri.rth1.xyz/"><i class="fa-solid fa-link"></i>网址测试</a></li>
+            <li><a href="https://axapri.rth1.xyz/" target="_blank"><i class="fa-solid fa-link"></i>网址测试</a></li>
             <li><a href="404.html"><i class="fa-solid fa-triangle-exclamation"></i>页面失踪</a></li>
         </ul>
     </div>
