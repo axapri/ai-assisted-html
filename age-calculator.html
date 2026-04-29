@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axapri | 年龄计算器</title>
+    <link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
@@ -17,7 +19,7 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: #f9fafb;
+            background: #fafafa;
             padding: 20px;
         }
         .container {
@@ -25,18 +27,22 @@
             max-width: 500px;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 6px 24px rgba(0,0,0,0.04);
+            box-shadow: 0 6px 24px rgba(0,0,0,0.06);
             padding: 32px 24px;
             display: flex;
             flex-direction: column;
             gap: 22px;
             text-align: center;
-            overflow: hidden;
         }
+
         .title {
             font-size: 26px;
             font-weight: 600;
-            color: #111827;
+            color: #ae3333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .input-row {
             display: flex;
@@ -52,18 +58,23 @@
             text-align: center;
             min-width: 0;
         }
+        input:focus {
+            outline: none;
+            border-color: #ae3333;
+        }
         .result {
             font-size: 20px;
-            color: #2563eb;
+            color: #ae3333;
             font-weight: 600;
             padding: 16px;
-            background: #f9fafb;
+            background: #f9f9f9;
             border-radius: 12px;
             min-height: 60px;
             width: 100%;
-            white-space: pre-wrap; 
+            white-space: pre-wrap;
             word-wrap: break-word;
             line-height: 1.4;
+            border: 1px solid #f0f0f0;
         }
         .btn-group {
             display: flex;
@@ -78,20 +89,45 @@
             border: none;
             font-size: 15px;
             cursor: pointer;
+            font-weight: 500;
         }
         .calc {
-            background: #2563eb;
+            background: #ae3333;
             color: white;
+        }
+        .calc:hover {
+            background: #962b2b;
         }
         .clear {
             background: #e5e7eb;
             color: #374151;
         }
+        .clear:hover {
+            background: #d8d8d8;
+        }
+
+        .back-home {
+            color: #ae3333;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .back-home:hover {
+            text-decoration: underline;
+        }
+
+        .footer {
+            margin-top: 8px;
+            font-size: 14px;
+            color: #999;
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
-    <div class="title">年龄计算器</div>
+    <div class="title">
+        <i class="fa-solid fa-cake-candles"></i>年龄计算器
+    </div>
 
     <div class="input-row">
         <input type="number" id="year" placeholder="年">
@@ -105,13 +141,17 @@
         <button class="btn calc" onclick="calc()">计算</button>
         <button class="btn clear" onclick="clearAll()">清空</button>
     </div>
+
+    <a href="index.html" class="back-home">首页</a>
+    <div class="footer">© 2026 Axapri · 记录学习与创作</div>
 </div>
 
 <script>
 function calc() {
-    const y = year.value;
-    const m = month.value;
-    const d = day.value;
+    const y = document.getElementById('year').value;
+    const m = document.getElementById('month').value;
+    const d = document.getElementById('day').value;
+    const res = document.getElementById('res');
 
     if (!y || !m || !d) {
         res.innerText = "请填写完整年月日";
@@ -121,22 +161,20 @@ function calc() {
     const birth = new Date(y, m - 1, d);
     const now = new Date();
     
-    // 计算年龄
     let age = now.getFullYear() - birth.getFullYear();
-    if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) age--;
+    if (now < new Date(now.getFullYear(), birth.getMonth(), birth.getDate())) {
+        age--;
+    }
     
-    // 计算总天数
     const days = Math.floor((now - birth) / (1000 * 60 * 60 * 24));
-    
-    // 两行显示，自动换行，绝不超出卡片
     res.innerText = `年龄：${age} 岁\n总天数：${days} 天`;
 }
 
 function clearAll() {
-    year.value = "";
-    month.value = "";
-    day.value = "";
-    res.innerText = "";
+    document.getElementById('year').value = "";
+    document.getElementById('month').value = "";
+    document.getElementById('day').value = "";
+    document.getElementById('res').innerText = "";
 }
 </script>
 </body>
