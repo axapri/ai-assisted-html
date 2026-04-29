@@ -4,6 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Axapri | 页面失踪</title>
+<link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <style>
 * {
   margin: 0;
@@ -26,7 +28,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #ffffff;
+  background: #fafafa;
   color: #111111;
   padding: 24px;
 }
@@ -42,7 +44,7 @@ body {
   font-weight: 700;
   letter-spacing: -1px;
   margin-bottom: 20px;
-  color: #111;
+  color: #ae3333;
 }
 
 .text {
@@ -53,19 +55,31 @@ body {
 }
 
 .button {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 14px 30px;
   border-radius: 12px;
-  background: #f1f1f1;
-  color: #111;
+  background: #ae3333;
+  color: #fff;
   text-decoration: none;
   font-weight: 500;
   transition: all 0.2s ease;
 }
 
 .button:hover {
-  background: #e0e0e0;
+  background: #962b2b;
   transform: translateY(-1px);
+}
+
+footer {
+  position: fixed;
+  bottom: 20px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
 }
 </style>
 </head>
@@ -74,7 +88,11 @@ body {
   <div class="wrap">
     <div class="code">404</div>
     <div class="text">抱歉，您访问的页面不存在或已被移除。</div>
-    <a href="https://axapri.github.io/ai-assisted-html/" class="button">返回首页</a>
+    <a href="index.html" class="button">
+      <i class="fa-solid fa-house"></i> 返回首页
+    </a>
   </div>
+
+  <footer>© 2026 Axapri · 记录学习与创作</footer>
 </body>
 </html>
