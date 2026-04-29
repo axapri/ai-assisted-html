@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri | 扫雷</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', system-ui, sans-serif; transition: all 0.2s ease; }
+        body { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:100vh; background:#f9fafb; padding:20px; }
+        #game { width:100%; max-width:400px; background:white; border-radius:20px; padding:30px; box-shadow:0 6px 24px rgba(0,0,0,0.04); display:flex; flex-direction:column; gap:20px; }
+        #status { text-align:center; font-size:18px; font-weight:600; color:#2563eb; }
+        #board { display:grid; grid-template-columns:repeat(10,1fr); gap:2px; }
+        .cell { aspect-ratio:1; background:#e5e7eb; border-radius:6px; display:flex; align-items:center; justify-content:center; font-weight:bold; cursor:pointer; font-size:14px; }
+        .cell:hover { background:#d1d5db; }
+        .cell.open { background:#f3f4f6; }
+        .cell.mine { background:#ef4444; color:white; }
+        .btn { padding:14px; border-radius:10px; border:none; background:#2563eb; color:white; font-size:16px; cursor:pointer; }
+        .btn:hover { background:#1d4ed8; transform:translateY(-1px); }
+        #start { position:fixed; inset:0; background:rgba(255,255,255,0.98); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:24px; z-index:100; }
+        .title { font-size:32px; font-weight:600; }
+    </style>
+</head>
+<body>
+<div id="game">
+    <div id="status">扫雷游戏</div>
+    <div id="board"></div>
+    <button class="btn" onclick="restart()">重新开始</button>
+</div>
+<div id="start">
+    <div class="title">扫雷</div>
+    <button class="btn" onclick="startGame()">开始游戏</button>
+</div>
+<script>
+let size=10, mines=15, board, minePos, gameOver;
+function $(id){return document.getElementById(id)}
+function startGame(){$("start").style.display="none"; init()}
+function init(){
+    board=Array(size*size).fill(0);
+    minePos=new Set();
+    gameOver=false;
+    while(minePos.size<mines) minePos.add(Math.floor(Math.random()*size*size));
+    minePos.forEach(p=>board[p]=-1);
+    for(let i=0;i<size*size;i++){
+        if(board[i]==-1)continue;
+        let c=0;
+        const dirs=[-11,-10,-9,-1,1,9,10,11];
+        dirs.forEach(d=>{
+            const j=i+d;
+            if(j>=0&&j<size*size&&Math.abs((i%size)-(j%size))<=1&&minePos.has(j))c++;
+        })
+        board[i]=c;
+    }
+    render();
+}
+function render(){
+    let b=$("board"); b.innerHTML="";
+    for(let i=0;i<size*size;i++){
+        let c=document.createElement("div");
+        c.classList.add("cell");
+        c.dataset.i=i;
+        c.onclick=()=>open(i);
+        b.appendChild(c);
+    }
+}
+function open(i){
+    if(gameOver||minePos.has(i)){
+        gameOver=true;
+        $("status").innerText="游戏结束 - 踩到地雷!";
+        document.querySelectorAll(".cell").forEach((x,j)=>{
+            if(minePos.has(j)){x.classList.add("mine");x.innerText="💣"}
+        })
+        return;
+    }
+    let cell=document.querySelector(`.cell[data-i="${i}"]`);
+    if(cell.classList.contains("open"))return;
+    cell.classList.add("open");
+    cell.innerText=board[i]||"";
+    if(board[i]===0){
+        const dirs=[-11,-10,-9,-1,1,9,10,11];
+        dirs.forEach(d=>{
+            const j=i+d;
+            if(j>=0&&j<size*size&&Math.abs((i%size)-(j%size))<=1) open(j);
+        })
+    }
+    checkWin();
+}
+function checkWin(){
+    let total=size*size-mines;
+    let opened=document.querySelectorAll(".cell.open").length;
+    if(opened>=total){gameOver=true; $("status").innerText="恭喜你，胜利！"}
+}
+function restart(){location.reload()}
+</script>
+</body>
+</html>
