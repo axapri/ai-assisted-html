@@ -210,12 +210,6 @@
             width:100%; height:3px;
             background: var(--color-heart);
             transform: skewX(-15deg);
-            animation: stretch 3.4s infinite ease-in-out;
-        }
-
-        @keyframes stretch {
-            0%,100% { transform:skewX(-15deg) scaleX(1); }
-            50% { transform:skewX(-15deg) scaleX(1.06); }
         }
 
         .rules-grid {
@@ -559,12 +553,6 @@
         .final-title span {
             color: var(--color-heart);
             position: relative;
-            animation: heartbeat 2.2s infinite ease-in-out;
-        }
-
-        @keyframes heartbeat {
-            0%,100% { transform:scale(1); }
-            50% { transform:scale(1.06); }
         }
 
         .final-title span::after {
@@ -792,7 +780,7 @@
                 <span>爱</span><span>的</span><span>反</span><span>说</span><span>明</span><span>书</span>
             </h1>
             <p class="anti-subtitle">
-                忘掉“正确的表达公式”，忘掉“满分的情话模板”，<br>
+               忘掉“正确的表达公式”，忘掉“满分的情话模板”，<br>
                 爱从来不需要说明书，只需要你敢说的真心。
             </p>
             <div class="scroll-trigger" onclick="scrollToNext()">
