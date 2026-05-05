@@ -3,7 +3,14 @@
 <head>
 	<meta name="baidu-site-verification" content="codeva-CsjXm2nfVY" />
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="font-size-adjust" content="none">
+
     <title>Axapri-人间晚风驿站</title>
     <meta name="description" content="Axapri 效率与乐趣，提供极简起始页、计算器、二维码生成、字数统计、扫雷、五子棋、爱的反说明书等免费在线工具与解压游戏。">
     <meta name="keywords" content="Axapri,效率与乐趣,Axapri-人间晚风驿站,人间晚风驿站,人间晚风小铺,人间晚风,在线工具,日常工具,解压游戏,柔软角落,极简起始页,计算器,数学计算器,二维码生成,字数统计,进制转换,倒计时器,年龄计算器,随机抽签器,金额大写转换,加密解密,密码生成,图片压缩,压缩解压,格式转换,肺部呼吸训练,BMI健康计算,数字钢琴,色块配对,方块闪避,记忆顺序,数字拼图,节奏点击,井字棋,五子棋,黑白棋,扫雷,中国象棋,生日祝福,爱的反说明书,网站开发">
@@ -133,7 +140,7 @@
             font-size: 1.1rem;
             width: 16px;
             text-align: center;
-            flex-shrink: 0; 
+            flex-shrink: 0;
         }
 
         .grid {
@@ -249,6 +256,20 @@
         html {
             scroll-behavior: smooth;
         }
+
+        * {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-text-size-adjust: none !important;
+            tap-highlight-color: transparent !important;
+        }
+        html, body {
+            overflow-x: hidden !important;
+            touch-action: manipulation !important;
+        }
+        body {
+            -webkit-overflow-scrolling: touch !important;
+            overflow-scrolling: touch !important;
+        }
     </style>
 </head>
 <body>
@@ -353,6 +374,17 @@
 
 <script>
 document.addEventListener('DOMContentLoaded', () => {
+    (function() {
+        if (typeof WeixinJSBridge == 'object' && typeof document.addEventListener == 'function') {
+            document.addEventListener('WeixinJSBridgeReady', function() {
+                WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+                WeixinJSBridge.on('menu:setfont', function() {
+                    WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+                });
+            });
+        }
+    })();
+
     const themeBtn = document.getElementById('themeBtn');
     const search = document.getElementById('search');
     const favSection = document.getElementById('favSection');
