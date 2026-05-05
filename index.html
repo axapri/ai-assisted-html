@@ -86,9 +86,6 @@
         .search-box::placeholder {
             color: var(--subtext);
         }
-		.search-box:focus {
- 			 border-color: var(--theme);
-		}
 
         .header {
             margin-bottom: 30px;
@@ -125,11 +122,9 @@
             color: var(--text);
             margin-bottom: 16px;
             padding-left: 12px;
-			padding-right: 8px;
             border-left: 4px solid var(--theme);
             display: flex;
             align-items: center;
-            flex-shrink: 0;
             gap: 8px;
         }
 
@@ -137,7 +132,6 @@
             color: var(--theme);
             font-size: 1.1rem;
             width: 16px;
-            flex-shrink: 0;
             text-align: center;
         }
 
@@ -164,7 +158,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            padding: 6px 40px 6px 10px; 
+            padding: 6px 10px;
             border-radius: 8px;
             width: 100%;
         }
@@ -179,13 +173,6 @@
             color: var(--theme);
             opacity: 0.9;
         }
-		.grid li a {
- 			 transition: all 0.2s ease;
-		}
-		.grid li a:hover {
-  			transform: translateY(-2px);
-  			box-shadow: 0 2px 8px rgba(174, 51, 51, 0.15);
-		}
 
         /* 收藏 & 复制按钮 */
         .tool-actions {
@@ -327,9 +314,9 @@
         <li><a href="memory-sequence.html"><i class="fa-solid fa-brain"></i>记忆顺序</a><div class="tool-actions"><button class="action-btn fav" data-name="记忆顺序" data-link="memory-sequence.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="memory-sequence.html"><i class="fa-regular fa-copy"></i></button></div></li>
         <li><a href="digital-puzzle.html"><i class="fa-solid fa-puzzle-piece"></i>数字拼图</a><div class="tool-actions"><button class="action-btn fav" data-name="数字拼图" data-link="digital-puzzle.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="digital-puzzle.html"><i class="fa-regular fa-copy"></i></button></div></li>
         <li><a href="rhythm-click.html"><i class="fa-solid fa-hand-pointer"></i>节奏点击</a><div class="tool-actions"><button class="action-btn fav" data-name="节奏点击" data-link="rhythm-click.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="rhythm-click.html"><i class="fa-regular fa-copy"></i></button></div></li>
-        <li><a href="tic-tac-toe.html"><i class="fa-solid fa-grip"></i>井字棋</a><div class="tool-actions"><button class="action-btn fav" data-name="井字棋" data-link="tic-tac-toe.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="tic-tac-toe.html"><i class="fa-regular fa-star"></i></button></div></li>
-        <li><a href="gomoku.html"><i class="fa-solid fa-chess-board"></i>五子棋</a><div class="tool-actions"><button class="action-btn fav" data-name="五子棋" data-link="gomoku.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="gomoku.html"><i class="fa-regular fa-star"></i></button></div></li>
-        <li><a href="reversi.html"><i class="fa-solid fa-circle"></i>黑白棋</a><div class="tool-actions"><button class="action-btn fav" data-name="黑白棋" data-link="reversi.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="reversi.html"><i class="fa-regular fa-star"></i></button></div></li>
+        <li><a href="tic-tac-toe.html"><i class="fa-solid fa-grip"></i>井字棋</a><div class="tool-actions"><button class="action-btn fav" data-name="井字棋" data-link="tic-tac-toe.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="tic-tac-toe.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="gomoku.html"><i class="fa-solid fa-chess-board"></i>五子棋</a><div class="tool-actions"><button class="action-btn fav" data-name="五子棋" data-link="gomoku.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="gomoku.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="reversi.html"><i class="fa-solid fa-circle"></i>黑白棋</a><div class="tool-actions"><button class="action-btn fav" data-name="黑白棋" data-link="reversi.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="reversi.html"><i class="fa-regular fa-copy"></i></button></div></li>
         <li><a href="minesweeper.html"><i class="fa-solid fa-bomb"></i>扫雷</a><div class="tool-actions"><button class="action-btn fav" data-name="扫雷" data-link="minesweeper.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="minesweeper.html"><i class="fa-regular fa-copy"></i></button></div></li>
         <li><a href="chinese-chess.html"><i class="fa-solid fa-chess-knight"></i>中国象棋</a><div class="tool-actions"><button class="action-btn fav" data-name="中国象棋" data-link="chinese-chess.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="chinese-chess.html"><i class="fa-regular fa-copy"></i></button></div></li>
     </ul>
