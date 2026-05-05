@@ -8,7 +8,7 @@
     <meta name="x5-orientation" content="portrait">
     <meta name="x5-page-mode" content="app">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-status-bar-style" content="default">
     <meta name="font-size-adjust" content="none">
 
     <title>Axapri-人间晚风驿站</title>
@@ -25,6 +25,7 @@
             transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
         }
 
+        /* 6套主题配色变量 */
         :root {
             --bg: #ffffff;
             --text: #24292f;
@@ -34,8 +35,8 @@
             --card: #f9f9f9;
             --hover: #f1f1f1;
         }
-
-        .dark {
+        /* 深色主题 */
+        .theme-dark {
             --bg: #111827;
             --text: #f3f6f6;
             --subtext: #9ca3af;
@@ -43,6 +44,46 @@
             --theme: #c94444;
             --card: #1f3133;
             --hover: #374151;
+        }
+        /* 绿色主题 */
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        /* 蓝色主题 */
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        /* 紫色主题 */
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        /* 黄色护眼主题 */
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
         }
 
         body {
@@ -64,8 +105,10 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
+            position: relative;
         }
 
+        /* 主题切换按钮 */
         .theme-toggle {
             background: var(--card);
             border: 1px solid var(--border);
@@ -78,10 +121,55 @@
             cursor: pointer;
             color: var(--text);
             transition: 0.2s;
+            z-index: 10;
         }
         .theme-toggle:hover {
             transform: scale(1.05);
         }
+
+        /* 主题选择面板 */
+        .theme-panel {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            width: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+        .theme-panel.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+        .theme-color {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+        }
+        .theme-color.active {
+            border-color: var(--theme);
+            transform: scale(1.1);
+        }
+        .color-light { background: #ffffff; border: 1px solid #e5e7eb; }
+        .color-dark { background: #111827; }
+        .color-green { background: #16a34a; }
+        .color-blue { background: #3b82f6; }
+        .color-purple { background: #a855f7; }
+        .color-yellow { background: #d97706; }
 
         /* 搜索框优化 */
         .search-wrapper {
@@ -339,8 +427,17 @@
         <i class="fa-solid fa-folder-open"></i>Axapri・效率与乐趣
     </h1>
     <button class="theme-toggle" id="themeBtn">
-        <i class="fa-solid fa-moon"></i>
+        <i class="fa-solid fa-palette"></i>
     </button>
+    <!-- 主题选择面板 -->
+    <div class="theme-panel" id="themePanel">
+        <div class="theme-color color-light" data-theme="light" title="浅色"></div>
+        <div class="theme-color color-dark" data-theme="dark" title="深色"></div>
+        <div class="theme-color color-green" data-theme="green" title="绿色"></div>
+        <div class="theme-color color-blue" data-theme="blue" title="蓝色"></div>
+        <div class="theme-color color-purple" data-theme="purple" title="紫色"></div>
+        <div class="theme-color color-yellow" data-theme="yellow" title="护眼黄"></div>
+    </div>
 </div>
 
 <div class="search-wrapper">
@@ -458,6 +555,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 元素获取
     const themeBtn = document.getElementById('themeBtn');
+    const themePanel = document.getElementById('themePanel');
+    const themeColors = document.querySelectorAll('.theme-color');
     const search = document.getElementById('search');
     const searchClear = document.getElementById('searchClear');
     const searchEmpty = document.getElementById('searchEmpty');
@@ -467,35 +566,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const backTop = document.getElementById('backTop');
     const items = document.querySelectorAll('li');
 
-    // 自动跟随系统深色模式 + 手动切换
-    const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const localDark = localStorage.getItem('dark');
+    // 6套主题切换 - 本地存储保存
+    const savedTheme = localStorage.getItem('site-theme') || 'light';
+    document.body.className = `theme-${savedTheme}`;
     
-    if (localDark === null) {
-        if (isSystemDark) {
-            document.body.classList.add('dark');
-            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-            localStorage.setItem('dark', '1');
-        }
-    } else {
-        if (localDark === '1') {
-            document.body.classList.add('dark');
-            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-        }
-    }
-
-    themeBtn.addEventListener('click', () => {
-        document.body.classList.toggle('dark');
-        if (document.body.classList.contains('dark')) {
-            localStorage.setItem('dark', '1');
-            themeBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
-        } else {
-            localStorage.setItem('dark', '0');
-            themeBtn.innerHTML = '<i class="fa-solid fa-moon"></i>';
-        }
+    // 激活当前主题图标
+    themeColors.forEach(color => {
+        if(color.dataset.theme === savedTheme) color.classList.add('active');
     });
 
-    //  搜索功能优化：回车+清空+无结果提示
+    // 切换主题面板显示/隐藏
+    themeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        themePanel.classList.toggle('show');
+    });
+
+    // 点击空白关闭主题面板
+    document.addEventListener('click', () => {
+        themePanel.classList.remove('show');
+    });
+    themePanel.addEventListener('click', (e) => e.stopPropagation());
+
+    // 切换主题
+    themeColors.forEach(color => {
+        color.addEventListener('click', () => {
+            const theme = color.dataset.theme;
+            // 移除所有主题类
+            document.body.className = '';
+            // 添加当前主题类
+            document.body.classList.add(`theme-${theme}`);
+            // 保存到本地
+            localStorage.setItem('site-theme', theme);
+            // 更新激活状态
+            themeColors.forEach(c => c.classList.remove('active'));
+            color.classList.add('active');
+            // 关闭面板
+            themePanel.classList.remove('show');
+            showTip('主题切换成功');
+        });
+    });
+
+    // 搜索功能优化：回车+清空+无结果提示
     search.addEventListener('input', () => {
         const kw = search.value.toLowerCase().trim();
         searchClear.style.display = kw ? 'block' : 'none';
