@@ -1,206 +1,206 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- 首页 -->
+  <!-- 首页 → 最高权重 -->
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/</loc>
+    <lastmod>2025-04-30</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
 
   <!-- 日常工具 -->
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/start-page.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/start-page.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/calculator.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/calculator.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/math-calculator.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/math-calculator.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/qr-code.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/qr-code.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/word-count.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/word-count.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/base-conversion.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/base-conversion.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/countdown-timer.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/countdown-timer.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/age-calculator.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/age-calculator.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/random-draw.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/random-draw.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/renminbi-conversion.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/renminbi-conversion.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/encryption-decryption.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/encryption-decryption.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/password-generation.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/password-generation.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/image-compression.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/image-compression.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/compression-decompression.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/compression-decompression.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/format-conversion.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/format-conversion.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/breathing-training.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/breathing-training.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/health-calculation.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/health-calculation.html</loc>
+    <lastmod>2025-04-28</lastmod>
     <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <priority>0.9</priority>
   </url>
 
   <!-- 解压游戏 -->
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/digital-piano.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/digital-piano.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/color-block-matching.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/color-block-matching.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/block-dodge.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/block-dodge.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/memory-sequence.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/memory-sequence.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/digital-puzzle.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/digital-puzzle.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/rhythm-click.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/rhythm-click.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/tic-tac-toe.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/tic-tac-toe.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/gomoku.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/gomoku.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/reversi.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/reversi.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/minesweeper.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/minesweeper.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/chinese-chess.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/chinese-chess.html</loc>
+    <lastmod>2025-04-27</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
   <!-- 柔软角落 -->
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/birthday-wishes.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/birthday-wishes.html</loc>
+    <lastmod>2025-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/truth.html</loc>
-    <lastmod>2026-04-30</lastmod>
+    <loc>https://axapri.icu/truth.html</loc>
+    <lastmod>2025-04-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
 
-  <!-- 网站开发 -->
+  <!-- 404 页面 -->
   <url>
-    <loc>https://axapri.github.io/ai-assisted-html/404.html</loc>
-    <lastmod>2026-04-30</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.8</priority>
+    <loc>https://axapri.icu/404.html</loc>
+    <lastmod>2025-04-25</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.1</priority>
   </url>
 
 </urlset>
