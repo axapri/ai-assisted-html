@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="baidu-site-verification" content="codeva-CsjXm2nfVY" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-status-bar-style" content="default">
+    <meta name="font-size-adjust" content="none">
+
+    <title>Axapri-人间晚风驿站</title>
+    <meta name="description" content="Axapri-人间晚风驿站｜一个温柔治愈的在线工具合集，影音导航、日常工具、解压小游戏应有尽有。">
+    <meta name="keywords" content="Axapri,效率与乐趣,人间晚风驿站,在线工具,影音导航,日常工具,解压游戏">
+	<script defer src="https://cloud.umami.is/script.js" data-website-id="3a88e02c-cbf3-44c0-8a13-51352a35e435"></script>
+	<link rel="icon" href="favicon.png" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            background-color: var(--bg);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 60px 20px;
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .theme-toggle {
+            background: var(--card);
+            border: 1px solid var(--border);
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text);
+            z-index: 10;
+        }
+        .theme-panel {
+            position: absolute; top: 50px; right: 0;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px;
+            display: flex; gap: 8px; flex-wrap: wrap;
+            width: 160px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 0; visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 999;
+        }
+        .theme-panel.show {
+            opacity: 1; visibility: visible;
+            transform: translateY(0);
+        }
+        .theme-color {
+            width: 28px; height: 28px;
+            border-radius: 8px; cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .theme-color.active {
+            border-color: var(--theme); transform: scale(1.1);
+        }
+        .color-light { background: #ffffff; border: 1px solid #e5e7eb; }
+        .color-dark { background: #111827; }
+        .color-green { background: #16a34a; }
+        .color-blue { background: #3b82f6; }
+        .color-purple { background: #a855f7; }
+        .color-yellow { background: #d97706; }
+
+        .search-wrapper {
+            position: relative; width: 100%; margin-bottom: 20px;
+        }
+        .search-box {
+            width: 100%;
+            padding: 10px 40px 10px 14px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            background: var(--card);
+            font-size: 15px; outline: none;
+            color: var(--text);
+        }
+        .search-clear {
+            position: absolute; right: 14px; top: 50%;
+            transform: translateY(-50%);
+            color: var(--subtext); cursor: pointer;
+            display: none;
+        }
+        .search-empty {
+            text-align: center;
+            color: var(--subtext);
+            padding: 20px; display: none;
+        }
+
+        .main-title {
+            font-size: 2em; font-weight: 700;
+            color: var(--theme);
+            margin-bottom: 8px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid var(--theme);
+            display: flex; align-items: center; gap: 10px;
+        }
+        .main-title i { font-size: 1.1em; }
+        .subtitle { color: var(--subtext); font-size: 1em; margin-bottom:20px; }
+
+        .category { margin-bottom: 36px; }
+        .category-title {
+            font-size: 1.25rem; font-weight: 600;
+            color: var(--text);
+            margin-bottom: 16px;
+            padding-left: 12px;
+            border-left: 4px solid var(--theme);
+            display: flex; align-items: center; gap: 8px;
+        }
+        .category-title i {
+            color: var(--theme); font-size: 1.1rem;
+            width: 16px; text-align: center; flex-shrink: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px 16px;
+        }
+        @media (min-width: 500px) {
+            .grid { grid-template-columns: repeat(3, 1fr); }
+        }
+        .grid li { list-style: none; position: relative; }
+
+        a {
+            color: var(--theme); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 38px 6px 10px;
+            border-radius: 8px; width: 100%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            min-height: 44px;
+        }
+        a:hover { background: var(--hover); transform: scale(1.02); }
+        a i {
+            font-size: 0.85rem; color: var(--theme);
+            opacity: 0.9; width: 16px; text-align: center;
+        }
+
+        .tool-actions {
+            position: absolute; right: 6px; top: 6px;
+            display: flex; gap: 4px; z-index: 10;
+        }
+        .action-btn {
+            width: 22px; height: 22px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px; background: transparent;
+            border: none; color: var(--subtext);
+            font-size: 12px; cursor: pointer;
+        }
+        .action-btn:hover { background: var(--hover); color: var(--theme); }
+        .action-btn.faved { color: var(--theme); }
+
+        .fav-section { margin-bottom: 30px; display: none; }
+        .fav-section.show { display: block; }
+
+        .toast {
+            position: fixed; bottom: 30px; left: 50%;
+            transform: translateX(-50%);
+            background: var(--text); color: var(--bg);
+            padding: 8px 14px; border-radius: 8px;
+            font-size: 13px; opacity: 0;
+            pointer-events: none; z-index: 999;
+        }
+        .toast.show { opacity: 1; }
+
+        footer {
+            color: var(--subtext); font-size: 0.875em;
+            padding-top: 24px; border-top: 1px solid var(--border);
+            margin-top: 40px; text-align: center;
+        }
+
+        .back-top {
+            position: fixed; bottom: 30px; right: 20px;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: var(--card); border: 1px solid var(--border);
+            color: var(--text);
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; opacity: 0; visibility: hidden;
+            z-index: 998;
+        }
+        .back-top.show { opacity: 1; visibility: visible; }
+
+        html { scroll-behavior: smooth; }
+        * { -webkit-tap-highlight-color: transparent !important; }
+
+        /* 影音标签样式 */
+        .tab-card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: 16px; overflow: hidden;
+            margin-bottom: 20px;
+        }
+        .tab-nav {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--hover);
+            border-bottom: 1px solid var(--border);
+        }
+        @media (min-width:500px) {
+            .tab-nav { grid-template-columns: repeat(6,1fr); }
+        }
+        .tab-nav button {
+            background: transparent; border: none;
+            padding: 12px 6px; font-size: 14px;
+            color: var(--subtext); cursor: pointer;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-nav button.active {
+            color: var(--theme); border-color: var(--theme);
+            font-weight: 600;
+        }
+        .tab-content {
+            padding: 16px; display: none;
+        }
+        .tab-content.active { display: block; }
+        .tab-content .grid { gap: 10px; }
+
+        /* 跳转免责弹窗样式 */
+        .modal-mask {
+            position: fixed; top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex; align-items: center; justify-content: center;
+            z-index: 9999;
+            opacity: 0; visibility: hidden;
+            transition: 0.2s ease;
+        }
+        .modal-mask.show {
+            opacity: 1; visibility: visible;
+        }
+        .modal-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            width: 85%; max-width: 320px;
+            padding: 24px; text-align: center;
+        }
+        .modal-title {
+            font-size: 16px; font-weight: 600;
+            color: var(--text); margin-bottom: 12px;
+        }
+        .modal-desc {
+            font-size: 13px; color: var(--subtext);
+            line-height: 1.6; margin-bottom: 20px;
+        }
+        .modal-btns {
+            display: flex; gap: 10px;
+        }
+        .modal-btns button {
+            flex: 1; padding: 8px 0;
+            border-radius: 8px; border: none;
+            font-size: 14px; cursor: pointer;
+        }
+        .modal-cancel {
+            background: var(--card);
+            border: 1px solid var(--border) !important;
+            color: var(--text);
+        }
+        .modal-confirm {
+            background: var(--theme); color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+<div class="top-bar">
+    <h1 class="main-title" style="border:0; padding:0; margin:0;">
+        <i class="fa-solid fa-folder-open"></i>Axapri・效率与乐趣
+    </h1>
+    <button class="theme-toggle" id="themeBtn">
+        <i class="fa-solid fa-palette"></i>
+    </button>
+    <!-- 主题选择面板 -->
+    <div class="theme-panel" id="themePanel">
+        <div class="theme-color color-light" data-theme="light" title="浅色"></div>
+        <div class="theme-color color-dark" data-theme="dark" title="深色"></div>
+        <div class="theme-color color-green" data-theme="green" title="绿色"></div>
+        <div class="theme-color color-blue" data-theme="blue" title="蓝色"></div>
+        <div class="theme-color color-purple" data-theme="purple" title="紫色"></div>
+        <div class="theme-color color-yellow" data-theme="yellow" title="护眼黄"></div>
+    </div>
+</div>
+
+<div class="search-wrapper">
+    <input type="text" class="search-box" id="search" placeholder="🔍 搜索工具...">
+    <i class="fa-solid fa-xmark search-clear" id="searchClear"></i>
+</div>
+
+<div class="header">
+    <p class="subtitle">风遇山止，船到岸停，万事皆有温柔归期</p>
+    <p class="subtitle" style="margin-top:6px;font-size:0.9em;">All winds end, all ships find their shore.</p>
+</div>
+
+<div class="search-empty" id="searchEmpty">暂无匹配工具</div>
+
+<!-- 首页置顶：影音导航 -->
+<div class="tab-card">
+    <div class="tab-nav">
+        <button class="tab-btn active" data-tab="tab1">影视</button>
+        <button class="tab-btn" data-tab="tab2">音乐</button>
+        <button class="tab-btn" data-tab="tab3">漫画</button>
+        <button class="tab-btn" data-tab="tab4">书籍</button>
+        <button class="tab-btn" data-tab="tab5">游戏</button>
+        <button class="tab-btn" data-tab="tab6">导航</button>
+    </div>
+
+    <div class="tab-content active" id="tab1">
+        <ul class="grid">
+            <li><a href="https://www.bilibili.com/" target="_blank"><i class="fa-solid fa-video"></i>哔哩哔哩</a><div class="tool-actions"><button class="action-btn fav" data-name="哔哩哔哩" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="https://bbys.app/" target="_blank"><i class="fa-solid fa-clapperboard"></i>布布影视</a><div class="tool-actions"><button class="action-btn fav" data-name="布布影视" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="tab2">
+        <ul class="grid">
+            <li><a href="https://music.163.com/" target="_blank"><i class="fa-solid fa-music"></i>网易云音乐</a><div class="tool-actions"><button class="action-btn fav" data-name="网易云音乐" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="https://jywav.com/" target="_blank"><i class="fa-solid fa-headphones"></i>鲸音无损音乐</a><div class="tool-actions"><button class="action-btn fav" data-name="鲸音无损音乐" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="tab3">
+        <ul class="grid">
+            <li><a href="https://cn.bzmgcn.com/" target="_blank"><i class="fa-solid fa-book-open"></i>包子漫画</a><div class="tool-actions"><button class="action-btn fav" data-name="包子漫画" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="https://www.manhuafree.com/" target="_blank"><i class="fa-solid fa-book"></i>漫自由</a><div class="tool-actions"><button class="action-btn fav" data-name="漫自由" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="tab4">
+        <ul class="grid">
+            <li><a href="https://lunarora.com/" target="_blank"><i class="fa-solid fa-book"></i>鹿鸣川</a><div class="tool-actions"><button class="action-btn fav" data-name="鹿鸣川" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="https://www.xiaoshuo84.cc/" target="_blank"><i class="fa-solid fa-bookmark"></i>小说巴士</a><div class="tool-actions"><button class="action-btn fav" data-name="小说巴士" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="tab5">
+        <ul class="grid">
+            <li><a href="https://www.jidiyouxi.com/" target="_blank"><i class="fa-solid fa-gamepad"></i>机地游戏</a><div class="tool-actions"><button class="action-btn fav" data-name="机地游戏" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="https://poki.com/zh" target="_blank"><i class="fa-solid fa-gamepad"></i>宝玩游戏</a><div class="tool-actions"><button class="action-btn fav" data-name="宝玩游戏" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+    <div class="tab-content" id="tab6">
+        <ul class="grid">
+            <li><a href="https://yinghezhinan.com/" target="_blank"><i class="fa-solid fa-link"></i>硬核指南</a><div class="tool-actions"><button class="action-btn fav" data-name="硬核指南" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+            <li><a href="#" target="_blank"><i class="fa-solid fa-globe"></i>待续</a><div class="tool-actions"><button class="action-btn fav" data-name="待续" data-link="#"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="#"><i class="fa-regular fa-copy"></i></button></div></li>
+        </ul>
+    </div>
+</div>
+
+<!-- 我的收藏 -->
+<div class="fav-section" id="favSection">
+    <div class="category-title">
+        <i class="fa-solid fa-star"></i>我的收藏
+    </div>
+    <ul class="grid" id="favList"></ul>
+</div>
+
+<!-- 日常工具 -->
+<div class="category">
+    <div class="category-title">
+        <i class="fa-solid fa-screwdriver-wrench"></i>日常工具
+    </div>
+    <ul class="grid" id="toolList">
+        <li><a href="start-page.html"><i class="fa-solid fa-house"></i>极简起始页</a><div class="tool-actions"><button class="action-btn fav" data-name="极简起始页" data-link="start-page.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="start-page.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="calculator.html"><i class="fa-solid fa-calculator"></i>计算器</a><div class="tool-actions"><button class="action-btn fav" data-name="计算器" data-link="calculator.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="calculator.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="math-calculator.html"><i class="fa-solid fa-square-root-variable"></i>数学计算器</a><div class="tool-actions"><button class="action-btn fav" data-name="数学计算器" data-link="math-calculator.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="math-calculator.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="qr-code.html"><i class="fa-solid fa-qrcode"></i>二维码生成</a><div class="tool-actions"><button class="action-btn fav" data-name="二维码生成" data-link="qr-code.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="qr-code.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="word-count.html"><i class="fa-solid fa-file-lines"></i>字数统计</a><div class="tool-actions"><button class="action-btn fav" data-name="字数统计" data-link="word-count.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="word-count.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="base-conversion.html"><i class="fa-solid fa-exchange"></i>进制转换</a><div class="tool-actions"><button class="action-btn fav" data-name="进制转换" data-link="base-conversion.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="base-conversion.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="countdown-timer.html"><i class="fa-solid fa-hourglass-half"></i>倒计时器</a><div class="tool-actions"><button class="action-btn fav" data-name="倒计时器" data-link="countdown-timer.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="countdown-timer.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="age-calculator.html"><i class="fa-solid fa-cake-candles"></i>年龄计算器</a><div class="tool-actions"><button class="action-btn fav" data-name="年龄计算器" data-link="age-calculator.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="age-calculator.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="random-draw.html"><i class="fa-solid fa-shuffle"></i>随机抽签器</a><div class="tool-actions"><button class="action-btn fav" data-name="随机抽签器" data-link="random-draw.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="random-draw.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="renminbi-conversion.html"><i class="fa-solid fa-money-bill"></i>金额大写转换</a><div class="tool-actions"><button class="action-btn fav" data-name="金额大写转换" data-link="renminbi-conversion.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="renminbi-conversion.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="encryption-decryption.html"><i class="fa-solid fa-lock"></i>加密解密</a><div class="tool-actions"><button class="action-btn fav" data-name="加密解密" data-link="encryption-decryption.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="encryption-decryption.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="password-generation.html"><i class="fa-solid fa-key"></i>密码生成</a><div class="tool-actions"><button class="action-btn fav" data-name="密码生成" data-link="password-generation.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="password-generation.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="image-compression.html"><i class="fa-solid fa-image"></i>图片压缩</a><div class="tool-actions"><button class="action-btn fav" data-name="图片压缩" data-link="image-compression.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="image-compression.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="compression-decompression.html"><i class="fa-solid fa-file-zipper"></i>压缩解压</a><div class="tool-actions"><button class="action-btn fav" data-name="压缩解压" data-link="compression-decompression.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="compression-decompression.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="format-conversion.html"><i class="fa-solid fa-file"></i>格式转换</a><div class="tool-actions"><button class="action-btn fav" data-name="格式转换" data-link="format-conversion.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="format-conversion.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="breathing-training.html"><i class="fa-solid fa-lungs"></i>肺部呼吸训练</a><div class="tool-actions"><button class="action-btn fav" data-name="肺部呼吸训练" data-link="breathing-training.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="breathing-training.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="health-calculation.html"><i class="fa-solid fa-heart-pulse"></i>BMI 健康计算</a><div class="tool-actions"><button class="action-btn fav" data-name="BMI 健康计算" data-link="health-calculation.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="health-calculation.html"><i class="fa-regular fa-copy"></i></button></div></li>
+    </ul>
+</div>
+
+<!-- 解压游戏 -->
+<div class="category">
+    <div class="category-title">
+        <i class="fa-solid fa-gamepad"></i>解压游戏
+    </div>
+    <ul class="grid">
+        <li><a href="digital-piano.html"><i class="fa-solid fa-music"></i>数字钢琴</a><div class="tool-actions"><button class="action-btn fav" data-name="数字钢琴" data-link="digital-piano.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="digital-piano.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="color-block-matching.html"><i class="fa-solid fa-palette"></i>色块配对</a><div class="tool-actions"><button class="action-btn fav" data-name="色块配对" data-link="color-block-matching.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="color-block-matching.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="block-dodge.html"><i class="fa-solid fa-person-running"></i>方块闪避</a><div class="tool-actions"><button class="action-btn fav" data-name="方块闪避" data-link="block-dodge.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="block-dodge.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="memory-sequence.html"><i class="fa-solid fa-brain"></i>记忆顺序</a><div class="tool-actions"><button class="action-btn fav" data-name="记忆顺序" data-link="memory-sequence.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="memory-sequence.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="digital-puzzle.html"><i class="fa-solid fa-puzzle-piece"></i>数字拼图</a><div class="tool-actions"><button class="action-btn fav" data-name="数字拼图" data-link="digital-puzzle.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="digital-puzzle.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="rhythm-click.html"><i class="fa-solid fa-hand-pointer"></i>节奏点击</a><div class="tool-actions"><button class="action-btn fav" data-name="节奏点击" data-link="rhythm-click.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="rhythm-click.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="tic-tac-toe.html"><i class="fa-solid fa-grip"></i>井字棋</a><div class="tool-actions"><button class="action-btn fav" data-name="井字棋" data-link="tic-tac-toe.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="tic-tac-toe.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="gomoku.html"><i class="fa-solid fa-chess-board"></i>五子棋</a><div class="tool-actions"><button class="action-btn fav" data-name="五子棋" data-link="gomoku.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="gomoku.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="reversi.html"><i class="fa-solid fa-circle"></i>黑白棋</a><div class="tool-actions"><button class="action-btn fav" data-name="黑白棋" data-link="reversi.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="reversi.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="minesweeper.html"><i class="fa-solid fa-bomb"></i>扫雷</a><div class="tool-actions"><button class="action-btn fav" data-name="扫雷" data-link="minesweeper.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="minesweeper.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="chinese-chess.html"><i class="fa-solid fa-chess-knight"></i>中国象棋</a><div class="tool-actions"><button class="action-btn fav" data-name="中国象棋" data-link="chinese-chess.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="chinese-chess.html"><i class="fa-regular fa-copy"></i></button></div></li>
+    </ul>
+</div>
+
+<!-- 柔软角落 -->
+<div class="category">
+    <div class="category-title">
+        <i class="fa-regular fa-heart"></i>柔软角落
+    </div>
+    <ul class="grid">
+        <li><a href="birthday-wishes.html"><i class="fa-solid fa-gift"></i>生日祝福</a><div class="tool-actions"><button class="action-btn fav" data-name="生日祝福" data-link="birthday-wishes.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="birthday-wishes.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="truth.html"><i class="fa-regular fa-heart"></i>爱的反说明书</a><div class="tool-actions"><button class="action-btn fav" data-name="爱的反说明书" data-link="truth.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="truth.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="life-countdown.html"><i class="fa-solid fa-hourglass-end"></i>生命倒计时</a><div class="tool-actions"><button class="action-btn fav" data-name="生命倒计时" data-link="life-countdown.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="life-countdown.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="life-progress-bar.html"><i class="fa-solid fa-chart-line"></i>人生进度条</a><div class="tool-actions"><button class="action-btn fav" data-name="人生进度条" data-link="life-progress-bar.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="life-progress-bar.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="memorial-day.html"><i class="fa-solid fa-calendar-day"></i>纪念日倒数器</a><div class="tool-actions"><button class="action-btn fav" data-name="纪念日倒数器" data-link="memorial-day.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="memorial-day.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="daily-wish.html"><i class="fa-solid fa-feather-pointed"></i>每日温柔寄语</a><div class="tool-actions"><button class="action-btn fav" data-name="每日温柔寄语" data-link="daily-wish.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="daily-wish.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="diary-notes.html"><i class="fa-solid fa-book-open"></i>情绪私密日记本</a><div class="tool-actions"><button class="action-btn fav" data-name="情绪私密日记本" data-link="diary-notes.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="diary-notes.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="nickname-generator.html"><i class="fa-solid fa-wand-sparkles"></i>温柔昵称生成器</a><div class="tool-actions"><button class="action-btn fav" data-name="温柔昵称生成器" data-link="nickname-generator.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="nickname-generator.html"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="love-time.html"><i class="fa-solid fa-heart"></i>爱意时光计算器</a><div class="tool-actions"><button class="action-btn fav" data-name="爱意时光计算器" data-link="love-time.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="love-time.html"><i class="fa-regular fa-copy"></i></button></div></li>
+    </ul>
+</div>
+
+<!-- 网站开发 -->
+<div class="category">
+    <div class="category-title">
+        <i class="fa-solid fa-code"></i>网站开发
+    </div>
+    <ul class="grid">
+        <li><a href="https://axapri.rth1.xyz/" target="_blank"><i class="fa-solid fa-link"></i>网址测试</a><div class="tool-actions"><button class="action-btn fav" data-name="网址测试" data-link="https://axapri.rth1.xyz/"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="https://axapri.rth1.xyz/"><i class="fa-regular fa-copy"></i></button></div></li>
+        <li><a href="404.html"><i class="fa-solid fa-triangle-exclamation"></i>页面失踪</a><div class="tool-actions"><button class="action-btn fav" data-name="页面失踪" data-link="404.html"><i class="fa-regular fa-star"></i></button><button class="action-btn copy" data-link="404.html"><i class="fa-regular fa-copy"></i></button></div></li>
+    </ul>
+</div>
+
+<footer>
+    <p>© 2026 Axapri・效率与乐趣</p>
+</footer>
+
+<div class="back-top" id="backTop">
+    <i class="fa-solid fa-arrow-up"></i>
+</div>
+<div class="toast" id="toast"></div>
+
+<!-- 跳转免责弹窗结构 -->
+<div class="modal-mask" id="modalMask">
+    <div class="modal-box">
+        <div class="modal-title">温馨提示</div>
+        <div class="modal-desc">
+            本站仅做网址导航聚合，<br>外部链接内容与本站无关，<br>版权归原作者，请支持正版。
+        </div>
+        <div class="modal-btns">
+            <button class="modal-cancel" id="modalCancel">取消</button>
+            <button class="modal-confirm" id="modalConfirm">前往访问</button>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    const themeBtn = document.getElementById('themeBtn');
+    const themePanel = document.getElementById('themePanel');
+    const themeColors = document.querySelectorAll('.theme-color');
+    const search = document.getElementById('search');
+    const searchClear = document.getElementById('searchClear');
+    const searchEmpty = document.getElementById('searchEmpty');
+    const favSection = document.getElementById('favSection');
+    const favList = document.getElementById('favList');
+    const toast = document.getElementById('toast');
+    const backTop = document.getElementById('backTop');
+    const items = document.querySelectorAll('li');
+
+    const savedTheme = localStorage.getItem('site-theme') || 'light';
+    document.body.className = `theme-${savedTheme}`;
+    themeColors.forEach(color => {
+        if(color.dataset.theme === savedTheme) color.classList.add('active');
+    });
+
+    themeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        themePanel.classList.toggle('show');
+    });
+    document.addEventListener('click', () => themePanel.classList.remove('show'));
+    themePanel.addEventListener('click', e => e.stopPropagation());
+
+    themeColors.forEach(color => {
+        color.addEventListener('click', () => {
+            const theme = color.dataset.theme;
+            document.body.className = '';
+            document.body.classList.add(`theme-${theme}`);
+            localStorage.setItem('site-theme', theme);
+            themeColors.forEach(c => c.classList.remove('active'));
+            color.classList.add('active');
+            themePanel.classList.remove('show');
+            showTip('主题切换成功');
+        });
+    });
+
+    search.addEventListener('input', () => {
+        const kw = search.value.toLowerCase().trim();
+        searchClear.style.display = kw ? 'block' : 'none';
+        let hasResult = false;
+        items.forEach(li => {
+            const match = li.textContent.toLowerCase().includes(kw);
+            li.style.display = match ? '' : 'none';
+            if (match) hasResult = true;
+        });
+        searchEmpty.style.display = hasResult || !kw ? 'none' : 'block';
+    });
+
+    searchClear.addEventListener('click', () => {
+        search.value = '';
+        searchClear.style.display = 'none';
+        searchEmpty.style.display = 'none';
+        items.forEach(li => li.style.display = '');
+    });
+
+    window.addEventListener('scroll', () => {
+        backTop.classList.toggle('show', window.scrollY > 300);
+    });
+    backTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    function showTip(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1200);
+    }
+
+    function loadFav() {
+        const fav = JSON.parse(localStorage.getItem('fav') || '[]');
+        favList.innerHTML = '';
+        if (fav.length === 0) {
+            favSection.classList.remove('show');
+            return;
+        }
+        favSection.classList.add('show');
+        fav.forEach(item => {
+            const li = document.createElement('li');
+            li.innerHTML = `
+            <a href="${item.link}"><i class="fa-solid fa-star"></i>${item.name}</a>
+            <div class="tool-actions">
+                <button class="action-btn unfav" data-link="${item.link}"><i class="fa-solid fa-xmark"></i></button>
+                <button class="action-btn copy" data-link="${item.link}"><i class="fa-regular fa-copy"></i></button>
+            </div>`;
+            favList.appendChild(li);
+        });
+        document.querySelectorAll('.unfav').forEach(btn => {
+            btn.addEventListener('click', () => {
+                let fav = JSON.parse(localStorage.getItem('fav') || '[]');
+                fav = fav.filter(i => i.link !== btn.dataset.link);
+                localStorage.setItem('fav', JSON.stringify(fav));
+                loadFav();
+                syncFavUI();
+                showTip('已取消收藏');
+            });
+        });
+    }
+
+    function syncFavUI() {
+        const fav = JSON.parse(localStorage.getItem('fav') || '[]');
+        document.querySelectorAll('.fav').forEach(btn => {
+            const link = btn.dataset.link;
+            if (fav.some(i => i.link === link)) {
+                btn.classList.add('faved');
+                btn.innerHTML = '<i class="fa-solid fa-star"></i>';
+            } else {
+                btn.classList.remove('faved');
+                btn.innerHTML = '<i class="fa-regular fa-star"></i>';
+            }
+        });
+    }
+
+    document.querySelectorAll('.fav').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const name = btn.dataset.name;
+            const link = btn.dataset.link;
+            let fav = JSON.parse(localStorage.getItem('fav') || '[]');
+            const idx = fav.findIndex(i => i.link === link);
+            if (idx >= 0) {
+                fav.splice(idx, 1);
+                showTip('已取消收藏');
+            } else {
+                fav.push({ name, link });
+                showTip('收藏成功');
+            }
+            localStorage.setItem('fav', JSON.stringify(fav));
+            loadFav();
+            syncFavUI();
+        });
+    });
+
+    document.querySelectorAll('.copy').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const link = btn.dataset.link;
+            const full = link.startsWith('http') ? link : `${location.origin}/${link.replace(/^\//, '')}`;
+            navigator.clipboard.writeText(full).then(() => showTip('链接已复制')).catch(()=>showTip('复制失败'));
+        });
+    });
+
+    loadFav();
+    syncFavUI();
+
+    // 影音导航标签切换
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const tabContents = document.querySelectorAll('.tab-content');
+    tabBtns.forEach(btn => {
+        btn.addEventListener('click', function () {
+            tabBtns.forEach(b => b.classList.remove('active'));
+            tabContents.forEach(c => c.classList.remove('active'));
+            this.classList.add('active');
+            document.getElementById(this.dataset.tab).classList.add('active');
+        });
+    });
+
+    // 跳转弹窗逻辑
+    const modalMask = document.getElementById('modalMask');
+    const modalCancel = document.getElementById('modalCancel');
+    const modalConfirm = document.getElementById('modalConfirm');
+    let targetUrl = '';
+
+    document.querySelectorAll('a[target="_blank"]').forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            targetUrl = this.href;
+            modalMask.classList.add('show');
+        });
+    });
+
+    modalCancel.addEventListener('click', () => {
+        modalMask.classList.remove('show');
+        targetUrl = '';
+    });
+
+    modalConfirm.addEventListener('click', () => {
+        modalMask.classList.remove('show');
+        if(targetUrl) {
+            window.open(targetUrl, '_blank');
+        }
+    });
+
+    modalMask.addEventListener('click', (e) => {
+        if(e.target === modalMask) {
+            modalMask.classList.remove('show');
+            targetUrl = '';
+        }
+    });
+
+});
+</script>
+
+</body>
+</html>
