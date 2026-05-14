@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 人生进度条</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .item {
+            margin-bottom: 24px;
+        }
+
+        .item label {
+            display: block;
+            font-size: 15px;
+            color: var(--subtext);
+            margin-bottom: 8px;
+        }
+
+        input[type="date"],
+        input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-size: 15px;
+            background: var(--card);
+            color: var(--text);
+            outline: none;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 14px;
+            margin: 40px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        #start {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #reset {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .result-box {
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .progress-wrap {
+            width: 100%;
+            height: 14px;
+            background: var(--border);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: var(--theme);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.6s ease;
+        }
+
+        .info-text {
+            font-size: 16px;
+            color: var(--text);
+            margin: 8px 0;
+        }
+
+        .percent-big {
+            font-size: 48px;
+            font-weight: 700;
+            color: var(--theme);
+            margin: 10px 0;
+        }
+
+        .soft-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--subtext);
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-hourglass-end"></i>人生进度条
+        </div>
+        <div class="desc">时光不语，悄悄记录走过的每一段路程</div>
+
+        <div class="item">
+            <label>出生日期</label>
+            <input type="date" id="birth">
+        </div>
+
+        <div class="item">
+            <label>预估寿命 / 岁</label>
+            <input type="number" id="ageLimit" placeholder="建议输入 80~100" min="50" max="120">
+        </div>
+
+        <div class="btn-box">
+            <button id="calcBtn">计算进度</button>
+            <button id="resetBtn">重置</button>
+        </div>
+
+        <div class="result-box">
+            <div class="percent-big" id="percentShow">0%</div>
+            <div class="progress-wrap">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <div class="info-text" id="liveDays">已生活：—— 天</div>
+            <div class="info-text" id="leftDays">剩余时光：—— 天</div>
+            <div class="soft-text">愿余生温柔以待，不负岁月，不负自己</div>
+        </div>
+    </div>
+
+    <script>
+        // 同步网站全局主题
+        document.body.className = localStorage.getItem('site-theme') ? 'theme-' + localStorage.getItem('site-theme') : '';
+
+        // 元素
+        const birthEl = document.getElementById('birth');
+        const ageLimitEl = document.getElementById('ageLimit');
+        const calcBtn = document.getElementById('calcBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const percentShow = document.getElementById('percentShow');
+        const progressBar = document.getElementById('progressBar');
+        const liveDays = document.getElementById('liveDays');
+        const leftDays = document.getElementById('leftDays');
+
+        // 页面加载恢复数据
+        window.onload = function () {
+            birthEl.value = localStorage.getItem('prog_birth') || '';
+            ageLimitEl.value = localStorage.getItem('prog_age') || '';
+        };
+
+        // 计算
+        calcBtn.onclick = function () {
+            const birthVal = birthEl.value;
+            const limitVal = parseInt(ageLimitEl.value);
+
+            if (!birthVal || isNaN(limitVal)) {
+                alert('请选择出生日期并输入预估寿命');
+                return;
+            }
+
+            const birthTime = new Date(birthVal).getTime();
+            const nowTime = Date.now();
+            const totalTime = limitVal * 365 * 24 * 60 * 60 * 1000;
+            const usedTime = nowTime - birthTime;
+
+            if (usedTime <= 0) {
+                alert('出生日期不能晚于今天');
+                return;
+            }
+
+            // 保存数据
+            localStorage.setItem('prog_birth', birthVal);
+            localStorage.setItem('prog_age', limitVal);
+
+            // 计算
+            const percent = (usedTime / totalTime) * 100;
+            const realPercent = percent > 100 ? 100 : percent.toFixed(2);
+
+            const lived = Math.floor(usedTime / (1000 * 60 * 60 * 24));
+            const left = Math.floor((totalTime - usedTime) / (1000 * 60 * 60 * 24));
+
+            // 赋值展示
+            percentShow.innerText = realPercent + '%';
+            progressBar.style.width = realPercent + '%';
+            liveDays.innerText = `已生活：${lived.toLocaleString()} 天`;
+            leftDays.innerText = `剩余时光：${left.toLocaleString()} 天`;
+        };
+
+        // 重置
+        resetBtn.onclick = function () {
+            localStorage.removeItem('prog_birth');
+            localStorage.removeItem('prog_age');
+            birthEl.value = '';
+            ageLimitEl.value = '';
+            percentShow.innerText = '0%';
+            progressBar.style.width = '0%';
+            liveDays.innerText = '已生活：—— 天';
+            leftDays.innerText = '剩余时光：—— 天';
+        };
+    </script>
+</body>
+</html>
