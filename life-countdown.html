@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Axapri | 生命倒计时</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, sans-serif;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        body {
+            background: #f5f5f5;
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+            overscroll-behavior: none;
+        }
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+        h1 {
+            text-align: center;
+            font-size: 28px;
+            font-weight: 600;
+            margin-bottom: 55px;
+            color: #111;
+            letter-spacing: 1px;
+        }
+        .item {
+            margin-bottom: 26px;
+        }
+        .item label {
+            display: block;
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 10px;
+        }
+        input[type="date"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #fff;
+            outline: none;
+            transition: border 0.25s ease;
+        }
+        input[type="date"]:focus {
+            border-color: #666;
+        }
+        .btn-box {
+            display: flex;
+            gap: 14px;
+            margin: 45px 0;
+        }
+        button {
+            flex: 1;
+            padding: 13px;
+            border-radius: 10px;
+            border: none;
+            font-size: 15px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+        #start {
+            background: #222;
+            color: #fff;
+        }
+        #start:hover {
+            background: #333;
+        }
+        #reset {
+            background: #eaeaea;
+            color: #333;
+        }
+        #reset:hover {
+            background: #ddd;
+        }
+        .sec-box {
+            text-align: center;
+            margin-top: 35px;
+            padding-top: 35px;
+            border-top: 1px solid #e5e5e5;
+        }
+        .tip {
+            font-size: 15px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .sec-num {
+            font-size: 52px;
+            font-weight: 700;
+            color: #111;
+            letter-spacing: 3px;
+            transition: all 0.2s ease;
+        }
+        /* 温柔文案样式 */
+        .soft-text {
+            margin-top: 18px;
+            font-size: 14px;
+            color: #888;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>生命倒计时</h1>
+
+        <div class="item">
+            <label>出生日期</label>
+            <input type="date" id="birthDate">
+        </div>
+        <div class="item">
+            <label>结束日期</label>
+            <input type="date" id="endDate">
+        </div>
+
+        <div class="btn-box">
+            <button id="start" onclick="startCount()">开始倒计时</button>
+            <button id="reset" onclick="resetAll()">重置</button>
+        </div>
+
+        <div class="sec-box">
+            <div class="tip">剩余总秒数</div>
+            <div class="sec-num" id="showSec">0</div>
+            <!-- 温柔文案 -->
+            <div class="soft-text">
+                时光缓慢流淌，请好好热爱当下的每一刻
+            </div>
+        </div>
+    </div>
+
+<script>
+let timer = null;
+let endTimeStamp = 0;
+
+// 页面加载：恢复日期 + 恢复秒数
+window.onload = function(){
+    // 恢复保存的日期
+    let birthSave = localStorage.getItem('birthSave');
+    let endSave = localStorage.getItem('endSave');
+    if(birthSave) document.getElementById('birthDate').value = birthSave;
+    if(endSave) document.getElementById('endDate').value = endSave;
+
+    // 恢复倒计时
+    let save = localStorage.getItem('lifeEndTime');
+    if(save){
+        endTimeStamp = parseInt(save);
+        runTimer();
+    }
+};
+
+// 开始倒计时
+function startCount(){
+    // 防止重复开启定时器
+    if(timer) return;
+
+    let birth = document.getElementById('birthDate').value;
+    let end = document.getElementById('endDate').value;
+
+    if(!birth || !end){
+        alert('请选择出生日期和结束日期');
+        return;
+    }
+
+    // 保存日期到本地
+    localStorage.setItem('birthSave', birth);
+    localStorage.setItem('endSave', end);
+
+    let endDt = new Date(end);
+    let now = new Date();
+
+    if(endDt <= now){
+        alert('结束日期必须在现在之后');
+        return;
+    }
+
+    endTimeStamp = endDt.getTime();
+    localStorage.setItem('lifeEndTime', endTimeStamp);
+    runTimer();
+}
+
+function runTimer(){
+    timer = setInterval(()=>{
+        let now = Date.now();
+        let diff = endTimeStamp - now;
+
+        if(diff <= 0){
+            clearInterval(timer);
+            timer = null;
+            localStorage.removeItem('lifeEndTime');
+            document.getElementById('showSec').innerText = '0';
+            alert('生命倒计时已结束');
+            return;
+        }
+
+        let totalSec = Math.floor(diff / 1000);
+        document.getElementById('showSec').innerText = totalSec.toLocaleString();
+    },1000);
+}
+
+// 重置所有
+function resetAll(){
+    if(timer){
+        clearInterval(timer);
+        timer = null;
+    }
+    localStorage.clear();
+    endTimeStamp = 0;
+    document.getElementById('birthDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('showSec').innerText = '0';
+}
+</script>
+</body>
+</html>
