@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 每日温柔寄语</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 40px 25px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .sentence {
+            font-size: 17px;
+            line-height: 1.8;
+            color: var(--text);
+        }
+
+        .date-tip {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--subtext);
+        }
+
+        .btn-refresh {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            border: none;
+            background: var(--theme);
+            color: #fff;
+            font-size: 15px;
+            cursor: pointer;
+        }
+
+        .soft-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--subtext);
+            text-align: center;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-feather-pointed"></i>每日温柔寄语
+        </div>
+        <div class="desc">每日一句晚风短句，治愈平凡生活</div>
+
+        <div class="card">
+            <div class="sentence" id="sentence"></div>
+            <div class="date-tip" id="dateTip"></div>
+        </div>
+
+        <button class="btn-refresh" id="refreshBtn">换一句温柔</button>
+
+        <div class="soft-text">
+            愿日子清透，世事温柔，你永远被时光善待
+        </div>
+    </div>
+
+    <script>
+        // 同步全局主题
+        document.body.className = localStorage.getItem('site-theme') ? 'theme-' + localStorage.getItem('site-theme') : '';
+
+        // 治愈文案库
+        const wishList = [
+            "慢慢来，谁不是边走边自愈。",
+            "风遇山止，船到岸停，万事皆有温柔归期。",
+            "把烦恼丢进晚风里，让夜色替你收藏心事。",
+            "平凡的日子里，也要给自己一点温柔偏爱。",
+            "生活普普通通，但也乐在其中。",
+            "愿你三餐四季，温柔有趣，岁岁无忧。",
+            "不必太匆忙，时光会给你所有答案。",
+            "心怀温柔，所遇皆是人间浪漫。",
+            "保持热爱，奔赴下一场山海。",
+            "夜色温柔，人间值得，你也值得。",
+            "日子缓缓，生活散散，平安喜乐就好。",
+            "放过自己，与生活温柔和解。"
+        ];
+
+        const sentenceEl = document.getElementById('sentence');
+        const dateTipEl = document.getElementById('dateTip');
+        const refreshBtn = document.getElementById('refreshBtn');
+
+        // 获取今日日期
+        function getTodayStr() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+        }
+
+        // 加载寄语
+        function loadWish() {
+            const today = getTodayStr();
+            const saveDate = localStorage.getItem('wish_date');
+            const saveText = localStorage.getItem('wish_text');
+
+            // 同一天不重复换，第二天自动刷新
+            if(saveDate === today && saveText) {
+                sentenceEl.innerText = saveText;
+            } else {
+                const randomText = wishList[Math.floor(Math.random() * wishList.length)];
+                sentenceEl.innerText = randomText;
+                localStorage.setItem('wish_date', today);
+                localStorage.setItem('wish_text', randomText);
+            }
+            dateTipEl.innerText = today;
+        }
+
+        // 手动换一句
+        refreshBtn.onclick = function() {
+            const randomText = wishList[Math.floor(Math.random() * wishList.length)];
+            sentenceEl.innerText = randomText;
+        };
+
+        // 初始化
+        loadWish();
+    </script>
+</body>
+</html>
