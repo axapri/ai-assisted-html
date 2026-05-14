@@ -2,224 +2,281 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
     <title>Axapri | 生命倒计时</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: system-ui, -apple-system, sans-serif;
-            user-select: none;
-            -webkit-user-select: none;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
         }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
         body {
-            background: #f5f5f5;
-            color: #222;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             padding: 60px 20px;
-            overscroll-behavior: none;
         }
+
         .container {
             width: 100%;
             max-width: 420px;
         }
-        h1 {
+
+        .title {
             text-align: center;
-            font-size: 28px;
+            font-size: 26px;
             font-weight: 600;
-            margin-bottom: 55px;
-            color: #111;
-            letter-spacing: 1px;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
         .item {
-            margin-bottom: 26px;
+            margin-bottom: 24px;
         }
+
         .item label {
             display: block;
             font-size: 15px;
-            color: #444;
-            margin-bottom: 10px;
+            color: var(--subtext);
+            margin-bottom: 8px;
         }
+
         input[type="date"] {
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid #ddd;
-            border-radius: 10px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
             font-size: 15px;
-            background: #fff;
+            background: var(--card);
+            color: var(--text);
             outline: none;
-            transition: border 0.25s ease;
         }
-        input[type="date"]:focus {
-            border-color: #666;
-        }
+
         .btn-box {
             display: flex;
             gap: 14px;
-            margin: 45px 0;
+            margin: 40px 0;
         }
+
         button {
             flex: 1;
-            padding: 13px;
-            border-radius: 10px;
+            padding: 14px;
+            border-radius: 12px;
             border: none;
             font-size: 15px;
             cursor: pointer;
-            transition: all 0.25s ease;
+            font-weight: 500;
         }
+
         #start {
-            background: #222;
+            background: var(--theme);
             color: #fff;
         }
-        #start:hover {
-            background: #333;
-        }
+
         #reset {
-            background: #eaeaea;
-            color: #333;
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
         }
-        #reset:hover {
-            background: #ddd;
-        }
-        .sec-box {
+
+        .show-box {
             text-align: center;
-            margin-top: 35px;
-            padding-top: 35px;
-            border-top: 1px solid #e5e5e5;
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
         }
-        .tip {
+
+        .label {
+            color: var(--subtext);
             font-size: 15px;
-            color: #666;
-            margin-bottom: 20px;
+            margin-bottom: 12px;
         }
-        .sec-num {
-            font-size: 52px;
+
+        .sec {
+            font-size: 50px;
             font-weight: 700;
-            color: #111;
-            letter-spacing: 3px;
-            transition: all 0.2s ease;
+            color: var(--theme);
+            letter-spacing: 2px;
         }
-        /* 温柔文案样式 */
-        .soft-text {
-            margin-top: 18px;
+
+        .text {
+            margin-top: 16px;
             font-size: 14px;
-            color: #888;
+            color: var(--subtext);
             line-height: 1.6;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
-        <h1>生命倒计时</h1>
+        <div class="title">
+            <i class="fa-solid fa-hourglass-half"></i>生命倒计时
+        </div>
+        <div class="desc">时光温柔，生活可爱，岁月自有答案</div>
 
         <div class="item">
             <label>出生日期</label>
-            <input type="date" id="birthDate">
+            <input type="date" id="birth">
         </div>
+
         <div class="item">
             <label>结束日期</label>
-            <input type="date" id="endDate">
+            <input type="date" id="end">
         </div>
 
         <div class="btn-box">
-            <button id="start" onclick="startCount()">开始倒计时</button>
-            <button id="reset" onclick="resetAll()">重置</button>
+            <button id="start">开始倒计时</button>
+            <button id="reset">重置</button>
         </div>
 
-        <div class="sec-box">
-            <div class="tip">剩余总秒数</div>
-            <div class="sec-num" id="showSec">0</div>
-            <!-- 温柔文案 -->
-            <div class="soft-text">
-                时光缓慢流淌，请好好热爱当下的每一刻
-            </div>
+        <div class="show-box">
+            <div class="label">剩余总秒数</div>
+            <div class="sec" id="show">0</div>
+            <div class="text">愿你在有限时光里，活出无限温柔与热爱</div>
         </div>
     </div>
 
-<script>
-let timer = null;
-let endTimeStamp = 0;
+    <script>
+        let timer = null;
+        let endStamp = 0;
 
-// 页面加载：恢复日期 + 恢复秒数
-window.onload = function(){
-    // 恢复保存的日期
-    let birthSave = localStorage.getItem('birthSave');
-    let endSave = localStorage.getItem('endSave');
-    if(birthSave) document.getElementById('birthDate').value = birthSave;
-    if(endSave) document.getElementById('endDate').value = endSave;
+        // 主题同步
+        document.body.className = localStorage.getItem('site-theme') ? 'theme-' + localStorage.getItem('site-theme') : '';
 
-    // 恢复倒计时
-    let save = localStorage.getItem('lifeEndTime');
-    if(save){
-        endTimeStamp = parseInt(save);
-        runTimer();
-    }
-};
+        // 加载保存
+        window.onload = function () {
+            let b = localStorage.getItem('life_birth');
+            let e = localStorage.getItem('life_end');
+            let s = localStorage.getItem('life_target');
 
-// 开始倒计时
-function startCount(){
-    // 防止重复开启定时器
-    if(timer) return;
+            if (b) document.getElementById('birth').value = b;
+            if (e) document.getElementById('end').value = e;
+            if (s) endStamp = Number(s);
+        };
 
-    let birth = document.getElementById('birthDate').value;
-    let end = document.getElementById('endDate').value;
+        // 开始
+        document.getElementById('start').onclick = function () {
+            let birth = document.getElementById('birth').value;
+            let end = document.getElementById('end').value;
 
-    if(!birth || !end){
-        alert('请选择出生日期和结束日期');
-        return;
-    }
+            if (!birth || !end) {
+                alert('请选择两个日期');
+                return;
+            }
 
-    // 保存日期到本地
-    localStorage.setItem('birthSave', birth);
-    localStorage.setItem('endSave', end);
+            let et = new Date(end).getTime();
+            if (et <= Date.now()) {
+                alert('结束日期必须晚于现在');
+                return;
+            }
 
-    let endDt = new Date(end);
-    let now = new Date();
+            localStorage.setItem('life_birth', birth);
+            localStorage.setItem('life_end', end);
+            endStamp = et;
+            localStorage.setItem('life_target', endStamp);
 
-    if(endDt <= now){
-        alert('结束日期必须在现在之后');
-        return;
-    }
+            run();
+        };
 
-    endTimeStamp = endDt.getTime();
-    localStorage.setItem('lifeEndTime', endTimeStamp);
-    runTimer();
-}
-
-function runTimer(){
-    timer = setInterval(()=>{
-        let now = Date.now();
-        let diff = endTimeStamp - now;
-
-        if(diff <= 0){
-            clearInterval(timer);
-            timer = null;
-            localStorage.removeItem('lifeEndTime');
-            document.getElementById('showSec').innerText = '0';
-            alert('生命倒计时已结束');
-            return;
+        function run() {
+            if (timer) clearInterval(timer);
+            timer = setInterval(() => {
+                let diff = endStamp - Date.now();
+                if (diff <= 0) {
+                    clearInterval(timer);
+                    document.getElementById('show').innerText = '0';
+                    return;
+                }
+                let sec = Math.floor(diff / 1000);
+                document.getElementById('show').innerText = sec.toLocaleString();
+            }, 1000);
         }
 
-        let totalSec = Math.floor(diff / 1000);
-        document.getElementById('showSec').innerText = totalSec.toLocaleString();
-    },1000);
-}
-
-// 重置所有
-function resetAll(){
-    if(timer){
-        clearInterval(timer);
-        timer = null;
-    }
-    localStorage.clear();
-    endTimeStamp = 0;
-    document.getElementById('birthDate').value = '';
-    document.getElementById('endDate').value = '';
-    document.getElementById('showSec').innerText = '0';
-}
-</script>
+        // 重置
+        document.getElementById('reset').onclick = function () {
+            clearInterval(timer);
+            timer = null;
+            localStorage.removeItem('life_birth');
+            localStorage.removeItem('life_end');
+            localStorage.removeItem('life_target');
+            document.getElementById('birth').value = '';
+            document.getElementById('end').value = '';
+            document.getElementById('show').innerText = '0';
+        };
+    </script>
 </body>
 </html>
