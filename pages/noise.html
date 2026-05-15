@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 晚风白噪音小站</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #47569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 60px 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 26px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 15px;
+            margin-bottom: 40px;
+        }
+
+        .noise-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-bottom: 30px;
+        }
+
+        .noise-item {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px 10px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .noise-item:hover {
+            transform: scale(1.03);
+            background: var(--hover);
+        }
+
+        .noise-item i {
+            font-size: 28px;
+            color: var(--theme);
+            margin-bottom: 10px;
+        }
+
+        .noise-item .name {
+            font-size: 15px;
+            color: var(--text);
+        }
+
+        .noise-item.active {
+            border-color: var(--theme);
+            background: var(--hover);
+        }
+
+        .soft-text {
+            margin-top: 20px;
+            font-size: 14px;
+            color: var(--subtext);
+            text-align: center;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-wind"></i>晚风白噪音小站
+        </div>
+        <div class="desc">听一阵晚风，把心事慢慢放空</div>
+
+       <!-- 「此声音采用 CC0 协议」 您可以复制、修改、发行和演绎本音频，甚至可用于商业性目的，都无需问询作者的同意。 -->
+
+        <div class="noise-grid">
+            
+            <!-- 下雨 许可:CC0 作者:阿涛君 来源:耳聆网 https://www.ear0.com/sound/37752 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E4%B8%8B%E9%9B%A8_%E8%80%B3%E8%81%86%E7%BD%91_%5B%E5%A3%B0%E9%9F%B3ID%EF%BC%9A37752%5D.mp3">
+                <i class="fa-solid fa-cloud-rain"></i>
+                <div class="name">温柔雨声</div>
+            </div>
+
+            <!-- 海浪 许可:CC0 作者:愉快火 来源:耳聆网 https://www.ear0.com/sound/13264 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E6%B5%B7%E6%B5%AA_%E8%80%B3%E8%81%86%E7%BD%91__%E5%A3%B0%E9%9F%B3ID%EF%BC%9A13264_.mp3">
+                <i class="fa-solid fa-water"></i>
+                <div class="name">海浪轻吟</div>
+            </div>
+
+            <!-- 湘江边的虫鸣晚风 许可:CC0 作者:跃入星星的深海 来源:耳聆网 https://www.ear0.com/sound/39535 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E6%B9%98%E6%B1%9F%E8%BE%B9%E7%9A%84%E8%99%AB%E9%B8%A3%E6%99%9A%E9%A3%8E_%E8%80%B3%E8%81%86%E7%BD%91_%5B%E5%A3%B0%E9%9F%B3ID%EF%BC%9A39535%5D.mp3">
+                <i class="fa-solid fa-wind"></i>
+                <div class="name">晚风徐徐</div>
+            </div>
+
+            <!-- 鸟鸣 许可:CC0 作者:oyxf 来源:耳聆网 https://www.ear0.com/sound/40833 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E9%B8%9F%E9%B8%A3_%E8%80%B3%E8%81%86%E7%BD%91__%E5%A3%B0%E9%9F%B3ID%EF%BC%9A40833_.mp3">
+                <i class="fa-solid fa-dove"></i>
+                <div class="name">林间鸟鸣</div>
+            </div>
+
+            <!-- 溪流 许可:CC0 作者:fjddk 来源:耳聆网 https://www.ear0.com/sound/35479 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E6%BA%AA%E6%B5%81_%E8%80%B3%E8%81%86%E7%BD%91_%5B%E5%A3%B0%E9%9F%B3ID%EF%BC%9A35479%5D.mp3">
+                <i class="fa-solid fa-water"></i>
+                <div class="name">溪流潺潺</div>
+            </div>
+
+            <!-- 壁炉燃烧的火焰 许可:CC0 作者:Etienne 来源:耳聆网 https://www.ear0.com/sound/14320 -->
+          
+            <div class="noise-item" data-src="https://raw.githubusercontent.com/axapri/ai-assisted-html/main/static/music/%E5%A3%81%E7%82%89%E7%87%83%E7%83%A7%E7%9A%84%E7%81%AB%E7%84%B0_%E8%80%B3%E8%81%86%E7%BD%91__%E5%A3%B0%E9%9F%B3ID%EF%BC%9A14320_.mp3">
+                <i class="fa-solid fa-fire-flame-curved"></i>
+                <div class="name">壁炉暖声</div>
+            </div>
+        </div>
+
+        <div class="soft-text">
+            戴上耳机，让温柔白噪音陪你静心、放空、入眠
+        </div>
+    </div>
+
+    <audio id="audioPlayer" preload="auto"></audio>
+
+    <script>
+        document.body.className = localStorage.getItem('site-theme') ? 'theme-' + localStorage.getItem('site-theme') : '';
+
+        const items = document.querySelectorAll('.noise-item');
+        const audio = document.getElementById('audioPlayer');
+        let currentPlay = null;
+
+        // 无缝循环（完全不卡顿）
+        audio.addEventListener('timeupdate', function () {
+            // 最后 1.5 秒立即回到开头，零延迟衔接
+            if (this.duration > 0 && this.duration - this.currentTime <= 1.5) {
+                this.currentTime = 0.01;
+            }
+        });
+        // 双保险：播放结束立刻重播
+        audio.addEventListener('ended', function () {
+            this.currentTime = 0.01;
+            this.play();
+        });
+
+        items.forEach(item => {
+            item.addEventListener('click', async function(){
+                const src = this.dataset.src;
+
+                if(currentPlay === this){
+                    audio.pause();
+                    this.classList.remove('active');
+                    currentPlay = null;
+                    return;
+                }
+
+                audio.pause();
+                items.forEach(i => i.classList.remove('active'));
+
+                audio.src = src;
+                audio.load(); // 强制加载
+                await audio.play();
+                this.classList.add('active');
+                currentPlay = this;
+            });
+        });
+    </script>
+</body>
+</html>
