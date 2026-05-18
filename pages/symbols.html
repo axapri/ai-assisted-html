@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<title>Axapri | 序号符号大全</title>
+<link rel="icon" href="static/image/favicon.png" type="image/png" sizes="32x32">
+<link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+    --bg-color:#f5f7fa;
+    --card-bg:#ffffff;
+    --text-color:#222222;
+    --sub-text:#666666;
+    --border-color:#eeeeee;
+    --main-color:#ae3333;
+}
+.dark{
+    --bg-color:#12141d;
+    --card-bg:#202330;
+    --text-color:#f0f0f0;
+    --sub-text:#b0b0c0;
+    --border-color:#333745;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;transition:background 0.3s ease, color 0.3s ease, border-color 0.3s ease, transform 0.2s ease;}
+html {scroll-behavior: smooth;}
+body{
+    font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto;
+    background: linear-gradient(120deg, var(--bg-color), #eef2f8);
+    min-height:100vh;
+    color:var(--text-color);
+    line-height:1.5;
+    padding:20px 15px;
+}
+.container{max-width:880px;margin:0 auto;}
+
+.head-box{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:26px;
+    flex-wrap:wrap;
+    gap:16px;
+    width:100%;
+}
+.top-title{
+    font-size:23px;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+.top-title i{
+    font-size:26px;
+    color:var(--main-color);
+}
+.right-action{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    width:100%;
+}
+.type-select{
+    height: 38px;
+    padding:0 16px;
+    border:1px solid var(--border-color);
+    border-radius:10px;
+    background:var(--card-bg);
+    color:var(--text-color);
+    font-size:14px;
+    outline:none;
+    min-width:190px;
+    flex:1;
+    cursor:pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+.type-select:focus {
+    border-color:var(--main-color);
+}
+
+.func-btn{
+    width:38px;
+    height:38px;
+    border:none;
+    border-radius:10px;
+    background:var(--card-bg);
+    border:1px solid var(--border-color);
+    color:var(--text-color);
+    cursor:pointer;
+    font-size:17px;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    flex-shrink:0;
+}
+.func-btn:active{transform:scale(0.95);}
+.func-btn:hover {
+    border-color:var(--main-color);
+    color:var(--main-color);
+}
+
+.search-wrap{
+    display:flex;
+    gap:12px;
+    margin-bottom:30px;
+}
+.search-box{
+    flex:1;
+    padding:15px 20px;
+    border:1px solid var(--border-color);
+    border-radius:14px;
+    font-size:15px;
+    outline:none;
+    background:var(--card-bg);
+    color:var(--text-color);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.search-box:focus{
+    border-color:var(--main-color);
+    box-shadow:0 0 0 3px rgba(174,51,51,0.12);
+}
+.clear-btn{
+    padding:0 22px;
+    border:none;
+    border-radius:14px;
+    background:var(--card-bg);
+    border:1px solid var(--border-color);
+    color:var(--sub-text);
+    cursor:pointer;
+    font-size:14px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.clear-btn:active{transform:scale(0.95);}
+.clear-btn:hover {
+    border-color:var(--main-color);
+    color:var(--main-color);
+}
+
+.hot-title{
+    font-size:17px;
+    font-weight:600;
+    margin:12px 0 18px;
+    color:var(--main-color);
+    border-left:5px solid var(--main-color);
+    padding-left:12px;
+    display:flex;
+    align-items:center;
+}
+
+.list-wrap{
+    display:grid;
+    grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    gap:16px;
+    margin-bottom:50px;
+}
+
+.item{
+    background:var(--card-bg);
+    padding:16px 12px;
+    border-radius:14px;
+    border:1px solid var(--border-color);
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.05);
+    gap:6px;
+}
+.item:hover{
+    border-color:var(--main-color);
+    transform:translateY(-3px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+}
+.target{
+    color:var(--main-color);
+    font-weight:bold;
+    font-size:19px;
+    cursor:pointer;
+    user-select:none;
+}
+.tool-actions{
+    display:flex;
+    gap:4px;
+    flex-shrink:0;
+}
+.action-btn{
+    width:32px;
+    height:32px;
+    border-radius:8px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:transparent;
+    border:none;
+    color:var(--sub-text);
+    cursor:pointer;
+    font-size:15px;
+}
+.action-btn:active{transform:scale(0.92);}
+.action-btn:hover{
+    background:var(--bg-color);
+    color:var(--main-color);
+}
+.collect-btn.faved{
+    color:var(--main-color);
+}
+
+.toast{
+    position:fixed;
+    bottom:50px;
+    left:50%;
+    transform:translateX(-50%);
+    background:var(--main-color);
+    color:#fff;
+    padding:12px 26px;
+    border-radius:30px;
+    font-size:14px;
+    opacity:0;
+    pointer-events:none;
+    transition:0.3s ease;
+    z-index:999;
+    white-space:nowrap;
+    box-shadow:0 4px 15px rgba(174,51,51,0.3);
+}
+.toast.show{opacity:1;}
+
+.footer{
+    text-align:center;
+    padding:25px 0 15px;
+    color:var(--sub-text);
+    font-size:13px;
+    border-top:1px solid var(--border-color);
+    margin-top:40px;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+    <div class="head-box">
+        <h2 class="top-title"><i class="fa-solid fa-icons"></i> 实用序号符号大全</h2>
+        <div class="right-action">
+            <select class="type-select" id="typeSelect">
+                <option value="hot">热门常用符号</option>
+                <option value="roman">罗马大写</option>
+                <option value="romanLow">罗马小写</option>
+                <option value="cnLow">中文小写数字</option>
+                <option value="cnUp">财务中文大写</option>
+                <option value="greek">希腊字母</option>
+                <option value="circle">空心圈数字</option>
+                <option value="blackCircle">实心圈数字</option>
+                <option value="bracket">括号序号</option>
+                <option value="square">方块数字</option>
+                <option value="chineseOrd">中文序数</option>
+                <option value="englishOrd">英文序数</option>
+                <option value="engUp">26大写英文字母</option>
+                <option value="engLow">26小写英文字母</option>
+                <option value="japan">日文数字</option>
+                <option value="tiangan">十天干</option>
+                <option value="dizhi">十二地支</option>
+                <option value="shengxiao">十二生肖</option>
+                <option value="dashNum">横杠序号</option>
+                <option value="dotNum">圆点序号</option>
+                <option value="govOrder">公文层级序号</option>
+                <option value="specialSymbol">常用特殊符号</option>
+                <option value="lineSymbol">边框分割花式符号</option>
+                <option value="nickSymbol">网名个性组合符号</option>
+                <option value="blankSymbol">游戏空白隐形符号</option>
+            </select>
+            <button class="func-btn" onclick="toggleCollectView()" title="我的收藏">
+                <i class="fa-solid fa-heart"></i>
+            </button>
+            <button class="func-btn" id="darkBtn" onclick="toggleDark()" title="切换深浅模式">
+                <i class="fa-solid fa-moon"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="search-wrap">
+        <input class="search-box" id="searchInp" placeholder="搜索想要的符号、序号">
+        <button class="clear-btn" onclick="clearSearch()">清空</button>
+    </div>
+
+    <div class="hot-title" id="hotTitle">热门精选 · 日常高频使用</div>
+    <div class="list-wrap" id="numList"></div>
+
+</div>
+
+<div class="toast" id="toast">复制成功</div>
+
+<script>
+const dataAll = {
+    hot: [
+        {val:"①"},{val:"②"},{val:"③"},{val:"④"},{val:"⑤"},{val:"⑥"},{val:"⑦"},{val:"⑧"},{val:"⑨"},{val:"⑩"},
+        {val:"一"},{val:"二"},{val:"三"},{val:"四"},{val:"五"},{val:"√"},{val:"×"},{val:"★"},{val:"☆"},{val:"△"},
+        {val:"一、"},{val:"（一）"},{val:"1."},{val:"(1)"},{val:"Ⅰ"},{val:"Ⅱ"},{val:"Ⅲ"},{val:"Ⅳ"},{val:"Ⅴ"},{val:"Ⅵ"}
+    ],
+    roman: [
+        {val:"Ⅰ"},{val:"Ⅱ"},{val:"Ⅲ"},{val:"Ⅳ"},{val:"Ⅴ"},{val:"Ⅵ"},{val:"Ⅶ"},{val:"Ⅷ"},{val:"Ⅸ"},{val:"Ⅹ"},
+        {val:"Ⅺ"},{val:"Ⅻ"},{val:"Ⅼ"},{val:"Ⅽ"},{val:"Ⅾ"},{val:"Ⅿ"}
+    ],
+    romanLow: [
+        {val:"ⅰ"},{val:"ⅱ"},{val:"ⅲ"},{val:"ⅳ"},{val:"ⅴ"},{val:"ⅵ"},{val:"ⅶ"},{val:"ⅷ"},{val:"ⅸ"},{val:"ⅹ"},
+        {val:"ⅺ"},{val:"ⅻ"},{val:"ⅼ"},{val:"ⅽ"},{val:"ⅾ"},{val:"ⅿ"}
+    ],
+    cnLow: [
+        {val:"一"},{val:"二"},{val:"三"},{val:"四"},{val:"五"},{val:"六"},{val:"七"},{val:"八"},{val:"九"},{val:"十"},
+        {val:"十一"},{val:"十二"},{val:"十三"},{val:"十四"},{val:"十五"},{val:"二十"},{val:"三十"},{val:"五十"},{val:"一百"}
+    ],
+    cnUp: [
+        {val:"壹"},{val:"贰"},{val:"叁"},{val:"肆"},{val:"伍"},{val:"陆"},{val:"柒"},{val:"捌"},{val:"玖"},{val:"拾"},
+        {val:"佰"},{val:"仟"},{val:"万"},{val:"亿"},{val:"零"},{val:"整"}
+    ],
+    greek: [
+        {val:"α"},{val:"β"},{val:"γ"},{val:"δ"},{val:"ε"},{val:"ζ"},{val:"η"},{val:"θ"},{val:"ι"},{val:"κ"},
+        {val:"λ"},{val:"μ"},{val:"ν"},{val:"ξ"},{val:"ο"},{val:"π"},{val:"ρ"},{val:"σ"},{val:"τ"},{val:"υ"},
+        {val:"φ"},{val:"χ"},{val:"ψ"},{val:"ω"}
+    ],
+    circle: [
+        {val:"①"},{val:"②"},{val:"③"},{val:"④"},{val:"⑤"},{val:"⑥"},{val:"⑦"},{val:"⑧"},{val:"⑨"},{val:"⑩"},
+        {val:"⑪"},{val:"⑫"},{val:"⑬"},{val:"⑭"},{val:"⑮"},{val:"⑯"},{val:"⑰"},{val:"⑱"},{val:"⑲"},{val:"⑳"}
+    ],
+    blackCircle: [
+        {val:"❶"},{val:"❷"},{val:"❸"},{val:"❹"},{val:"❺"},{val:"❻"},{val:"❼"},{val:"❽"},{val:"❾"},{val:"❿"},
+        {val:"⓫"},{val:"⓬"},{val:"⓭"},{val:"⓮"},{val:"⓯"},{val:"⓰"},{val:"⓱"},{val:"⓲"},{val:"⓳"},{val:"⓴"}
+    ],
+    bracket: [
+        {val:"(1)"},{val:"(2)"},{val:"(3)"},{val:"(4)"},{val:"(5)"},{val:"(6)"},{val:"(7)"},{val:"(8)"},{val:"(9)"},{val:"(10)"},
+        {val:"(11)"},{val:"(12)"},{val:"(13)"},{val:"(14)"},{val:"(15)"},{val:"(16)"},{val:"(17)"},{val:"(18)"},{val:"(19)"},{val:"(20)"}
+    ],
+    square: [
+        {val:"🄰"},{val:"🄱"},{val:"🄲"},{val:"🄳"},{val:"🄴"},{val:"🄵"},{val:"🄶"},{val:"🄷"},{val:"🄸"},{val:"🄹"},
+        {val:"🄺"},{val:"🄻"},{val:"🄼"},{val:"🄽"},{val:"🄾"},{val:"🄿"},{val:"🅀"},{val:"🅁"},{val:"🅂"},{val:"🅃"}
+    ],
+    chineseOrd: [
+        {val:"第一"},{val:"第二"},{val:"第三"},{val:"第四"},{val:"第五"},{val:"第六"},{val:"第七"},{val:"第八"},{val:"第九"},{val:"第十"},
+        {val:"第十一"},{val:"第十二"},{val:"第十三"},{val:"第十四"},{val:"第十五"},{val:"第十六"},{val:"第十七"},{val:"第十八"},{val:"第十九"},{val:"第二十"}
+    ],
+    englishOrd: [
+        {val:"1st"},{val:"2nd"},{val:"3rd"},{val:"4th"},{val:"5th"},{val:"6th"},{val:"7th"},{val:"8th"},{val:"9th"},{val:"10th"},
+        {val:"11th"},{val:"12th"},{val:"13th"},{val:"14th"},{val:"15th"},{val:"16th"},{val:"17th"},{val:"18th"},{val:"19th"},{val:"20th"}
+    ],
+    engUp: [
+        {val:"A"},{val:"B"},{val:"C"},{val:"D"},{val:"E"},{val:"F"},{val:"G"},{val:"H"},{val:"I"},{val:"J"},
+        {val:"K"},{val:"L"},{val:"M"},{val:"N"},{val:"O"},{val:"P"},{val:"Q"},{val:"R"},{val:"S"},{val:"T"},
+        {val:"U"},{val:"V"},{val:"W"},{val:"X"},{val:"Y"},{val:"Z"}
+    ],
+    engLow: [
+        {val:"a"},{val:"b"},{val:"c"},{val:"d"},{val:"e"},{val:"f"},{val:"g"},{val:"h"},{val:"i"},{val:"j"},
+        {val:"k"},{val:"l"},{val:"m"},{val:"n"},{val:"o"},{val:"p"},{val:"q"},{val:"r"},{val:"s"},{val:"t"},
+        {val:"u"},{val:"v"},{val:"w"},{val:"x"},{val:"y"},{val:"z"}
+    ],
+    japan: [
+        {val:"壱"},{val:"弐"},{val:"参"},{val:"四"},{val:"五"},{val:"六"},{val:"七"},{val:"八"},{val:"九"},{val:"十"},
+        {val:"一"},{val:"二"},{val:"三"},{val:"十"},{val:"百"},{val:"千"},{val:"万"}
+    ],
+    tiangan: [
+        {val:"甲"},{val:"乙"},{val:"丙"},{val:"丁"},{val:"戊"},{val:"己"},{val:"庚"},{val:"辛"},{val:"壬"},{val:"癸"}
+    ],
+    dizhi: [
+        {val:"子"},{val:"丑"},{val:"寅"},{val:"卯"},{val:"辰"},{val:"巳"},{val:"午"},{val:"未"},{val:"申"},{val:"酉"},{val:"戌"},{val:"亥"}
+    ],
+    shengxiao: [
+        {val:"鼠"},{val:"牛"},{val:"虎"},{val:"兔"},{val:"龙"},{val:"蛇"},{val:"马"},{val:"羊"},{val:"猴"},{val:"鸡"},{val:"狗"},{val:"猪"}
+    ],
+    dashNum: [
+        {val:"—1—"},{val:"—2—"},{val:"—3—"},{val:"—4—"},{val:"—5—"},{val:"—6—"},{val:"—7—"},{val:"—8—"},{val:"—9—"},{val:"—10—"}
+    ],
+    dotNum: [
+        {val:"1."},{val:"2."},{val:"3."},{val:"4."},{val:"5."},{val:"6."},{val:"7."},{val:"8."},{val:"9."},{val:"10."},
+        {val:"11."},{val:"12."},{val:"13."},{val:"14."},{val:"15."},{val:"16."},{val:"17."},{val:"18."},{val:"19."},{val:"20."}
+    ],
+    govOrder: [
+        {val:"一、"},{val:"（一）"},{val:"1."},{val:"（1）"},{val:"①"},{val:"1.1"},{val:"1.1.1"},{val:"A."},{val:"(A)"},{val:"a."}
+    ],
+    specialSymbol: [
+        {val:"√"},{val:"×"},{val:"★"},{val:"☆"},{val:"△"},{val:"▽"},{val:"→"},{val:"←"},{val:"↑"},{val:"↓"},
+        {val:"♡"},{val:"♥"},{val:"♢"},{val:"♦"},{val:"♣"},{val:"♠"},{val:"○"},{val:"●"},{val:"◇"},{val:"◆"},
+        {val:"□"},{val:"■"},{val:"▽"},{val:"▲"},{val:"△"},{val:"▶"},{val:"◀"},{val:"♩"},{val:"♪"},{val:"♫"}
+    ],
+    lineSymbol: [
+        {val:"━"},{val:"┃"},{val:"┏"},{val:"┓"},{val:"┗"},{val:"┛"},{val:"┣"},{val:"┫"},{val:"┳"},{val:"┻"},
+        {val:"╋"},{val:"━"},{val:"│"},{val:"┌"},{val:"┐"},{val:"└"},{val:"┘"},{val:"┤"},{val:"├"},{val:"┴"},{val:"┬"},
+        {val:"═"},{val:"║"},{val:"╔"},{val:"╗"},{val:"╚"},{val:"╝"},{val:"╠"},{val:"╣"},{val:"╦"},{val:"╩"},{val:"╬"}
+    ],
+    nickSymbol: [
+        {val:"ꫛꫀꪝ"},{val:"゛温柔゛"},{val:"༊࿈࿆"},{val:"°͈꒳°͈"},{val:"✧浅念✧"},{val:"☁雾屿☁"},{val:"⋆͛📢⋆͛"},{val:"࿐星辰࿐"},
+        {val:"ღ"},{val:"༺"},{val:"༻"},{val:"ۖ"},{val:"ۗ"},{val:"ۘ"},{val:"ۙ"},{val:"ۚ"},{val:"ۛ"},{val:"ۜ"},
+        {val:"۞"},{val:"۩"},{val:"₪"},{val:"ஐ"},{val:"ღ"},{val:"ஜ"},{val:"௸"},{val:"ೄ"},{val:"ೆ"},{val:"ೡ"}
+    ],
+    blankSymbol: [
+        {val:"ㅤ"},{val:"　"},{val:"‌"},{val:"‍"},{val:"ᅠ"},{val:"ᆢ"},{val:"˚"},{val:"༊"},{val:"⠀"},{val:""},
+        {val:"​"},{val:"⁡"},{val:"⁢"},{val:"⁣"},{val:"⁤"}
+    ]
+};
+
+const typeNames = {
+    hot:"热门精选 · 日常高频使用", roman:"罗马大写 · 序号符号", romanLow:"罗马小写 · 序号符号",
+    cnLow:"中文小写 · 数字符号", cnUp:"财务大写 · 金额专用", greek:"希腊字母 · 数理符号",
+    circle:"空心圈数字 · 序号", blackCircle:"实心圈数字 · 序号", bracket:"括号序号 · 公文常用",
+    square:"方块数字 · 个性序号", chineseOrd:"中文序数 · 文案排版", englishOrd:"英文序数 · 序号格式",
+    engUp:"26大写英文字母", engLow:"26小写英文字母", japan:"日文数字 · 和风符号",
+    tiangan:"十天干 · 传统序号", dizhi:"十二地支 · 传统序号", shengxiao:"十二生肖 · 趣味序号",
+    dashNum:"横杠序号 · 格式符号", dotNum:"圆点序号 · 笔记常用", govOrder:"公文层级 · 标准序号",
+    specialSymbol:"常用特殊 · 标点符号", lineSymbol:"分割边框 · 排版符号", nickSymbol:"网名个性 · 组合符号",
+    blankSymbol:"隐形空白 · 游戏专用"
+};
+
+let nowType = localStorage.getItem("symbolType") || "hot";
+let isDark = localStorage.getItem("darkMode") === "1";
+let collectList = JSON.parse(localStorage.getItem("symbolCollect")) || [];
+let isShowCollect = false;
+
+const listDom = document.getElementById('numList');
+const searchInp = document.getElementById('searchInp');
+const toast = document.getElementById('toast');
+const typeSelect = document.getElementById('typeSelect');
+const hotTitle = document.getElementById('hotTitle');
+const darkBtn = document.getElementById('darkBtn');
+
+if(isDark){
+    document.body.classList.add("dark");
+    darkBtn.innerHTML = '<i class="fa-solid fa-sun"></i>';
+}
+typeSelect.value = nowType;
+hotTitle.innerText = typeNames[nowType];
+
+function toggleDark(){
+    isDark = !isDark;
+    document.body.classList.toggle("dark",isDark);
+    darkBtn.innerHTML = isDark ? '<i class="fa-solid fa-sun"></i>' : '<i class="fa-solid fa-moon"></i>';
+    localStorage.setItem("darkMode",isDark?"1":"0");
+}
+
+function toggleCollectView(){
+    isShowCollect = !isShowCollect;
+    searchInp.value = "";
+    if(isShowCollect){
+        hotTitle.innerText = "我的收藏符号";
+        renderList(collectList.map(v=>({val:v})));
+    }else{
+        hotTitle.innerText = typeNames[nowType];
+        renderList(dataAll[nowType]);
+    }
+}
+
+typeSelect.addEventListener('change',function(){
+    nowType = this.value;
+    localStorage.setItem("symbolType",nowType);
+    isShowCollect = false;
+    searchInp.value = "";
+    hotTitle.innerText = typeNames[nowType];
+    renderList(dataAll[nowType]);
+})
+
+function renderList(arr){
+    listDom.innerHTML = arr.length===0 ? "<div style='grid-column:1/-1;text-align:center;color:var(--sub-text);padding:30px 0;'>暂无数据</div>" : "";
+    arr.forEach(item=>{
+        let has = collectList.includes(item.val);
+        listDom.innerHTML += `
+        <div class="item">
+            <div class="target" onclick="fastCopy('${item.val}')">${item.val}</div>
+            <div class="tool-actions">
+                <button class="action-btn collect-btn ${has?'faved':''}" onclick="toggleCollect('${item.val}')">
+                    <i class="${has?'fa-solid fa-heart':'fa-regular fa-heart'}"></i>
+                </button>
+                <button class="action-btn" onclick="fastCopy('${item.val}')">
+                    <i class="fa-regular fa-copy"></i>
+                </button>
+            </div>
+        </div>`;
+    })
+}
+
+function toggleCollect(val){
+    const i = collectList.indexOf(val);
+    i>-1 ? collectList.splice(i,1) : collectList.push(val);
+    localStorage.setItem("symbolCollect",JSON.stringify(collectList));
+    renderList(isShowCollect ? collectList.map(v=>({val:v})) : dataAll[nowType]);
+    showToast(i>-1 ? "取消收藏" : "收藏成功");
+}
+
+function fastCopy(txt){
+    if(navigator.clipboard && window.isSecureContext){
+        navigator.clipboard.writeText(txt).then(()=>showToast("复制成功"));
+    }else{
+        let input = document.createElement('input');
+        input.value = txt;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        showToast("复制成功");
+    }
+}
+
+function showToast(t){
+    toast.innerText=t;
+    toast.classList.add("show");
+    clearTimeout(toast.timer);
+    toast.timer = setTimeout(()=>toast.classList.remove("show"),1200);
+}
+
+function clearSearch(){
+    searchInp.value="";
+    renderList(isShowCollect ? collectList.map(v=>({val:v})) : dataAll[nowType]);
+}
+
+searchInp.oninput = function(){
+    const key = this.value.trim().toLowerCase();
+    const source = isShowCollect ? collectList.map(v=>({val:v})) : dataAll[nowType];
+    if(!key){renderList(source);return;}
+    const res = source.filter(x=>x.val.toLowerCase().includes(key));
+    renderList(res);
+}
+
+renderList(dataAll[nowType]);
+</script>
+</body>
+</html>
