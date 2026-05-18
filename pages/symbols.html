@@ -148,24 +148,24 @@ body{
     display:flex;
     align-items:center;
 }
-
 .list-wrap{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(130px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
     gap:16px;
     margin-bottom:50px;
 }
 
 .item{
     background:var(--card-bg);
-    padding:16px 12px;
+    padding:14px 16px;
     border-radius:14px;
     border:1px solid var(--border-color);
     display:flex;
     justify-content:space-between;
     align-items:center;
     box-shadow: 0 3px 10px rgba(0,0,0,0.05);
-    gap:6px;
+    gap:10px;
+    white-space: nowrap;
 }
 .item:hover{
     border-color:var(--main-color);
@@ -178,24 +178,28 @@ body{
     font-size:19px;
     cursor:pointer;
     user-select:none;
+    white-space: nowrap;
+    overflow: visible;
+    text-overflow: unset;
 }
 .tool-actions{
     display:flex;
-    gap:4px;
+    gap:6px;
     flex-shrink:0;
 }
 .action-btn{
-    width:32px;
-    height:32px;
-    border-radius:8px;
-    display:flex;
+    width:30px;
+    height:30px;
+    border-radius:6px;
+    display:inline-flex;
     align-items:center;
     justify-content:center;
     background:transparent;
     border:none;
     color:var(--sub-text);
     cursor:pointer;
-    font-size:15px;
+    font-size:14px;
+    flex-shrink:0;
 }
 .action-btn:active{transform:scale(0.92);}
 .action-btn:hover{
@@ -385,7 +389,7 @@ const dataAll = {
         {val:"═"},{val:"║"},{val:"╔"},{val:"╗"},{val:"╚"},{val:"╝"},{val:"╠"},{val:"╣"},{val:"╦"},{val:"╩"},{val:"╬"}
     ],
     nickSymbol: [
-        {val:"ꫛꫀꪝ"},{val:"゛温柔゛"},{val:"༊࿈࿆"},{val:"°͈꒳°͈"},{val:"✧浅念✧"},{val:"☁雾屿☁"},{val:"⋆͛📢⋆͛"},{val:"࿐星辰࿐"},
+        {val:"ꫛꫀꪝ"},{val:"゛温柔゛"},{val:"༊࿈࿆"},{val:"°͈꒳°͈"},{val:"✧浅念✧"},{val:"☁雾屿☁"},{val:"⋆͛📢⋆͛"},
         {val:"ღ"},{val:"༺"},{val:"༻"},{val:"ۖ"},{val:"ۗ"},{val:"ۘ"},{val:"ۙ"},{val:"ۚ"},{val:"ۛ"},{val:"ۜ"},
         {val:"۞"},{val:"۩"},{val:"₪"},{val:"ஐ"},{val:"ღ"},{val:"ஜ"},{val:"௸"},{val:"ೄ"},{val:"ೆ"},{val:"ೡ"}
     ],
