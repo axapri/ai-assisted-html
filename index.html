@@ -584,8 +584,24 @@ document.addEventListener('DOMContentLoaded', () => {
     const backTop = document.getElementById('backTop');
     const items = document.querySelectorAll('li');
 
-    // 6套主题切换 - 本地存储保存
-    const savedTheme = localStorage.getItem('site-theme') || 'light';
+    // 自动主题逻辑：系统深浅色 + 定时护眼模式
+    function getAutoTheme() {
+        // 1. 如果用户手动设置过主题，优先使用
+        const saved = localStorage.getItem('site-theme');
+        if (saved) return saved;
+
+        // 2. 定时护眼模式：20:00 ~ 06:00 自动深色
+        const hour = new Date().getHours();
+        const isNight = hour >= 20 || hour < 6;
+        if (isNight) return 'dark';
+
+        // 3. 跟随系统深色模式
+        const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        return isSystemDark ? 'dark' : 'light';
+    }
+
+    // 初始化自动主题
+    const savedTheme = getAutoTheme();
     document.body.className = `theme-${savedTheme}`;
     
     // 激活当前主题图标
@@ -613,7 +629,7 @@ document.addEventListener('DOMContentLoaded', () => {
             document.body.className = '';
             // 添加当前主题类
             document.body.classList.add(`theme-${theme}`);
-            // 保存到本地
+            // 保存到本地（手动选择后覆盖自动）
             localStorage.setItem('site-theme', theme);
             // 更新激活状态
             themeColors.forEach(c => c.classList.remove('active'));
@@ -624,18 +640,22 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 搜索功能优化：回车+清空+无结果提示
+    // 搜索功能（带防抖）
+    let searchTimer;
     search.addEventListener('input', () => {
-        const kw = search.value.toLowerCase().trim();
-        searchClear.style.display = kw ? 'block' : 'none';
-        
-        let hasResult = false;
-        items.forEach(li => {
-            const match = li.textContent.toLowerCase().includes(kw);
-            li.style.display = match ? '' : 'none';
-            if (match) hasResult = true;
-        });
-        searchEmpty.style.display = hasResult || !kw ? 'none' : 'block';
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(() => {
+            const kw = search.value.toLowerCase().trim();
+            searchClear.style.display = kw ? 'block' : 'none';
+            
+            let hasResult = false;
+            items.forEach(li => {
+                const match = li.textContent.toLowerCase().includes(kw);
+                li.style.display = match ? '' : 'none';
+                if (match) hasResult = true;
+            });
+            searchEmpty.style.display = hasResult || !kw ? 'none' : 'block';
+        }, 150);
     });
 
     // 回车搜索
@@ -706,7 +726,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.addEventListener('click', () => {
                 const link = btn.dataset.link;
                 const full = link.startsWith('http') ? link : `${location.origin}/${link.replace(/^\//, '')}`;
-                navigator.clipboard.writeText(full).then(() => showTip('链接已复制'));
+                navigator.clipboard.writeText(full).then(() => showTip('链接已复制')).catch(() => showTip('复制失败'));
             });
         });
     }
@@ -746,7 +766,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 修复复制链接（全平台兼容）
+    // 复制链接兼容
     document.querySelectorAll('#toolList .copy, .grid:not(#favList) .copy').forEach(btn => {
         btn.addEventListener('click', () => {
             const link = btn.dataset.link;
