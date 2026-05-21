@@ -1,0 +1,22 @@
+{
+  "name": "Axapri-人间晚风驿站",
+  "short_name": "Axapri",
+  "description": "温柔治愈的在线工具合集，极简起始页、计算器、小游戏、治愈角落",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ae3333",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "favicon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
