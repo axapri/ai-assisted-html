@@ -747,12 +747,14 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // 点击空白关闭主题面板
-    document.addEventListener('click', () => {
-        themePanel.classList.remove('show');
-        privacyModal.classList.remove('show');
-    });
-    themePanel.addEventListener('click', (e) => e.stopPropagation());
-    privacyModal.addEventListener('click', (e) => e.stopPropagation());
+	document.addEventListener('click', (e) => {
+    	themePanel.classList.remove('show');
+    	// 判断点击的是弹窗蒙层区域才关闭
+    	if(e.target === privacyModal){
+        	privacyModal.classList.remove('show');
+    	}
+	});
+	themePanel.addEventListener('click', (e) => e.stopPropagation());
 
     // 切换主题
     themeColors.forEach(color => {
