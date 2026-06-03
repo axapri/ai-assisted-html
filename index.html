@@ -292,48 +292,49 @@
         }
 
         a {
-            color: var(--theme);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 10px 38px 10px 10px;
-            border-radius: 8px;
-            width: 100%;
-            background: var(--card);
-            border: 1px solid var(--border);
-            min-height: 56px;
-        }
+    		color: var(--theme);
+    		text-decoration: none;
+   			display: block;
+    		padding: 10px 38px 10px 10px;
+    		border-radius: 8px;
+    		width: 100%;
+    		background: var(--card);
+    		border: 1px solid var(--border);
+    		min-height: 56px;
+		}
 
-        a:hover {
-            background: var(--hover);
-            transform: scale(1.02);
-        }
+		a:hover {
+  			background: var(--hover);
+    		transform: scale(1.02);
+		}
 
-        /* 工具名称样式 */
-        .tool-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
-        .tool-name i {
-            font-size: 0.85rem;
-            color: var(--theme);
-            opacity: 0.9;
-            width: 16px;
-            text-align: center;
-        }
+		/* 工具名称样式 */
+		.tool-name {
+    		height: 22px;
+    		line-height: 22px;
+    		display: flex;
+    		align-items: center;
+    		gap: 8px;
+    		font-weight: 500;
+		}
+		.tool-name i {
+    		font-size: 0.85rem;
+    		color: var(--theme);
+    		opacity: 0.9;
+    		width: 16px;
+    		text-align: center;
+		}
 
-        /* 工具描述样式 */
-        .tool-desc {
-            font-size: 0.75rem;
-            color: var(--subtext);
-            line-height: 1.4;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+		/* 工具描述样式 */
+		.tool-desc {
+    		font-size: 0.75rem;
+    		color: var(--subtext);
+    		height: 18px;
+    		line-height: 18px;
+    		white-space: nowrap;
+    		overflow: hidden;
+    		text-overflow: ellipsis;
+		}
 
         /* 收藏 & 复制按钮 */
         .tool-actions {
