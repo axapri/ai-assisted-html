@@ -292,18 +292,21 @@
         }
 
         a {
-            color: var(--theme);
-            text-decoration: none;
-            display: flex;
-            flex-direction: column;
-            gap: 2px;
-            padding: 10px 38px 10px 10px;
-            border-radius: 8px;
-            width: 100%;
-            background: var(--card);
-            border: 1px solid var(--border);
-            min-height: 56px;
-        }
+    		color: var(--theme);
+    		text-decoration: none;
+    		display: flex;
+    		flex-direction: column;
+    		gap: 2px;
+    		padding: 10px 38px 10px 10px;
+   	 		border-radius: 8px;
+    		width: 100%;
+    		background: var(--card);
+    		border: 1px solid var(--border);
+    		min-height: 56px;
+    		max-width: 100%;
+            flex: 0 0 auto;
+            overflow: hidden;
+		}
 
         a:hover {
             background: var(--hover);
@@ -312,28 +315,35 @@
 
         /* 工具名称样式 */
         .tool-name {
+ 			flex-shrink:0;
+            min-height: 20px;
             display: flex;
             align-items: center;
             gap: 8px;
             font-weight: 500;
-        }
+		}
         .tool-name i {
             font-size: 0.85rem;
             color: var(--theme);
             opacity: 0.9;
             width: 16px;
             text-align: center;
+            flex-shrink: 0;
         }
 
         /* 工具描述样式 */
-        .tool-desc {
-            font-size: 0.75rem;
-            color: var(--subtext);
-            line-height: 1.4;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
+		.tool-desc {
+    		font-size: 0.75rem;
+    		color: var(--subtext);
+   			line-height: 1.4;
+    		white-space: nowrap;
+   			overflow: hidden;
+    		text-overflow: ellipsis;
+    		flex-shrink: 0 !important;
+            min-width: 0;
+    		min-height:15px;
+            width: 100%;
+		}
 
         /* 收藏 & 复制按钮 */
         .tool-actions {
@@ -542,7 +552,7 @@
 
 <div class="top-bar">
     <h1 class="main-title" style="border:0; padding:0; margin:0;">
-        <i class="fa-solid fa-folder-open"></i>Axapri・效率与乐趣
+        <i class="fa-solid fa-folder-open"></i>Axapri 人间晚风驿站
     </h1>
     <button class="theme-toggle" id="themeBtn">
         <i class="fa-solid fa-palette"></i>
@@ -1043,7 +1053,7 @@
 </div>
 
 <footer>
-    <p>© 2026 Axapri・效率与乐趣 | <span class="footer-link" id="privacyBtn">隐私声明</span></p>
+    <p>© 2026 Axapri・人间晚风驿站 | <span class="footer-link" id="privacyBtn">隐私声明</span></p>
 </footer>
 
 <!-- 返回顶部按钮 -->
