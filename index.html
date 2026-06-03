@@ -130,8 +130,8 @@
             position: relative;
         }
 
-        /* 主题切换按钮 */
-        .theme-toggle {
+        /* 新版设置按钮 */
+        .settings-btn {
             background: var(--card);
             border: 1px solid var(--border);
             width: 38px;
@@ -144,13 +144,14 @@
             color: var(--text);
             transition: 0.2s;
             z-index: 10;
+            font-size: 16px;
         }
-        .theme-toggle:hover {
+        .settings-btn:hover {
             transform: scale(1.05);
         }
 
-        /* 主题选择面板 */
-        .theme-panel {
+        /* 设置菜单面板 */
+        .settings-panel {
             position: absolute;
             top: 50px;
             right: 0;
@@ -158,10 +159,7 @@
             border: 1px solid var(--border);
             border-radius: 12px;
             padding: 12px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            width: 160px;
+            width: 180px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             opacity: 0;
             visibility: hidden;
@@ -169,10 +167,33 @@
             transition: all 0.2s ease;
             z-index: 999;
         }
-        .theme-panel.show {
+        .settings-panel.show {
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
+        }
+        .settings-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            color: var(--text);
+            transition: 0.2s;
+        }
+        .settings-item:hover {
+            background: var(--hover);
+        }
+        .theme-colors {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 10px 5px;
+            border-top: 1px solid var(--border);
+            margin-top: 8px;
+            padding-top: 12px;
         }
         .theme-color {
             width: 28px;
@@ -399,6 +420,7 @@
 
         .toast.show {
             opacity: 1;
+            visibility: visible;
         }
 
         footer {
@@ -544,17 +566,26 @@
     <h1 class="main-title" style="border:0; padding:0; margin:0;">
         <i class="fa-solid fa-folder-open"></i>Axapri・效率与乐趣
     </h1>
-    <button class="theme-toggle" id="themeBtn">
-        <i class="fa-solid fa-palette"></i>
+    <!-- 设置按钮 -->
+    <button class="settings-btn" id="settingsBtn">
+        <i class="fa-solid fa-gear"></i>
     </button>
-    <!-- 主题选择面板 -->
-    <div class="theme-panel" id="themePanel">
-        <div class="theme-color color-light" data-theme="light" title="浅色"></div>
-        <div class="theme-color color-dark" data-theme="dark" title="深色"></div>
-        <div class="theme-color color-green" data-theme="green" title="绿色"></div>
-        <div class="theme-color color-blue" data-theme="blue" title="蓝色"></div>
-        <div class="theme-color color-purple" data-theme="purple" title="紫色"></div>
-        <div class="theme-color color-yellow" data-theme="yellow" title="护眼黄"></div>
+    <!-- 设置菜单面板 -->
+    <div class="settings-panel" id="settingsPanel">
+        <div class="settings-item" id="shareBtn">
+            <i class="fa-solid fa-share-alt"></i>分享本站
+        </div>
+        <div class="settings-item" id="installBtn">
+            <i class="fa-solid fa-desktop"></i>安装到桌面
+        </div>
+        <div class="theme-colors">
+            <div class="theme-color color-light" data-theme="light" title="浅色"></div>
+            <div class="theme-color color-dark" data-theme="dark" title="深色"></div>
+            <div class="theme-color color-green" data-theme="green" title="绿色"></div>
+            <div class="theme-color color-blue" data-theme="blue" title="蓝色"></div>
+            <div class="theme-color color-purple" data-theme="purple" title="紫色"></div>
+            <div class="theme-color color-yellow" data-theme="yellow" title="护眼黄"></div>
+        </div>
     </div>
 </div>
 
@@ -1101,8 +1132,10 @@ document.addEventListener('DOMContentLoaded', () => {
     })();
 
     // 元素获取
-    const themeBtn = document.getElementById('themeBtn');
-    const themePanel = document.getElementById('themePanel');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const settingsPanel = document.getElementById('settingsPanel');
+    const shareBtn = document.getElementById('shareBtn');
+    const installBtn = document.getElementById('installBtn');
     const themeColors = document.querySelectorAll('.theme-color');
     const search = document.getElementById('search');
     const searchClear = document.getElementById('searchClear');
@@ -1116,18 +1149,22 @@ document.addEventListener('DOMContentLoaded', () => {
     const privacyBtn = document.getElementById('privacyBtn');
     const privacyClose = document.getElementById('privacyClose');
 
+    // PWA 安装变量
+    let deferredPrompt;
+
+    // 监听PWA安装提示
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+    });
+
     // 自动主题逻辑：系统深浅色 + 定时护眼模式
     function getAutoTheme() {
-        // 1. 如果用户手动设置过主题，优先使用
         const saved = localStorage.getItem('site-theme');
         if (saved) return saved;
-
-        // 2. 定时护眼模式：20:00 ~ 06:00 自动深色
         const hour = new Date().getHours();
         const isNight = hour >= 20 || hour < 6;
         if (isNight) return 'dark';
-
-        // 3. 跟随系统深色模式
         const isSystemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
         return isSystemDark ? 'dark' : 'light';
     }
@@ -1141,37 +1178,91 @@ document.addEventListener('DOMContentLoaded', () => {
         if(color.dataset.theme === savedTheme) color.classList.add('active');
     });
 
-    // 切换主题面板显示/隐藏
-    themeBtn.addEventListener('click', (e) => {
+    // 设置菜单显示/隐藏
+    settingsBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        themePanel.classList.toggle('show');
+        settingsPanel.classList.toggle('show');
     });
 
-    // 点击空白关闭主题面板
-	document.addEventListener('click', (e) => {
-    	themePanel.classList.remove('show');
-    	// 判断点击的是弹窗蒙层区域才关闭
-    	if(e.target === privacyModal){
-        	privacyModal.classList.remove('show');
+    // 点击空白关闭菜单
+    document.addEventListener('click', (e) => {
+        settingsPanel.classList.remove('show');
+        if(e.target === privacyModal){
+            privacyModal.classList.remove('show');
+        }
+    });
+    settingsPanel.addEventListener('click', (e) => e.stopPropagation());
+
+    // 分享本站功能
+    shareBtn.addEventListener('click', () => {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Axapri・人间晚风驿站',
+                text: '一个温柔治愈的在线工具合集',
+                url: window.location.href
+            }).then(() => {
+                showTip('分享成功');
+            }).catch(() => {
+                showTip('分享取消');
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href).then(() => {
+                showTip('链接已复制，可手动分享');
+            });
+        }
+        settingsPanel.classList.remove('show');
+    });
+
+	//安装到桌面功能
+    installBtn.addEventListener('click', () => {
+    	settingsPanel.classList.remove('show')
+    	// 方案1：支持PWA自动弹窗
+    	if (deferredPrompt) {
+        	deferredPrompt.prompt()
+        	deferredPrompt.userChoice.then(res => {
+            	res.outcome === 'accepted' ? showTip('成功添加到桌面！') : showTip('已取消安装')
+            	deferredPrompt = null
+        	})
+    	} else {
+        	// 方案2：全平台图文引导手动添加（核心：自主引导用户操作）
+        	let tipText = ''
+        	const ua = navigator.userAgent.toLowerCase()
+        	// 微信浏览器
+        	if (ua.includes('micromessenger')) {
+            	tipText = '🔖微信添加桌面步骤：\n1.点右上角【···】\n2.选择【添加到桌面】'
+        	}
+        	// QQ内置浏览器
+        	else if (ua.includes('qqbrowser') || ua.includes('qq/')) {
+            	tipText = '🔖QQ浏览器添加桌面：\n右上角菜单→添加到桌面'
+        	}
+        	// 安卓原生/小米/华为/OPPO浏览器
+        	else if (ua.includes('android')) {
+            	tipText = '🔖安卓浏览器添加：\n右上角菜单→添加到主页/创建快捷方式'
+        	}
+        	// iPhone Safari
+        	else if (ua.includes('iphone') || ua.includes('ipad')) {
+            	tipText = '🔖苹果Safari添加：\n底部分享图标→添加到主屏幕'
+        	}
+        	// 其他浏览器
+        	else {
+            	tipText = '🔖浏览器菜单→添加到桌面/创建快捷方式\n网址已自动复制'
+        	}
+        	// 自动复制网址
+        	navigator.clipboard.writeText(location.origin)
+        	showTip(tipText)
     	}
-	});
-	themePanel.addEventListener('click', (e) => e.stopPropagation());
+	})
 
     // 切换主题
     themeColors.forEach(color => {
         color.addEventListener('click', () => {
             const theme = color.dataset.theme;
-            // 移除所有主题类
             document.body.className = '';
-            // 添加当前主题类
             document.body.classList.add(`theme-${theme}`);
-            // 保存到本地（手动选择后覆盖自动）
             localStorage.setItem('site-theme', theme);
-            // 更新激活状态
             themeColors.forEach(c => c.classList.remove('active'));
             color.classList.add('active');
-            // 关闭面板
-            themePanel.classList.remove('show');
+            settingsPanel.classList.remove('show');
             showTip('主题切换成功');
         });
     });
