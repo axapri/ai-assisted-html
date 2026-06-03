@@ -293,19 +293,17 @@
 
         a {
     		color: var(--theme);
-   			text-decoration: none;
-   			display: flex;
-  			flex-direction: column;
+    		text-decoration: none;
+    		display: flex;
+    		flex-direction: column;
     		gap: 2px;
     		padding: 10px 38px 10px 10px;
-   			border-radius: 8px;
-   			width: 100%;
+   	 		border-radius: 8px;
+    		width: 100%;
     		background: var(--card);
     		border: 1px solid var(--border);
-    		/* 把最小高度调高，保证描述能放下 */
-    		min-height: 62px;
-    		/* 垂直居中更美观 */
-    		justify-content: center;
+    		min-height: 56px;
+    		max-width: 100%;
 		}
 
         a:hover {
@@ -315,11 +313,8 @@
 
         /* 工具名称样式 */
         .tool-name {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-weight: 500;
-        }
+ 			flex-shrink:0; /* 标题也禁止压缩 */
+		}
         .tool-name i {
             font-size: 0.85rem;
             color: var(--theme);
@@ -331,16 +326,13 @@
         /* 工具描述样式 */
 		.tool-desc {
     		font-size: 0.75rem;
-    		/* 强制提高对比度，保证所有主题都能看见 */
-    		color: var(--text);
-    		opacity: 0.7;
-   			 line-height: 1.4;
-   			 /* 保留单行省略，但保证可见 */
-   			 white-space: nowrap;
-   			 overflow: hidden;
-   			 text-overflow: ellipsis;
-   			 /* 加一个最小高度，防止文字被挤没 */
-   			 min-height: 14px;
+    		color: var(--subtext);
+   			line-height: 1.4;
+    		white-space: nowrap;
+   			overflow: hidden;
+    		text-overflow: ellipsis;
+    		flex-shrink: 0 !important; /* 核心：禁止flex压缩自身宽度 */
+    		min-height:15px;
 		}
 
         /* 收藏 & 复制按钮 */
