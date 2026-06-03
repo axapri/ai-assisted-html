@@ -578,6 +578,10 @@
         <div class="settings-item" id="installBtn">
             <i class="fa-solid fa-desktop"></i>安装到桌面
         </div>
+		<!-- 强制刷新按钮 -->
+		<div class="settings-item" id="refreshBtn">
+            <i class="fa-solid fa-arrows-rotate"></i>强制刷新
+        </div>
         <div class="theme-colors">
             <div class="theme-color color-light" data-theme="light" title="浅色"></div>
             <div class="theme-color color-dark" data-theme="dark" title="深色"></div>
@@ -1086,7 +1090,7 @@
 
 <!-- 隐私声明弹窗 -->
 <div class="privacy-modal" id="privacyModal">
-    <div class="privacy-content">
+    <div classprivacy-content">
         <button class="privacy-close" id="privacyClose"><i class="fa-solid fa-xmark"></i></button>
         <div class="privacy-title">隐私声明</div>
         <div class="privacy-text">
@@ -1136,6 +1140,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const settingsPanel = document.getElementById('settingsPanel');
     const shareBtn = document.getElementById('shareBtn');
     const installBtn = document.getElementById('installBtn');
+	const refreshBtn = document.getElementById('refreshBtn'); // 新增
     const themeColors = document.querySelectorAll('.theme-color');
     const search = document.getElementById('search');
     const searchClear = document.getElementById('searchClear');
@@ -1253,6 +1258,15 @@ document.addEventListener('DOMContentLoaded', () => {
     	}
 	})
 
+	// 强制刷新功能（无视缓存）
+	refreshBtn.addEventListener('click', () => {
+		settingsPanel.classList.remove('show');
+		showTip('正在强制刷新…');
+		setTimeout(() => {
+			window.location.replace(window.location.origin + window.location.pathname + '?t=' + new Date().getTime());
+		}, 300);
+	});
+	
     // 切换主题
     themeColors.forEach(color => {
         color.addEventListener('click', () => {
