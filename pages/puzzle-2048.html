@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 2048 数字拼图</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow: hidden;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .score-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 12px 14px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 14px;
+            color: var(--text);
+        }
+
+        .game-board {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+            touch-action: manipulation;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 340px;
+            position: relative;
+        }
+
+        .rule-view {
+            position: absolute;
+            inset: 0;
+            background: var(--card);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            padding: 20px;
+            gap: 12px;
+            font-size: 14px;
+            color: var(--subtext);
+            z-index: 10;
+        }
+        .rule-view.hidden {
+            display: none;
+        }
+
+        .cell {
+            aspect-ratio: 1/1;
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .n2 { background: #fef2f2; color: #ae3333; }
+        .n4 { background: #fde6e6; color: #ae3333; }
+        .n8 { background: #fcd4d4; color: #fff; }
+        .n16 { background: #fbc0c0; color: #fff; }
+        .n32 { background: #f9aaaa; color: #fff; }
+        .n64 { background: #f78e8e; color: #fff; }
+        .n128 { background: #f56c6c; color: #fff; }
+        .n256 { background: #f34f4f; color: #fff; }
+        .n512 { background: #f13030; color: #fff; }
+        .n1024 { background: #ef1f1f; color: #fff; font-size:15px; }
+        .n2048 { background: #ed0000; color: #fff; font-size:15px; }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 26px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #restartBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 16px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+        .modal{
+            position:fixed;
+            inset:0;
+            background:rgba(0,0,0,0.4);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            z-index:99;
+        }
+        .modal-content{
+            background:var(--bg);
+            padding:30px 25px;
+            border-radius:14px;
+            text-align:center;
+            max-width:280px;
+            border:1px solid var(--border);
+        }
+        .modal-content p{
+            margin-bottom:20px;
+            color:var(--text);
+        }
+        .modal-btn-group{
+            display:flex;
+            gap:10px;
+        }
+        .modal-btn-group button{
+            flex:1;
+        }
+        .modal-yes{
+            background:var(--theme);
+            color:#fff;
+        }
+        .modal-no{
+            background:#eee;
+            color:#333;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-gamepad"></i>2048 数字拼图
+        </div>
+        <div class="desc">电脑方向键｜手机滑动操控</div>
+
+        <div class="score-box">当前分数：<span id="score">0</span></div>
+
+        <div class="game-board" id="board">
+            <div class="rule-view" id="ruleView">
+                <div>🎮 游戏规则</div>
+                <div>相同数字碰撞即可合并</div>
+                <div>合成 2048 即可获胜</div>
+                <div>点击【开始新游戏】开始</div>
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="restartBtn">开始新游戏</button>
+            <button id="resetBtn">重置</button>
+        </div>
+
+        <div class="soft-text">
+            手指在棋盘上下左右滑屏，相同数字合并翻倍<br>合成 2048 即可获胜
+        </div>
+    </div>
+
+    <script>
+        const board = document.getElementById('board');
+        const scoreText = document.getElementById('score');
+        const restartBtn = document.getElementById('restartBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const ruleView = document.getElementById('ruleView');
+
+        let grid = [];
+        let saveGridData = null;
+        let saveScoreData = 0;
+        let score = 0;
+        let startX = 0, startY = 0;
+        const minSwipe = 25;
+        let gameOver = false;
+        let isLock = false;
+        const coolTime = 150;
+        let gameStarted = false;
+        let modalOpen = false; //标记弹窗开启，弹窗期间禁用操作
+        const colors = {2:'n2',4:'n4',8:'n8',16:'n16',32:'n32',64:'n64',128:'n128',256:'n256',512:'n512',1024:'n1024',2048:'n2048'};
+
+        function renderEmptyBoard(){
+            board.innerHTML = '';
+            for(let i=0;i<4;i++){
+                for(let j=0;j<4;j++){
+                    let div = document.createElement('div');
+                    div.className = 'cell';
+                    board.appendChild(div);
+                }
+            }
+        }
+
+        // 存档询问弹窗
+        function showSaveConfirm(){
+            modalOpen = true;
+            let wrap = document.createElement('div');
+            wrap.className='modal';
+            wrap.id='confirmModal';
+            wrap.innerHTML=`
+                <div class="modal-content">
+                    <p>检测到历史存档，是否继续上次对局？</p>
+                    <div class="modal-btn-group">
+                        <button class="modal-yes" id="yesBtn">继续存档</button>
+                        <button class="modal-no" id="noBtn">新开游戏</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(wrap);
+            document.getElementById('yesBtn').onclick=()=>{
+                //加载存档
+                grid = saveGridData;
+                score = saveScoreData;
+                scoreText.innerText = score;
+                render();
+                gameStarted = true;
+                ruleView.classList.add('hidden');
+                wrap.remove();
+                modalOpen = false;
+            }
+            document.getElementById('noBtn').onclick=()=>{
+                wrap.remove();
+                modalOpen = false;
+            }
+        }
+
+        function checkHasSave(){
+            let saveGrid = localStorage.getItem('grid2048');
+            let saveScore = localStorage.getItem('score2048');
+            if(saveGrid && saveScore){
+                saveGridData = JSON.parse(saveGrid);
+                saveScoreData = Number(saveScore);
+                return true;
+            }
+            return false;
+        }
+
+        function saveData(){
+            localStorage.setItem('grid2048',JSON.stringify(grid));
+            localStorage.setItem('score2048',score);
+        }
+
+        function init(){
+            ruleView.classList.add('hidden');
+            grid = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+            score = 0;
+            gameOver = false;
+            gameStarted = true;
+            scoreText.innerText = 0;
+            addNum();
+            addNum();
+            render();
+            saveData();
+        }
+
+        function addNum(){
+            let list = [];
+            for(let i=0;i<4;i++) for(let j=0;j<4;j++) if(grid[i][j]===0) list.push([i,j]);
+            if(list.length===0) return;
+            let [x,y] = list[Math.floor(Math.random()*list.length)];
+            let r = Math.random();
+            if(r>0.92) grid[x][y]=8;
+            else if(r>0.7) grid[x][y]=4;
+            else grid[x][y]=2;
+        }
+
+        function render(){
+            board.innerHTML = '';
+            for(let i=0;i<4;i++){
+                for(let j=0;j<4;j++){
+                    let div = document.createElement('div');
+                    div.className = 'cell';
+                    let v = grid[i][j];
+                    if(v!==0){
+                        div.innerText = v;
+                        div.classList.add(colors[v]);
+                    }
+                    board.appendChild(div);
+                }
+            }
+        }
+
+        function moveLeft(arr){
+            let newArr = arr.filter(v=>v!==0);
+            for(let i=0;i<newArr.length-1;i++){
+                if(newArr[i]===newArr[i+1]){
+                    newArr[i] *=2;
+                    score += newArr[i];
+                    newArr[i+1] = 0;
+                }
+            }
+            newArr = newArr.filter(v=>v!==0);
+            while(newArr.length<4) newArr.push(0);
+            return newArr;
+        }
+
+        function rotate(){
+            let n = [[0,0,0,0],[0,0,0,0],[0,0,0,0],[0,0,0,0]];
+            for(let i=0;i<4;i++) for(let j=0;j<4;j++) n[j][3-i] = grid[i][j];
+            grid = n;
+        }
+
+        function go(dir){
+            if(!gameStarted || gameOver || isLock || modalOpen) return;
+            isLock = true;
+            setTimeout(()=>isLock=false,coolTime);
+            let old = JSON.stringify(grid);
+            if(dir==='left') for(let i=0;i<4;i++) grid[i] = moveLeft(grid[i]);
+            if(dir==='right'){ for(let i=0;i<4;i++){ grid[i].reverse(); grid[i] = moveLeft(grid[i]); grid[i].reverse(); }}
+            if(dir==='up'){ rotate();rotate();rotate(); for(let i=0;i<4;i++) grid[i] = moveLeft(grid[i]); rotate(); }
+            if(dir==='down'){ rotate(); for(let i=0;i<4;i++) grid[i] = moveLeft(grid[i]); rotate();rotate();rotate(); }
+            if(old !== JSON.stringify(grid)){
+                scoreText.innerText = score;
+                addNum();
+                render();
+                saveData();
+                checkWin();
+                checkLose();
+            }
+        }
+
+        document.addEventListener('keydown',(e)=>{
+            if(!gameStarted || modalOpen) return;
+            if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.key)) e.preventDefault();
+            if(e.key==='ArrowUp') go('up');
+            if(e.key==='ArrowDown') go('down');
+            if(e.key==='ArrowLeft') go('left');
+            if(e.key==='ArrowRight') go('right');
+        });
+
+        board.addEventListener('touchstart',(e)=>{
+            if(!gameStarted || modalOpen) return;
+            startX = e.touches[0].clientX;
+            startY = e.touches[0].clientY;
+        })
+
+        board.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+        }, { passive: false });
+
+        board.addEventListener('touchend',(e)=>{
+            if(!gameStarted || modalOpen) return;
+            let endX = e.changedTouches[0].clientX;
+            let endY = e.changedTouches[0].clientY;
+            let dx = endX - startX;
+            let dy = endY - startY;
+            let absX = Math.abs(dx);
+            let absY = Math.abs(dy);
+            if(absX<minSwipe && absY<minSwipe) return;
+            if(absX > absY){
+                dx>0 ? go('right') : go('left');
+            }else{
+                dy>0 ? go('down') : go('up');
+            }
+        })
+
+        function showModal(text){
+            let wrap = document.createElement('div');
+            wrap.className='modal';
+            wrap.innerHTML=`
+                <div class="modal-content">
+                    <p>${text}</p>
+                    <button id="closeModal">确定</button>
+                </div>
+            `;
+            document.body.appendChild(wrap);
+            document.getElementById('closeModal').onclick=()=>wrap.remove();
+        }
+
+        function checkWin(){
+            for(let i=0;i<4;i++){
+                if(grid[i].includes(2048)) {
+                    showModal('🎉 恭喜你，合成2048，游戏胜利！');
+                    gameOver = true;
+                }
+            }
+        }
+
+        function checkLose(){
+            for(let i=0;i<4;i++) for(let j=0;j<4;j++){
+                if(grid[i][j]===0) return;
+                if(i<3 && grid[i][j]===grid[i+1][j]) return;
+                if(j<3 && grid[i][j]===grid[i][j+1]) return;
+            }
+            showModal('💥 游戏结束，无法移动！');
+            gameOver = true;
+        }
+
+        restartBtn.onclick = init;
+        //重置：只清空当前对局，保留本地存档
+        resetBtn.onclick = ()=>{
+            init();
+        };
+
+        window.onload=()=>{
+            renderEmptyBoard();
+            if(checkHasSave()){
+                showSaveConfirm();
+            }
+        };
+    </script>
+</body>
+</html>
