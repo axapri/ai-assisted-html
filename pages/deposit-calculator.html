@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 存款到期计算器</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7280;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height: 1.7;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #calcBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            text-align: center;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-piggy-bank"></i> 存款到期计算器
+        </div>
+        <div class="desc">银行整存整取定期存款收益测算</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label>存款本金（元）</label>
+                <input type="number" id="principal" value="10000">
+            </div>
+
+            <div class="form-item">
+                <label>存款期限</label>
+                <select id="term">
+                    <option value="0.25">3个月</option>
+                    <option value="0.5">6个月</option>
+                    <option value="1">1年</option>
+                    <option value="2">2年</option>
+                    <option value="3">3年</option>
+                    <option value="5">5年</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label>执行年利率（%）</label>
+                <input type="number" id="rate" value="1.50">
+            </div>
+
+            <div class="result-box" id="result">
+                计算结果将显示在这里
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="calcBtn">立即计算</button>
+            <button id="resetBtn">清空重置</button>
+        </div>
+
+        <div class="soft-text">
+            采用银行整存整取单利公式计算<br>结果仅供参考，实际以银行结算为准
+        </div>
+    </div>
+
+    <script>
+        const principal = document.getElementById('principal');
+        const term = document.getElementById('term');
+        const rate = document.getElementById('rate');
+        const calcBtn = document.getElementById('calcBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const result = document.getElementById('result');
+
+        // 自动切换利率
+        term.addEventListener('change', function () {
+            let rates = {
+                "0.25": 1.10,
+                "0.5": 1.30,
+                "1": 1.50,
+                "2": 1.85,
+                "3": 2.25,
+                "5": 2.30
+            };
+            rate.value = rates[this.value];
+            autoSave();
+        });
+
+        // 自动保存
+        function autoSave() {
+            let data = {
+                p: principal.value,
+                t: term.value,
+                r: rate.value
+            };
+            localStorage.setItem('depositData', JSON.stringify(data));
+        }
+
+        // 加载缓存
+        window.onload = function () {
+            let d = localStorage.getItem('depositData');
+            if (d) {
+                let obj = JSON.parse(d);
+                principal.value = obj.p || 10000;
+                term.value = obj.t || 1;
+                rate.value = obj.r || 1.50;
+            }
+        };
+
+        // 计算
+        function calc() {
+            let p = parseFloat(principal.value) || 0;
+            let t = parseFloat(term.value) || 0;
+            let r = parseFloat(rate.value) / 100 || 0;
+
+            if (p <= 0 || t <= 0 || r <= 0) {
+                result.innerText = "请输入有效数值";
+                return;
+            }
+
+            let interest = p * r * t;
+            let total = p + interest;
+
+            result.innerHTML = `
+到期利息：${interest.toFixed(2)} 元<br>
+本息合计：${total.toFixed(2)} 元
+            `;
+            autoSave();
+        }
+
+        // 重置
+        function resetAll() {
+            principal.value = "10000";
+            term.value = "1";
+            rate.value = "1.50";
+            result.innerText = "计算结果将显示在这里";
+            localStorage.removeItem('depositData');
+        }
+
+        // 绑定事件
+        calcBtn.addEventListener('click', calc);
+        resetBtn.addEventListener('click', resetAll);
+        principal.addEventListener('input', autoSave);
+        rate.addEventListener('input', autoSave);
+    </script>
+</body>
+</html>
