@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 日期计算器</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 310px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height:1.7;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #calcBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-calendar-days"></i> 日期计算器
+        </div>
+        <div class="desc">公历农历互转｜天数差｜推算日期</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label>计算模式</label>
+                <select id="mode">
+                    <option value="diff">日期相差天数</option>
+                    <option value="future">推算n天后的日期</option>
+                    <option value="lunar">公历转换农历</option>
+                </select>
+            </div>
+
+            <div class="form-item" id="box1">
+                <label>开始日期(公历)</label>
+                <input type="date" id="date1">
+            </div>
+
+            <div class="form-item" id="box2">
+                <label>结束日期(公历)</label>
+                <input type="date" id="date2">
+            </div>
+
+            <div class="form-item" id="box3" style="display:none;">
+                <label>推算天数</label>
+                <input type="number" id="days" value="30">
+            </div>
+
+            <div class="result-box" id="result">
+                计算结果将显示在这里
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="calcBtn">立即计算</button>
+            <button id="resetBtn">清空重置</button>
+        </div>
+
+        <div class="soft-text">
+            公历农历一键换算｜间隔天数｜往后推算日期
+        </div>
+    </div>
+
+<script>
+/** 农历公历转换核心库 */
+const lunarData = [0x04bd8,0x04ae0,0x0a570,0x054d5,0x0d260,0x0d950,0x16554,0x056a0,0x09ad0,0x055d2,0x04ae0,0x0a5b6,0x0a4d0,0x0d250,0x1d255,0x0b540,0x0d6a0,0x0ada2,0x095b0,0x14977,0x04970,0x0a4b0,0x0b4b5,0x06a50,0x06d40,0x1ab54,0x02b60,0x09570,0x052f2,0x04970];
+const Gan=["甲","乙","丙","丁","戊","己","庚","辛","壬","癸"];
+const Zhi=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+const monthCN=["正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","冬月","腊月"];
+const dayCN=["初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+
+function solar2Lunar(y,m,d){
+    let base=new Date(1900,0,31);
+    let target=new Date(y,m-1,d);
+    let days=Math.floor((target-base)/(1000*3600*24));
+    let ly=1900,lm=1,ld=1;
+    while(days>0){
+        let mLen=getLunarMonthLen(ly,lm);
+        if(days>mLen){days-=mLen;lm++;if(lm>12+getLeapMonth(ly)){lm=1;ly++;}}else{ld+=days;days=0;}
+    }
+    let leap=getLeapMonth(ly);
+    let isLeap=false;
+    if(leap>0 && lm>leap){lm--;if(lm==leap)isLeap=true;}
+    let g=(ly-4)%10,z=(ly-4)%12;
+    return {year:ly,month:lm,day:ld,isLeap:isLeap,gz:Gan[g]+Zhi[z]};
+}
+function getLeapMonth(y){let v=lunarData[y-1900];return (v&0xf);}
+function getLunarMonthLen(y,m){
+    let v=lunarData[y-1900];
+    let leap=getLeapMonth(y);
+    let isLeapMonth=(leap!=0&&m==leap);
+    let shift=0x8000;
+    if(isLeapMonth){shift>>=(leap+1);return (v&shift)?30:29;}
+    let start=m;if(leap!=0&&m>leap)start++;
+    shift>>=start;
+    return (v&shift)?30:29;
+}
+
+//页面逻辑
+const mode = document.getElementById('mode');
+const box1 = document.getElementById('box1');
+const box2 = document.getElementById('box2');
+const box3 = document.getElementById('box3');
+const date1 = document.getElementById('date1');
+const date2 = document.getElementById('date2');
+const days = document.getElementById('days');
+const result = document.getElementById('result');
+const calcBtn = document.getElementById('calcBtn');
+const resetBtn = document.getElementById('resetBtn');
+
+const today = new Date().toISOString().split('T')[0];
+date1.value = today;
+date2.value = today;
+
+mode.addEventListener('change', function () {
+    if (this.value === 'diff') {
+        box1.style.display = 'flex';box2.style.display = 'flex';box3.style.display = 'none';
+        box1.querySelector('label').innerText="开始日期(公历)";
+    } else if(this.value === 'future'){
+        box1.style.display = 'flex';box2.style.display = 'none';box3.style.display = 'flex';
+        box1.querySelector('label').innerText="起始日期(公历)";
+    }else{
+        box1.style.display = 'flex';box2.style.display = 'none';box3.style.display = 'none';
+        box1.querySelector('label').innerText="待转换公历日期";
+    }
+    autoSave();
+});
+
+function calc() {
+    if (mode.value === 'diff') {
+        let d1 = new Date(date1.value);
+        let d2 = new Date(date2.value);
+        let diff = Math.abs(d2 - d1) / (1000 * 60 * 60 * 24);
+        result.innerText = `相差：${diff} 天`;
+    } else if(mode.value === 'future'){
+        let d = new Date(date1.value);
+        let add = parseInt(days.value) || 0;
+        d.setDate(d.getDate() + add);
+        let s=d.toISOString().split('T')[0];
+        let lu=solar2Lunar(d.getFullYear(),d.getMonth()+1,d.getDate());
+        let leapStr=lu.isLeap?"闰":"";
+        result.innerText = `目标公历：${s}\n对应农历：${lu.gz}年 ${leapStr}${monthCN[lu.month-1]}${dayCN[lu.day-1]}`;
+    }else{
+        let arr=date1.value.split('-');
+        let y=+arr[0],m=+arr[1],d=+arr[2];
+        let lu=solar2Lunar(y,m,d);
+        let leapStr=lu.isLeap?"闰":"";
+        result.innerText=`公历：${y}-${m}-${d}\n农历：${lu.gz}年 ${leapStr}${monthCN[lu.month-1]}${dayCN[lu.day-1]}`;
+    }
+    autoSave();
+}
+
+function resetAll() {
+    mode.value = 'diff';
+    date1.value = today;
+    date2.value = today;
+    days.value = 30;
+    mode.dispatchEvent(new Event('change'));
+    result.innerText = '计算结果将显示在这里';
+    localStorage.removeItem('dateData');
+}
+
+function autoSave() {
+    let data = {mode: mode.value,date1: date1.value,date2: date2.value,days: days.value};
+    localStorage.setItem('dateData', JSON.stringify(data));
+}
+
+window.onload = function () {
+    let d = localStorage.getItem('dateData');
+    if (d) {
+        let data = JSON.parse(d);
+        mode.value = data.mode || 'diff';
+        date1.value = data.date1 || today;
+        date2.value = data.date2 || today;
+        days.value = data.days || 30;
+        mode.dispatchEvent(new Event('change'));
+    }
+};
+
+calcBtn.addEventListener('click', calc);
+resetBtn.addEventListener('click', resetAll);
+mode.addEventListener('change', autoSave);
+date1.addEventListener('change', autoSave);
+date2.addEventListener('change', autoSave);
+days.addEventListener('input', autoSave);
+</script>
+</body>
+</html>
