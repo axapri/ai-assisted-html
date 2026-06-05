@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 还款计算器</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 310px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height:1.7;
+            white-space: pre-line;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #calcBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-house-chimney"></i> 还款计算器
+        </div>
+        <div class="desc">房贷｜房租｜消费分期｜贷款月供测算</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label>贷款本金（元）</label>
+                <input type="number" id="principal" value="500000">
+            </div>
+
+            <div class="form-item">
+                <label>利率类型</label>
+                <select id="rateType">
+                    <option value="year">年利率（%）</option>
+                    <option value="month">月利率（%）</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label id="rateText">年利率（%）</label>
+                <input type="number" id="rate" value="3.8">
+            </div>
+
+            <div class="form-item">
+                <label>分期期数（月）</label>
+                <input type="number" id="months" value="360">
+            </div>
+
+            <div class="form-item">
+                <label>前期手续费（元，无则填0）</label>
+                <input type="number" id="fee" value="0">
+            </div>
+
+            <div class="form-item">
+                <label>还款方式</label>
+                <select id="payType">
+                    <option value="equal">等额本息</option>
+                    <option value="capital">等额本金</option>
+                </select>
+            </div>
+
+            <div class="result-box" id="result">
+                计算结果将显示在这里
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="calcBtn">立即计算</button>
+            <button id="resetBtn">清空重置</button>
+        </div>
+
+        <div class="soft-text">
+            等额本息：每月固定月供<br>等额本金：首月最高，每月递减
+        </div>
+    </div>
+
+    <script>
+        const principal = document.getElementById('principal');
+        const rateType = document.getElementById('rateType');
+        const rateText = document.getElementById('rateText');
+        const rate = document.getElementById('rate');
+        const months = document.getElementById('months');
+        const fee = document.getElementById('fee');
+        const payType = document.getElementById('payType');
+        const calcBtn = document.getElementById('calcBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultBox = document.getElementById('result');
+
+        //切换利率文字
+        rateType.onchange = function(){
+            if(this.value === 'year'){
+                rateText.textContent = "年利率（%）";
+                rate.value = "3.8";
+            }else{
+                rateText.textContent = "月利率（%）";
+                rate.value = "0.32";
+            }
+            autoSave();
+        }
+
+        //本地缓存读取
+        window.onload = function () {
+            let data = localStorage.getItem('loanData');
+            if (data) {
+                let d = JSON.parse(data);
+                principal.value = d.principal || 500000;
+                rateType.value = d.rateType || 'year';
+                rateText.textContent = rateType.value==='year'?'年利率（%）':'月利率（%）';
+                rate.value = d.rate || 3.8;
+                months.value = d.months || 360;
+                fee.value = d.fee || 0;
+                payType.value = d.payType || 'equal';
+            }
+        };
+
+        //自动保存
+        function autoSave() {
+            let data = {
+                principal: principal.value,
+                rateType: rateType.value,
+                rate: rate.value,
+                months: months.value,
+                fee: fee.value,
+                payType: payType.value
+            };
+            localStorage.setItem('loanData', JSON.stringify(data));
+        }
+
+        //核心计算
+        function calc() {
+            let p = parseFloat(principal.value) || 0;
+            let r = parseFloat(rate.value) || 0;
+            let m = parseInt(months.value) || 0;
+            let costFee = parseFloat(fee.value) || 0;
+
+            if (p <= 0 || r <= 0 || m <= 0) {
+                resultBox.innerText = "请输入有效的数值";
+                return;
+            }
+
+            //统一换算成月利率
+            let monthRate;
+            if(rateType.value==='year'){
+                monthRate = r / 100 / 12;
+            }else{
+                monthRate = r / 100;
+            }
+
+            let res = "";
+            if (payType.value === 'equal') {
+                //等额本息
+                let monthPay = (p * monthRate * Math.pow(1 + monthRate, m)) / (Math.pow(1 + monthRate, m) - 1);
+                let totalLoan = monthPay * m;
+                let totalInterest = totalLoan - p;
+                let realTotal = totalLoan + costFee;
+
+                res = `还款方式：等额本息
+每月月供：${monthPay.toFixed(2)} 元
+纯总利息：${totalInterest.toFixed(2)} 元
+手续费：${costFee.toFixed(2)} 元
+合计总支出：${realTotal.toFixed(2)} 元`;
+
+            } else {
+                //等额本金
+                let perMonthCapital = p / m;
+                let firstPay = perMonthCapital + p * monthRate;
+                let reduce = perMonthCapital * monthRate;
+                let totalInterest = p * monthRate * (m + 1) / 2;
+                let totalLoan = p + totalInterest;
+                let realTotal = totalLoan + costFee;
+
+                res = `还款方式：等额本金
+首月月供：${firstPay.toFixed(2)} 元
+每月递减：${reduce.toFixed(2)} 元
+纯总利息：${totalInterest.toFixed(2)} 元
+手续费：${costFee.toFixed(2)} 元
+合计总支出：${realTotal.toFixed(2)} 元`;
+            }
+
+            resultBox.innerText = res;
+            autoSave();
+        }
+
+        //重置
+        function resetAll() {
+            principal.value = "500000";
+            rateType.value = "year";
+            rateText.textContent = "年利率（%）";
+            rate.value = "3.8";
+            months.value = "360";
+            fee.value = "0";
+            payType.value = "equal";
+            resultBox.innerText = "计算结果将显示在这里";
+            localStorage.removeItem('loanData');
+        }
+
+        calcBtn.addEventListener('click', calc);
+        resetBtn.addEventListener('click', resetAll);
+        principal.addEventListener('input', autoSave);
+        rate.addEventListener('input', autoSave);
+        months.addEventListener('input', autoSave);
+        fee.addEventListener('input', autoSave);
+        payType.addEventListener('change', autoSave);
+    </script>
+</body>
+</html>
