@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 利息计算器</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 310px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height:1.7;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #calcBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-calculator"></i> 利息计算器
+        </div>
+        <div class="desc">支持年利率、月利率、日利率自由计算</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label>本金（元）</label>
+                <input type="number" id="principal" value="10000">
+            </div>
+
+            <div class="form-item">
+                <label>利率类型</label>
+                <select id="rateType">
+                    <option value="year">年利率 (%)</option>
+                    <option value="month">月利率 (%)</option>
+                    <option value="day">日利率 (%)</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label id="rateLabel">年利率 (%)</label>
+                <input type="number" id="rate" value="3.5">
+            </div>
+
+            <div class="form-item">
+                <label>计息方式</label>
+                <select id="interestType">
+                    <option value="simple">单利</option>
+                    <option value="compound">复利</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label>开始日期</label>
+                <input type="date" id="startDate">
+            </div>
+
+            <div class="form-item">
+                <label>结束日期</label>
+                <input type="date" id="endDate">
+            </div>
+
+            <div class="result-box" id="result">
+                计算结果将显示在这里
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="calcBtn">立即计算</button>
+            <button id="resetBtn">清空重置</button>
+        </div>
+
+        <div class="soft-text">
+            单利计算｜支持年、月、日利率<br>利息 = 本金 × 利率 × 天数
+        </div>
+    </div>
+
+    <script>
+        const rateType = document.getElementById('rateType');
+        const rateLabel = document.getElementById('rateLabel');
+        const rateInput = document.getElementById('rate');
+        const calcBtn = document.getElementById('calcBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const resultBox = document.getElementById('result');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const principal = document.getElementById('principal');
+        const interestType = document.getElementById('interestType');
+
+        // 今日默认日期
+        const today = new Date().toISOString().split('T')[0];
+        startDate.value = today;
+        endDate.value = today;
+
+        // 加载保存的数据
+        window.onload = function () {
+            let save = localStorage.getItem('interestData');
+            if (save) {
+                let d = JSON.parse(save);
+                principal.value = d.principal || 10000;
+                rateType.value = d.rateType || 'year';
+                rateInput.value = d.rate || 3.5;
+                interestType.value = d.interestType || 'simple';
+                startDate.value = d.startDate || today;
+                endDate.value = d.endDate || today;
+                rateLabel.textContent = rateType.value === 'year' ? '年利率 (%)' : rateType.value === 'month' ? '月利率 (%)' : '日利率 (%)';
+            }
+        };
+
+        // 自动保存
+        function autoSave() {
+            let data = {
+                principal: principal.value,
+                rateType: rateType.value,
+                rate: rateInput.value,
+                interestType: interestType.value,
+                startDate: startDate.value,
+                endDate: endDate.value
+            };
+            localStorage.setItem('interestData', JSON.stringify(data));
+        }
+
+        // 切换利率
+        rateType.addEventListener('change', function () {
+            rateLabel.textContent = this.value === 'year' ? '年利率 (%)' : this.value === 'month' ? '月利率 (%)' : '日利率 (%)';
+            autoSave();
+        });
+
+        // 日期变化自动算天数
+        function getDays() {
+            let s = new Date(startDate.value);
+            let e = new Date(endDate.value);
+            return Math.abs(e - s) / (1000 * 60 * 60 * 24) || 0;
+        }
+
+        // 计算
+        function calc() {
+            let p = parseFloat(principal.value) || 0;
+            let r = parseFloat(rateInput.value) || 0;
+            let days = getDays();
+            let rType = rateType.value;
+            let iType = interestType.value;
+
+            if (p <= 0 || r <= 0 || days <= 0) {
+                resultBox.innerText = '请输入有效数值';
+                return;
+            }
+
+            let yearRate;
+            if (rType === 'year') yearRate = r / 100;
+            else if (rType === 'month') yearRate = r * 12 / 100;
+            else yearRate = r * 365 / 100;
+
+            let years = days / 365;
+            let interest, total;
+
+            if (iType === 'simple') {
+                interest = (p * yearRate * years).toFixed(2);
+                total = (p + parseFloat(interest)).toFixed(2);
+            } else {
+                total = (p * Math.pow(1 + yearRate, years)).toFixed(2);
+                interest = (total - p).toFixed(2);
+            }
+
+            resultBox.innerHTML = `
+总天数：${days} 天<br>
+利息：${interest} 元<br>
+本息合计：${total} 元
+            `;
+            autoSave();
+        }
+
+        // 重置
+        function resetAll() {
+            principal.value = '10000';
+            rateType.value = 'year';
+            rateInput.value = '3.5';
+            interestType.value = 'simple';
+            startDate.value = today;
+            endDate.value = today;
+            rateLabel.textContent = '年利率 (%)';
+            resultBox.innerText = '计算结果将显示在这里';
+            localStorage.removeItem('interestData');
+        }
+
+        calcBtn.addEventListener('click', calc);
+        resetBtn.addEventListener('click', resetAll);
+        startDate.addEventListener('change', autoSave);
+        endDate.addEventListener('change', autoSave);
+        principal.addEventListener('input', autoSave);
+        rateInput.addEventListener('input', autoSave);
+        interestType.addEventListener('change', autoSave);
+    </script>
+</body>
+</html>
