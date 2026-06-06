@@ -1,4 +1,4 @@
-const CACHE_NAME = 'axapri-cache-v2';
+const CACHE_NAME = 'axapri-cache-v1';
 const ASSETS = [
   '/',
   '/index.html',
