@@ -1163,6 +1163,16 @@
                 <button class="action-btn copy" data-link="pages/noise.html"><i class="fa-regular fa-copy"></i></button>
             </div>
         </li>
+		<li>
+            <a href="pages/soft-corner.html" rel="noopener noreferrer">
+                <div class="tool-name"><i class="fa-solid fa-feather"></i> 心情标签</div>
+                <div class="tool-desc">私人心情便签，本地离线存储，支持多条记录保存不覆盖</div>
+            </a>
+            <div class="tool-actions">
+                <button class="action-btn fav" data-name="心情标签" data-link="pages/soft-corner.html"><i class="fa-regular fa-star"></i></button>
+                <button class="action-btn copy" data-link="pages/soft-corner.html"><i class="fa-regular fa-copy"></i></button>
+            </div>
+        </li>
     </ul>
 </div>
 <!-- 学习天地 -->
@@ -1569,13 +1579,13 @@ document.addEventListener('DOMContentLoaded', () => {
     syncFavUI();
 
 	// PWA 注册 Service Worker
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/service-worker.js')
-          .then(reg => console.log('PWA 注册成功:', reg))
-          .catch(err => console.error('PWA 注册失败:', err));
-      });
-    }
+//    if ('serviceWorker' in navigator) {
+//	    window.addEventListener('load', () => {
+//        navigator.serviceWorker.register('/service-worker.js')
+//          .then(reg => console.log('PWA 注册成功:', reg))
+//          .catch(err => console.error('PWA 注册失败:', err));
+//      });
+//    }
 });
 </script>
 </body>
