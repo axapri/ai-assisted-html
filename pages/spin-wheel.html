@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 随机抽签转盘</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .wheel{
+            width:260px;
+            height:260px;
+            margin:10px auto;
+            position:relative;
+        }
+        #disk{
+            width:100%;
+            height:100%;
+            border-radius:50%;
+            border:5px solid var(--theme);
+            position:relative;
+            overflow:hidden;
+        }
+
+        .pointer{
+            width:42%;
+            height:4px;
+            background:var(--theme);
+            position:absolute;
+            left: calc(50% + 4.5px);
+            top: 50%;
+            transform-origin: left center;
+            z-index:9;
+            border-radius:2px;
+        }
+        .pointer::after{
+            content:"";
+            position:absolute;
+            right:-2px;
+            top:-4px;
+            width:10px;
+            height:12px;
+            background:var(--theme);
+            border-radius:3px 5px 5px 3px;
+        }
+        .pivot-dot{
+            width:12px;
+            height:12px;
+            background:var(--theme);
+            border-radius:50%;
+            position:absolute;
+            left:calc(50% + 4.5px);
+            top:calc(50% + 2px);
+            transform:translate(-50%,-50%);
+            z-index:10;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 100%;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            width: 100%;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height:1.7;
+            width: 100%;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #start {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #reset {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .mask{
+            position:fixed;
+            left:0;
+            top:0;
+            width:100%;
+            height:100%;
+            background:rgba(0,0,0,0.5);
+            z-index:999;
+            display:none;
+            align-items:center;
+            justify-content:center;
+        }
+        .alert-box{
+            background:#fff;
+            border-radius:12px;
+            padding:24px 22px;
+            width:80%;
+            max-width:280px;
+            text-align:center;
+        }
+        .alert-text{
+            font-size:15px;
+            color:var(--text);
+            margin-bottom:18px;
+        }
+        .alert-btn{
+            padding:9px 32px;
+            background:var(--theme);
+            color:#fff;
+            border:none;
+            border-radius:8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="title">
+        <i class="fa-solid fa-arrows-spin"></i> 随机抽签转盘
+    </div>
+    <div class="desc">公平随机 | 自动记录 | 一键重置</div>
+
+    <div class="calc-box">
+        <div class="wheel">
+            <div id="disk"></div>
+            <div class="pivot-dot"></div>
+            <div class="pointer" id="ptr"></div>
+        </div>
+
+        <div class="form-item">
+            <label>输入选项（中文逗号，隔开内容）</label>
+            <input type="text" id="items" placeholder="吃饭，睡觉，学习，运动，游戏，逛街">
+        </div>
+
+        <div class="result-box" id="resultText">
+            结果将显示在这里
+        </div>
+    </div>
+
+    <div class="btn-box">
+        <button id="start">开始转动</button>
+        <button id="reset">清空重置</button>
+    </div>
+
+    <div class="soft-text">
+        点击开始随机抽取｜使用中文逗号「，」分隔选项<br>所有数据自动保存本地
+    </div>
+</div>
+
+<div class="mask" id="alertMask">
+    <div class="alert-box">
+        <div class="alert-text">请至少填写两项，使用中文逗号「，」分隔</div>
+        <button class="alert-btn" id="alertOk">确定</button>
+    </div>
+</div>
+
+<script>
+const items = document.getElementById('items');
+const disk = document.getElementById('disk');
+const ptr = document.getElementById('ptr');
+const start = document.getElementById('start');
+const reset = document.getElementById('reset');
+const resultText = document.getElementById('resultText');
+const alertMask = document.getElementById('alertMask');
+const alertOk = document.getElementById('alertOk');
+
+let spinning = false;
+let timer = null;
+let angle = 0;
+
+const colors = [
+  '#ff7676','#ffd166','#66d1ff','#81fcaf','#d89cff','#ff9ebb','#ffb366','#76efff'
+];
+
+alertOk.onclick = ()=> alertMask.style.display = 'none';
+
+function getOptionList(){
+    let str = items.value.replace(/,/g,'，');
+    let arr = str.split('，').map(item=>item.trim()).filter(item=>item);
+    return arr;
+}
+
+function drawWheel() {
+  disk.innerHTML = '';
+  let list = getOptionList();
+  if (list.length < 2) return;
+  const n = list.length;
+  const step = 360 / n;
+  const radius = 130;
+
+  for (let i = 0; i < n; i++) {
+    let svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", "260");
+    svg.setAttribute("height", "260");
+    svg.style.position = "absolute";
+    svg.style.left = 0;
+    svg.style.top = 0;
+
+    let path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    let startAng = step * i;
+    let endAng = step * (i + 1);
+    let startRad = (startAng - 90) * Math.PI / 180;
+    let endRad = (endAng - 90) * Math.PI / 180;
+
+    let x1 = radius + radius * Math.cos(startRad);
+    let y1 = radius + radius * Math.sin(startRad);
+    let x2 = radius + radius * Math.cos(endRad);
+    let y2 = radius + radius * Math.sin(endRad);
+
+    let largeArcFlag = step > 180 ? 1 : 0;
+    path.setAttribute("d", `M${radius},${radius} L${x1},${y1} A${radius},${radius} 0 ${largeArcFlag},1 ${x2},${y2} Z`);
+    path.setAttribute("fill", colors[i % colors.length]);
+    svg.appendChild(path);
+    disk.appendChild(svg);
+
+    let txt = document.createElement("div");
+    txt.style.position = "absolute";
+    txt.style.width = "100%";
+    txt.style.height = "100%";
+    txt.style.display = "flex";
+    txt.style.justifyContent = "center";
+    txt.style.alignItems = "center";
+    txt.style.fontSize = "14px";
+    txt.style.fontWeight = "bold";
+    txt.style.transform = `rotate(${startAng + step/2}deg) translateY(-85px)`;
+    txt.innerText = list[i];
+    disk.appendChild(txt);
+  }
+}
+
+function save() { localStorage.setItem('wheelRealFull', items.value); }
+window.onload = () => {
+  let d = localStorage.getItem('wheelRealFull');
+  if (d) { items.value = d; drawWheel(); }
+};
+items.oninput = () => { drawWheel(); save(); };
+
+function getResultIndex(totalRotateAngle, itemCount) {
+    const per = 360 / itemCount;
+    // 取转盘原地剩余角度
+    let remain = totalRotateAngle % 360;
+    // 指针顺时针转=转盘等效逆时针转，+90抵消绘图起始偏移
+    let pos = (remain + 90) % 360;
+    let idx = Math.floor(pos / per);
+    return idx;
+}
+
+start.onclick = () => {
+  let list = getOptionList();
+  if (list.length < 2) {
+      alertMask.style.display = 'flex';
+      return;
+  }
+
+  if (spinning) {
+      // 点击立刻停止
+      clearInterval(timer);
+      spinning = false;
+      start.innerText = '开始转动';
+      let index = getResultIndex(angle, list.length);
+      resultText.innerText = '结果：' + list[index];
+      return;
+  }
+
+  spinning = true;
+  start.innerText = '停止';
+  ptr.style.transition = 'none';
+  let speed = 13;
+
+  timer = setInterval(() => {
+    angle += speed;
+    ptr.style.transform = `rotate(${angle}deg)`;
+  }, 20);
+};
+
+reset.onclick = () => {
+  clearInterval(timer);
+  spinning = false;
+  start.innerText = '开始转动';
+  items.value = '';
+  resultText.innerText = '结果将显示在这里';
+  angle = 0;
+  ptr.style.transform = 'rotate(0deg)';
+  disk.innerHTML = '';
+  localStorage.removeItem('wheelRealFull');
+};
+</script>
+</body>
+</html>
