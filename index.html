@@ -39,10 +39,6 @@
 	<meta name="theme-color" content="#ae3333">
 	<meta name="apple-mobile-web-app-status-bar-style" content="default">
 	<link rel="apple-touch-icon" href="/favicon.png">
-	
-	<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-	<meta http-equiv="Pragma" content="no-cache">
-	<meta http-equiv="Expires" content="0">
     <style>
         * {
             margin: 0;
@@ -1572,22 +1568,14 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFav();
     syncFavUI();
 
-	// PWA 自动更新（保留安装功能，自动刷新缓存）
-	if ('serviceWorker' in navigator) {
-  		window.addEventListener('load', () => {
-    		navigator.serviceWorker.register('/service-worker.js?v=2')
-      			.then(reg => {
-        			reg.onupdatefound = () => {
-          				const newSW = reg.installing;
-          				newSW.onstatechange = () => {
-            				if (newSW.state === 'activated') {
-              					setTimeout(() => window.location.reload(), 500);
-            				}
-          				};
-        			};
-      			});
-  		});
-	}
+	// PWA 注册 Service Worker
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/service-worker.js')
+          .then(reg => console.log('PWA 注册成功:', reg))
+          .catch(err => console.error('PWA 注册失败:', err));
+      });
+    }
 });
 </script>
 </body>
