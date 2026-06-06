@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <title>Axapri | 时间戳转换工具</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+    }
+    body {
+      background: #f7f8fa;
+      padding: 20px;
+      max-width: 480px;
+      margin: 0 auto;
+    }
+    .card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 20px;
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+      margin-bottom: 16px;
+    }
+    .title {
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      color: #222;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .item {
+      margin-bottom:14px;
+    }
+    label {
+      display:block;
+      margin-bottom:6px;
+      font-size:14px;color:#555;
+    }
+    input {
+      width:100%;
+      padding:12px 14px;
+      border:1px solid #eaeef5;
+      border-radius:12px;
+      font-size:15px;
+    }
+    .btn-row{
+      display:flex;gap:8px;margin:12px 0;
+    }
+    button{
+      flex:1;
+      padding:12px;
+      background:#457eff;
+      color:#fff;
+      border:none;
+      border-radius:12px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      gap:6px;
+    }
+    .btn-gray{
+      background:#f5f5f5;color:#333;
+    }
+    .now-info{
+      padding:12px;
+      background:#f7f8fa;
+      border-radius:12px;
+      font-size:14px;
+      line-height:1.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title"><i class="fa-solid fa-clock"></i>时间戳转换工具</div>
+    <div class="item">
+      <label>时间戳（秒/毫秒自动识别）</label>
+      <input id="tsInput" placeholder="输入时间戳，如 1750000000">
+    </div>
+    <div class="item">
+      <label>日期时间（YYYY-MM-DD HH:mm:ss）</label>
+      <input id="dateInput" placeholder="2025-05-01 12:30:00">
+    </div>
+    <div class="btn-row">
+      <button onclick="tsToDate()"><i class="fa-solid fa-arrow-down"></i>戳转日期</button>
+      <button onclick="dateToTs()"><i class="fa-solid fa-arrow-up"></i>日期转戳</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn-gray" onclick="getNow()"><i class="fa-solid fa-refresh"></i>获取当前时间</button>
+      <button class="btn-gray" onclick="copyRes()"><i class="fa-solid fa-copy"></i>复制结果</button>
+    </div>
+  </div>
+  <div class="card">
+    <div class="title"><i class="fa-solid fa-info-circle"></i>实时数据</div>
+    <div class="now-info" id="showInfo"></div>
+  </div>
+<script>
+const tsInput = document.getElementById('tsInput');
+const dateInput = document.getElementById('dateInput');
+const showInfo = document.getElementById('showInfo');
+let lastResult = '';
+
+// 获取当前时间
+function getNow(){
+  const now = new Date();
+  const ms = now.getTime();
+  const s = Math.floor(ms/1000);
+  const local = formatDate(now);
+  const utc = formatUTC(now);
+  const str = `毫秒时间戳：${ms}\n秒级时间戳：${s}\n本地日期：${local}\nUTC日期：${utc}`;
+  showInfo.innerText = str;
+  lastResult = s+'';
+}
+
+// 时间戳转日期
+function tsToDate(){
+  let val = tsInput.value.trim();
+  if(!val)return;
+  let num = Number(val);
+  if(val.length===10) num *=1000;
+  const d = new Date(num);
+  if(isNaN(d.getTime())){
+    showInfo.innerText='输入无效时间戳';return;
+  }
+  const res = formatDate(d);
+  dateInput.value = res;
+  lastResult = res;
+  showInfo.innerText='转换结果：'+res;
+}
+
+// 日期转时间戳
+function dateToTs(){
+  let val = dateInput.value.trim();
+  if(!val)return;
+  const d = new Date(val);
+  if(isNaN(d.getTime())){
+    showInfo.innerText='日期格式错误';return;
+  }
+  const sec = Math.floor(d.getTime()/1000);
+  tsInput.value = sec;
+  lastResult = sec+'';
+  showInfo.innerText='秒级时间戳：'+sec+'\n毫秒：'+d.getTime();
+}
+
+// 复制结果
+function copyRes(){
+  if(!lastResult)return;
+  navigator.clipboard.writeText(lastResult);
+  showInfo.innerText='已复制：'+lastResult;
+}
+
+// 格式化本地日期
+function formatDate(d){
+  let y = d.getFullYear();
+  let m = String(d.getMonth()+1).padStart(2,'0');
+  let day = String(d.getDate()).padStart(2,'0');
+  let h = String(d.getHours()).padStart(2,'0');
+  let mi = String(d.getMinutes()).padStart(2,'0');
+  let s = String(d.getSeconds()).padStart(2,'0');
+  return `${y}-${m}-${day} ${h}:${mi}:${s}`;
+}
+// UTC格式化
+function formatUTC(d){
+  let utc = new Date(d.getTime() - d.getTimezoneOffset()*60000);
+  return formatDate(utc);
+}
+
+getNow();
+</script>
+</body>
+</html>
