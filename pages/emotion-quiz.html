@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 情绪测评</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            line-height:1.7;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #nextBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-clipboard-check"></i> 情绪测评
+        </div>
+        <div class="desc">认真作答，读懂最真实的情绪状态</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label id="question">问题 1：日常是否容易感受到快乐？</label>
+                <select id="answer">
+                    <option value="3">经常会</option>
+                    <option value="2">偶尔会</option>
+                    <option value="1">很少会</option>
+                </select>
+            </div>
+            <div class="result-box" id="result">
+                共16道题，一步步完成测评
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="nextBtn">下一题</button>
+            <button id="resetBtn">重新测评</button>
+        </div>
+
+        <div class="soft-text">
+            全维度情绪分析｜结果精准｜附带情绪调节建议
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const question = document.getElementById('question');
+        const answer = document.getElementById('answer');
+        const result = document.getElementById('result');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const toast = document.getElementById('toast');
+
+        let currentQ = 0;
+        let totalScore = 0;
+
+        const questionList = [
+            {q: "问题 1：日常是否容易感受到快乐？", opt: [{val:3,text:"经常会"},{val:2,text:"偶尔会"},{val:1,text:"很少会"}]},
+            {q: "问题 2：遇到烦心事，多久能平复心情？", opt: [{val:3,text:"很快释怀"},{val:2,text:"需要一段时间"},{val:1,text:"久久无法释怀"}]},
+            {q: "问题 3：是否愿意和身边人分享内心感受？", opt: [{val:3,text:"乐于主动分享"},{val:2,text:"看场合选择"},{val:1,text:"习惯独自消化"}]},
+            {q: "问题 4：面对生活压力，你的状态是？", opt: [{val:3,text:"从容应对"},{val:2,text:"略有压力感"},{val:1,text:"容易焦虑不安"}]},
+            {q: "问题 5：对新鲜事物、新体验抱有兴趣吗？", opt: [{val:3,text:"兴趣浓厚"},{val:2,text:"兴趣一般"},{val:1,text:"提不起兴趣"}]},
+            {q: "问题 6：一个人独处时，内心感受如何？", opt: [{val:3,text:"自在放松"},{val:2,text:"平淡无感"},{val:1,text:"孤单低落"}]},
+            {q: "问题 7：清晨睡醒，当下的第一状态是？", opt: [{val:3,text:"元气满满"},{val:2,text:"平平淡淡"},{val:1,text:"疲惫乏力"}]},
+            {q: "问题 8：会主动给自己制造小惊喜、小乐趣吗？", opt: [{val:3,text:"经常会"},{val:2,text:"偶尔为之"},{val:1,text:"几乎不会"}]},
+            {q: "问题 9：旁人的负面情绪容易影响到你吗？", opt: [{val:3,text:"几乎不受影响"},{val:2,text:"轻微被影响"},{val:1,text:"很容易被牵动"}]},
+            {q: "问题 10：做事遭遇阻碍，你会选择放弃吗？", opt: [{val:3,text:"坚持尝试"},{val:2,text:"犹豫后继续"},{val:1,text:"容易打退堂鼓"}]},
+            {q: "问题 11：空闲无事时，你的内心状态是？", opt: [{val:3,text:"享受悠闲"},{val:2,text:"无所适从"},{val:1,text:"内心空虚"}]},
+            {q: "问题 12：你接纳并认可当下的自己吗？", opt: [{val:3,text:"十分认可"},{val:2,text:"基本认可"},{val:1,text:"时常自我否定"}]},
+            {q: "问题 13：夜晚入睡时，是否会思绪纷乱？", opt: [{val:3,text:"很少出现"},{val:2,text:"偶尔出现"},{val:1,text:"经常胡思乱想"}]},
+            {q: "问题 14：定下小目标后，能否立刻行动？", opt: [{val:3,text:"行动力十足"},{val:2,text:"偶尔拖延"},{val:1,text:"迟迟不愿行动"}]},
+            {q: "问题 15：面对他人无心的过失，你能包容吗？", opt: [{val:3,text:"心胸豁达"},{val:2,text:"酌情包容"},{val:1,text:"难以释怀"}]},
+            {q: "问题 16：对于未来的生活，你抱有期待吗？", opt: [{val:3,text:"满怀憧憬"},{val:2,text:"顺其自然"},{val:1,text:"感到迷茫"}]},
+        ];
+
+        const resultTips = [
+            {
+                min: 16, max: 26,
+                text: "😔 情绪偏低落\n你近期负面情绪堆积较多，敏感且容易陷入内耗。不必强迫自己故作坚强，允许情绪自然流露。多出门散心、和亲友倾诉，慢慢梳理心情，好好善待自己。"
+            },
+            {
+                min: 27, max: 34,
+                text: "😌 身心偏疲惫\n整体情绪没有明显问题，但长期思虑、操劳让身体和精神都处于疲劳状态。建议减少无意义的纠结，规律作息、适当放空，逐步恢复身心活力。"
+            },
+            {
+                min: 35, max: 40,
+                text: "🙂 情绪状态稳定健康\n你拥有不错的情绪调节能力，心态平和稳重，能从容面对生活起伏。保持当前的生活节奏，感受日常里的温暖与美好就很好。"
+            },
+            {
+                min: 41, max: 44,
+                text: "😊 心态明朗，积极乐观\n内心向阳，善于发现生活中的小美好，情绪自愈能力很强。这份乐观会帮你化解大部分难题，生活会一直稳步向前。"
+            },
+            {
+                min: 45, max: 48,
+                text: "🥳 元气满分，内心强大\n你自信热忱、热爱生活，情绪饱满且稳定，拥有强大的内心力量。继续保持这份状态，未来的日子会更加精彩。"
+            }
+        ];
+
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1500);
+        }
+
+        function renderQ() {
+            const q = questionList[currentQ];
+            question.innerText = q.q;
+            answer.innerHTML = "";
+            q.opt.forEach(item => {
+                let op = document.createElement('option');
+                op.value = item.val;
+                op.innerText = item.text;
+                answer.appendChild(op);
+            });
+        }
+
+        function getFinalResult() {
+            let resText = "";
+            for (let item of resultTips) {
+                if (totalScore >= item.min && totalScore <= item.max) {
+                    resText = item.text;
+                    break;
+                }
+            }
+            result.innerText = resText;
+        }
+
+        nextBtn.onclick = function() {
+            totalScore += parseInt(answer.value);
+            currentQ++;
+
+            if (currentQ >= questionList.length) {
+                getFinalResult();
+                nextBtn.disabled = true;
+                showToast("测评完成");
+                return;
+            }
+            renderQ();
+        };
+
+        resetBtn.onclick = function() {
+            currentQ = 0;
+            totalScore = 0;
+            nextBtn.disabled = false;
+            renderQ();
+            result.innerText = "共16道题，一步步完成测评";
+            showToast("已重新开始");
+        };
+
+        renderQ();
+    </script>
+</body>
+</html>
