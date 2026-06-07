@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 全品类心理测试</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+            line-height:1.7;
+            min-height: 110px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 22px 0;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #nextBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.75);
+            color: #fff;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        .toast.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-heart-pulse"></i> 心理测试
+        </div>
+        <div class="desc">选择你想体验的测评，慢慢遇见自己</div>
+
+        <!-- 测试类型选择框 -->
+        <div class="form-item" style="margin-bottom:16px;">
+            <label>选择测试类型</label>
+            <select id="testType">
+                <option value="emotion">情绪测评</option>
+                <option value="personality">温柔人格测试</option>
+                <option value="animal">专属动物人格</option>
+                <option value="healing">内心治愈力测试</option>
+                <option value="happiness">幸福感测评</option>
+                <option value="social">社交舒适感测试</option>
+            </select>
+        </div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label id="question">请先选择测试类型</label>
+                <select id="answer">
+                    <option value="0">请选择测试</option>
+                </select>
+            </div>
+            <div class="result-box" id="result">
+                选择测试后开始答题
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="nextBtn">下一题</button>
+            <button id="resetBtn">重新测评</button>
+        </div>
+
+        <div class="soft-text">
+            全品类测试合集｜界面简洁温柔｜结果治愈暖心
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const question = document.getElementById('question');
+        const answer = document.getElementById('answer');
+        const result = document.getElementById('result');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const toast = document.getElementById('toast');
+        const testType = document.getElementById('testType');
+
+        let currentQ = 0;
+        let totalScore = 0;
+        let currentTest = null;
+
+        // 1. 情绪测评
+        const emotionTest = {
+            questions: [
+                {q: "问题 1：日常是否容易感受到快乐？", opt: [{val:3,text:"经常会"},{val:2,text:"偶尔会"},{val:1,text:"很少会"}]},
+                {q: "问题 2：遇到烦心事，多久能平复心情？", opt: [{val:3,text:"很快释怀"},{val:2,text:"需要一段时间"},{val:1,text:"久久无法释怀"}]},
+                {q: "问题 3：是否愿意和身边人分享内心感受？", opt: [{val:3,text:"乐于主动分享"},{val:2,text:"看场合选择"},{val:1,text:"习惯独自消化"}]},
+                {q: "问题 4：面对生活压力，你的状态是？", opt: [{val:3,text:"从容应对"},{val:2,text:"略有压力感"},{val:1,text:"容易焦虑不安"}]},
+                {q: "问题 5：对新鲜事物、新体验抱有兴趣吗？", opt: [{val:3,text:"兴趣浓厚"},{val:2,text:"兴趣一般"},{val:1,text:"提不起兴趣"}]},
+                {q: "问题 6：一个人独处时，内心感受如何？", opt: [{val:3,text:"自在放松"},{val:2,text:"平淡无感"},{val:1,text:"孤单低落"}]},
+                {q: "问题 7：清晨睡醒，当下的第一状态是？", opt: [{val:3,text:"元气满满"},{val:2,text:"平平淡淡"},{val:1,text:"疲惫乏力"}]},
+                {q: "问题 8：会主动给自己制造小惊喜、小乐趣吗？", opt: [{val:3,text:"经常会"},{val:2,text:"偶尔为之"},{val:1,text:"几乎不会"}]},
+                {q: "问题 9：旁人的负面情绪容易影响到你吗？", opt: [{val:3,text:"几乎不受影响"},{val:2,text:"轻微被影响"},{val:1,text:"很容易被牵动"}]},
+                {q: "问题 10：做事遭遇阻碍，你会选择放弃吗？", opt: [{val:3,text:"坚持尝试"},{val:2,text:"犹豫后继续"},{val:1,text:"容易打退堂鼓"}]},
+                {q: "问题 11：空闲无事时，你的内心状态是？", opt: [{val:3,text:"享受悠闲"},{val:2,text:"无所适从"},{val:1,text:"内心空虚"}]},
+                {q: "问题 12：你接纳并认可当下的自己吗？", opt: [{val:3,text:"十分认可"},{val:2,text:"基本认可"},{val:1,text:"时常自我否定"}]},
+                {q: "问题 13：夜晚入睡时，是否会思绪纷乱？", opt: [{val:3,text:"很少出现"},{val:2,text:"偶尔出现"},{val:1,text:"经常胡思乱想"}]},
+                {q: "问题 14：定下小目标后，能否立刻行动？", opt: [{val:3,text:"行动力十足"},{val:2,text:"偶尔拖延"},{val:1,text:"迟迟不愿行动"}]},
+                {q: "问题 15：面对他人无心的过失，你能包容吗？", opt: [{val:3,text:"心胸豁达"},{val:2,text:"酌情包容"},{val:1,text:"难以释怀"}]},
+                {q: "问题 16：对于未来的生活，你抱有期待吗？", opt: [{val:3,text:"满怀憧憬"},{val:2,text:"顺其自然"},{val:1,text:"感到迷茫"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"😔 情绪偏低落\n你近期负面情绪堆积较多，敏感且容易陷入内耗。不必强迫自己故作坚强，允许情绪自然流露。"},
+                {min:27,max:34,text:"😌 身心偏疲惫\n整体情绪没有明显问题，但长期思虑让身心疲劳。建议减少纠结，规律作息，慢慢恢复活力。"},
+                {min:35,max:40,text:"🙂 情绪状态稳定健康\n你拥有不错的调节能力，心态平和，能从容面对生活。"},
+                {min:41,max:44,text:"😊 心态明朗，积极乐观\n内心向阳，善于发现美好，自愈能力超强。"},
+                {min:45,max:48,text:"🥳 元气满分，内心强大\n你自信热忱、热爱生活，情绪饱满稳定，未来会更精彩。"}
+            ]
+        };
+
+        // 2. 温柔人格
+        const personalityTest = {
+            questions: [
+                {q: "问题 1：你更偏爱安静还是热闹？", opt: [{val:3,text:"安静独处"},{val:2,text:"都可以"},{val:1,text:"热闹氛围"}]},
+                {q: "问题 2：朋友难过时，你会？", opt: [{val:3,text:"耐心陪伴倾听"},{val:2,text:"简单安慰"},{val:1,text:"不知如何回应"}]},
+                {q: "问题 3：你容易注意到别人的小情绪吗？", opt: [{val:3,text:"非常容易"},{val:2,text:"偶尔会"},{val:1,text:"很少留意"}]},
+                {q: "问题 4：做决定时你更偏向？", opt: [{val:3,text:"温柔随和"},{val:2,text:"理性思考"},{val:1,text:"果断直接"}]},
+                {q: "问题 5：你会主动照顾身边人的感受吗？", opt: [{val:3,text:"总会主动"},{val:2,text:"看情况"},{val:1,text:"很少主动"}]},
+                {q: "问题 6：被误解时，你通常会？", opt: [{val:3,text:"温和解释"},{val:2,text:"默默放下"},{val:1,text:"心里委屈"}]},
+                {q: "问题 7：你喜欢细腻治愈的小事物吗？", opt: [{val:3,text:"非常喜欢"},{val:2,text:"一般"},{val:1,text:"不太喜欢"}]},
+                {q: "问题 8：你说话的风格更接近？", opt: [{val:3,text:"温柔轻声"},{val:2,text:"自然平和"},{val:1,text:"直接爽快"}]},
+                {q: "问题 9：你愿意包容别人的小缺点吗？", opt: [{val:3,text:"非常愿意"},{val:2,text:"可以包容"},{val:1,text:"很难包容"}]},
+                {q: "问题 10：遇到麻烦，你的态度是？", opt: [{val:3,text:"温柔面对"},{val:2,text:"平静处理"},{val:1,text:"容易烦躁"}]},
+                {q: "问题 11：你喜欢治愈温暖的环境吗？", opt: [{val:3,text:"特别喜欢"},{val:2,text:"还好"},{val:1,text:"无所谓"}]},
+                {q: "问题 12：你会对自己温柔吗？", opt: [{val:3,text:"会好好爱自己"},{val:2,text:"偶尔会"},{val:1,text:"很少会"}]},
+                {q: "问题 13：看到弱小的事物会心生怜惜吗？", opt: [{val:3,text:"一定会"},{val:2,text:"偶尔会"},{val:1,text:"不会"}]},
+                {q: "问题 14：你给人的第一印象更像？", opt: [{val:3,text:"温柔舒服"},{val:2,text:"亲切自然"},{val:1,text:"高冷独立"}]},
+                {q: "问题 15：你擅长用温柔方式化解矛盾吗？", opt: [{val:3,text:"非常擅长"},{val:2,text:"一般"},{val:1,text:"不擅长"}]},
+                {q: "问题 16：你相信世界充满温柔吗？", opt: [{val:3,text:"始终相信"},{val:2,text:"半信半疑"},{val:1,text:"不太相信"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"🪐 外冷内柔型\n外表安静独立，内心藏满温柔，只是不轻易表露。"},
+                {min:27,max:34,text:"🌿 温和舒服型\n待人真诚体贴，和你相处让人特别安心。"},
+                {min:35,max:40,text:"🌸 温柔治愈型\n浑身散发治愈感，细腻体贴，像小太阳一样温暖。"},
+                {min:41,max:44,text:"💫 极致温柔型\n内心柔软善良，共情力超强，是天生的治愈者。"},
+                {min:45,max:48,text:"✨ 天使温柔人格\n拥有满分温柔与善意，内心纯粹美好，走到哪都发光。"}
+            ]
+        };
+
+        // 3. 动物人格
+        const animalTest = {
+            questions: [
+                {q: "问题 1：闲暇时光你更愿意？", opt: [{val:3,text:"独自安静发呆"},{val:2,text:"约好友小聚"},{val:1,text:"出门四处游玩"}]},
+                {q: "问题 2：面对陌生环境，你会？", opt: [{val:3,text:"谨慎观察"},{val:2,text:"慢慢适应"},{val:1,text:"大胆探索"}]},
+                {q: "问题 3：别人求助于你，通常会？", opt: [{val:3,text:"温柔相助"},{val:2,text:"量力而行"},{val:1,text:"委婉拒绝"}]},
+                {q: "问题 4：做事风格偏向？", opt: [{val:3,text:"慢条斯理"},{val:2,text:"稳中求进"},{val:1,text:"雷厉风行"}]},
+                {q: "问题 5：你喜欢毛茸茸的小动物吗？", opt: [{val:3,text:"特别喜欢"},{val:2,text:"好感一般"},{val:1,text:"不太感兴趣"}]},
+                {q: "问题 6：遇到委屈，你会？", opt: [{val:3,text:"默默消化"},{val:2,text:"找人倾诉"},{val:1,text:"直接表达不满"}]},
+                {q: "问题 7：日常穿搭偏爱哪种风格？", opt: [{val:3,text:"简约柔和"},{val:2,text:"舒适休闲"},{val:1,text:"个性亮眼"}]},
+                {q: "问题 8：你对新鲜事物的态度？", opt: [{val:3,text:"观望了解"},{val:2,text:"偶尔尝试"},{val:1,text:"主动体验"}]},
+                {q: "问题 9：和朋友相处你属于？", opt: [{val:3,text:"贴心陪伴者"},{val:2,text:"平等相处"},{val:1,text:"活跃气氛者"}]},
+                {q: "问题 10：深夜时你的状态是？", opt: [{val:3,text:"思绪宁静"},{val:2,text:"正常作息"},{val:1,text:"精神活跃"}]},
+                {q: "问题 11：你更看重？", opt: [{val:3,text:"内心安稳"},{val:2,text:"生活平淡幸福"},{val:1,text:"自由洒脱"}]},
+                {q: "问题 12：被人夸赞后你会？", opt: [{val:3,text:"腼腆害羞"},{val:2,text:"礼貌道谢"},{val:1,text:"大方接受"}]},
+                {q: "问题 13：下雨天你的心情通常？", opt: [{val:3,text:"宁静安逸"},{val:2,text:"不受影响"},{val:1,text:"略感沉闷"}]},
+                {q: "问题 14：做选择时你？", opt: [{val:3,text:"犹豫细腻"},{val:2,text:"权衡后决定"},{val:1,text:"果断抉择"}]},
+                {q: "问题 15：你愿意守护身边人吗？", opt: [{val:3,text:"心甘情愿"},{val:2,text:"力所能及"},{val:1,text:"优先自己"}]},
+                {q: "问题 16：整体性格偏向？", opt: [{val:3,text:"温柔内敛"},{val:2,text:"平和中庸"},{val:1,text:"开朗外向"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"🐱 慵懒猫咪人格\n安静内敛，慢热细腻，有自己的小世界。"},
+                {min:27,max:34,text:"🐰 软萌兔子人格\n温顺乖巧，心地善良，自带治愈感。"},
+                {min:35,max:40,text:"🦊 灵动狐狸人格\n聪慧通透，有主见，相处轻松又舒服。"},
+                {min:41,max:44,text:"🐶 暖心小狗人格\n热情真诚，重视陪伴，是身边人的开心果。"},
+                {min:45,max:48,text:"🦅 自由飞鸟人格\n独立洒脱，勇敢自信，向往无拘无束。"}
+            ]
+        };
+
+        // 4. 治愈力
+        const healingTest = {
+            questions: [
+                {q: "问题 1：心情低落时，你会主动调节吗？", opt: [{val:3,text:"主动自我疏导"},{val:2,text:"等待慢慢好转"},{val:1,text:"任由情绪蔓延"}]},
+                {q: "问题 2：你愿意接纳不完美的自己吗？", opt: [{val:3,text:"坦然接纳"},{val:2,text:"努力接受"},{val:1,text:"难以释怀"}]},
+                {q: "问题 3：疲惫时会给自己放空时间吗？", opt: [{val:3,text:"经常安排"},{val:2,text:"偶尔会"},{val:1,text:"很少休息"}]},
+                {q: "问题 4：过往遗憾会反复困扰你吗？", opt: [{val:3,text:"早已放下"},{val:2,text:"偶尔想起"},{val:1,text:"时常纠结"}]},
+                {q: "问题 5：你相信生活总有美好吗？", opt: [{val:3,text:"始终相信"},{val:2,text:"半信半疑"},{val:1,text:"心生迷茫"}]},
+                {q: "问题 6：受挫后多久能重拾信心？", opt: [{val:3,text:"很快恢复"},{val:2,text:"需要几日"},{val:1,text:"久久低迷"}]},
+                {q: "问题 7：喜欢花草、晚风这类温柔事物吗？", opt: [{val:3,text:"十分喜爱"},{val:2,text:"感觉平淡"},{val:1,text:"毫无兴趣"}]},
+                {q: "问题 8：会用美食、音乐安抚心情吗？", opt: [{val:3,text:"常用方式"},{val:2,text:"偶尔尝试"},{val:1,text:"不起作用"}]},
+                {q: "问题 9：你能和负面情绪和平共处吗？", opt: [{val:3,text:"完全可以"},{val:2,text:"勉强做到"},{val:1,text:"极力抗拒"}]},
+                {q: "问题 10：独处对你来说意味着？", opt: [{val:3,text:"充电治愈"},{val:2,text:"普通时光"},{val:1,text:"孤单难熬"}]},
+                {q: "问题 11：犯错之后会过度责怪自己吗？", opt: [{val:3,text:"吸取教训"},{val:2,text:"短暂自责"},{val:1,text:"反复内耗"}]},
+                {q: "问题 12：你善于发现身边小美好吗？", opt: [{val:3,text:"很擅长"},{val:2,text:"偶尔发现"},{val:1,text:"视而不见"}]},
+                {q: "问题 13：压力大时会找人倾诉吗？", opt: [{val:3,text:"适度倾诉"},{val:2,text:"极少开口"},{val:1,text:"独自硬扛"}]},
+                {q: "问题 14：你对未来抱有期待吗？", opt: [{val:3,text:"满怀期待"},{val:2,text:"顺其自然"},{val:1,text:"忧心忡忡"}]},
+                {q: "问题 15：心态更容易偏向？", opt: [{val:3,text:"乐观豁达"},{val:2,text:"平稳中立"},{val:1,text:"悲观敏感"}]},
+                {q: "问题 16：你愿意温柔对待自己吗？", opt: [{val:3,text:"用心善待"},{val:2,text:"一般对待"},{val:1,text:"时常苛责"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"🌧️ 自愈力较弱\n容易被情绪困住，学着慢慢与生活和解。"},
+                {min:27,max:34,text:"☁️ 自愈力中等\n可稳住心态，可多建立情绪出口。"},
+                {min:35,max:40,text:"🌤️ 自愈力良好\n有不错调节能力，内心温和有韧性。"},
+                {min:41,max:44,text:"☀️ 自愈力优秀\n通透豁达，修复力强，自带光芒。"},
+                {min:45,max:48,text:"✨ 满分治愈体质\n能治愈自己，也能温暖身边所有人。"}
+            ]
+        };
+
+        // 5. 幸福感
+        const happinessTest = {
+            questions: [
+                {q: "问题 1：清晨醒来，心情大多是？", opt: [{val:3,text:"轻松愉悦"},{val:2,text:"平淡如常"},{val:1,text:"烦躁疲惫"}]},
+                {q: "问题 2：你容易满足于当下生活吗？", opt: [{val:3,text:"很容易"},{val:2,text:"一般"},{val:1,text:"很难满足"}]},
+                {q: "问题 3：和身边人相处是否融洽？", opt: [{val:3,text:"十分融洽"},{val:2,text:"还算和睦"},{val:1,text:"常有矛盾"}]},
+                {q: "问题 4：三餐饮食会让你感到快乐吗？", opt: [{val:3,text:"幸福感满满"},{val:2,text:"填饱肚子而已"},{val:1,text:"毫无滋味"}]},
+                {q: "问题 5：你常觉得生活充实有趣吗？", opt: [{val:3,text:"经常如此"},{val:2,text:"时好时坏"},{val:1,text:"空虚乏味"}]},
+                {q: "问题 6：收到小惊喜会开心很久吗？", opt: [{val:3,text:"会特别开心"},{val:2,text:"短暂开心"},{val:1,text:"波澜不惊"}]},
+                {q: "问题 7：你认为自己被人爱着吗？", opt: [{val:3,text:"真切感受到"},{val:2,text:"偶尔感受到"},{val:1,text:"感受不到"}]},
+                {q: "问题 8：对待烦恼你的态度是？", opt: [{val:3,text:"一笑而过"},{val:2,text:"慢慢化解"},{val:1,text:"耿耿于怀"}]},
+                {q: "问题 9：闲暇时光你觉得惬意吗？", opt: [{val:3,text:"十分惬意"},{val:2,text:"无所事事"},{val:1,text:"焦虑不安"}]},
+                {q: "问题 10：你会为小事心生欢喜吗？", opt: [{val:3,text:"经常会"},{val:2,text:"偶尔会"},{val:1,text:"几乎不会"}]},
+                {q: "问题 11：对目前的生活节奏满意吗？", opt: [{val:3,text:"很满意"},{val:2,text:"尚可接受"},{val:1,text:"很不满意"}]},
+                {q: "问题 12：夜晚入睡时内心安稳吗？", opt: [{val:3,text:"安稳踏实"},{val:2,text:"思绪零散"},{val:1,text:"辗转难安"}]},
+                {q: "问题 13：你愿意用心经营生活吗？", opt: [{val:3,text:"用心经营"},{val:2,text:"顺其自然"},{val:1,text:"懒得打理"}]},
+                {q: "问题 14：回忆过往大多是？", opt: [{val:3,text:"温暖美好"},{val:2,text:"平淡无奇"},{val:1,text:"满是遗憾"}]},
+                {q: "问题 15：你常常面带笑容吗？", opt: [{val:3,text:"笑容常在"},{val:2,text:"偶尔微笑"},{val:1,text:"少有笑容"}]},
+                {q: "问题 16：整体而言，你觉得自己幸福吗？", opt: [{val:3,text:"很幸福"},{val:2,text:"一般幸福"},{val:1,text:"并不幸福"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"☹️ 幸福感偏低\n生活缺少快乐，试着放慢脚步创造美好。"},
+                {min:27,max:34,text:"😐 幸福感普通\n平淡无惊喜，用心感受就会慢慢变好。"},
+                {min:35,max:40,text:"🙂 幸福感良好\n安稳平和，懂得知足，日子温柔踏实。"},
+                {min:41,max:44,text:"😊 幸福感较高\n阳光温暖，热爱生活，每天都很充实。"},
+                {min:45,max:48,text:"🥰 满分幸福感\n被幸福包围，被幸运眷顾，活在当下。"}
+            ]
+        };
+
+        // 6. 社交舒适感
+        const socialTest = {
+            questions: [
+                {q: "问题 1：参加多人聚会你会觉得？", opt: [{val:3,text:"轻松自在"},{val:2,text:"勉强适应"},{val:1,text:"紧张疲惫"}]},
+                {q: "问题 2：主动社交对你来说困难吗？", opt: [{val:3,text:"完全不困难"},{val:2,text:"有点难度"},{val:1,text:"非常困难"}]},
+                {q: "问题 3：和陌生人交谈你会？", opt: [{val:3,text:"自然从容"},{val:2,text:"略有拘谨"},{val:1,text:"紧张不安"}]},
+                {q: "问题 4：群体中你更愿意？", opt: [{val:3,text:"轻松表达"},{val:2,text:"偶尔发言"},{val:1,text:"默默倾听"}]},
+                {q: "问题 5：朋友邀约你会爽快答应吗？", opt: [{val:3,text:"开心答应"},{val:2,text:"看情况"},{val:1,text:"习惯性拒绝"}]},
+                {q: "问题 6：社交后你需要独处恢复吗？", opt: [{val:3,text:"不需要"},{val:2,text:"偶尔需要"},{val:1,text:"必须恢复"}]},
+                {q: "问题 7：你擅长维系长期关系吗？", opt: [{val:3,text:"非常擅长"},{val:2,text:"一般"},{val:1,text:"不擅长"}]},
+                {q: "问题 8：聚会中你通常是？", opt: [{val:3,text:"活跃气氛者"},{val:2,text:"随和参与者"},{val:1,text:"安静旁观者"}]},
+                {q: "问题 9：被众人关注你会？", opt: [{val:3,text:"淡定自然"},{val:2,text:"有点害羞"},{val:1,text:"尴尬不适"}]},
+                {q: "问题 10：你喜欢深度交流吗？", opt: [{val:3,text:"非常喜欢"},{val:2,text:"还好"},{val:1,text:"不喜欢"}]},
+                {q: "问题 11：你能快速融入新圈子吗？", opt: [{val:3,text:"完全可以"},{val:2,text:"慢慢适应"},{val:1,text:"很难融入"}]},
+                {q: "问题 12：社交场合你会伪装自己吗？", opt: [{val:3,text:"完全不会"},{val:2,text:"偶尔会"},{val:1,text:"经常会"}]},
+                {q: "问题 13：你喜欢小圈子还是大圈子？", opt: [{val:3,text:"大小都喜欢"},{val:2,text:"小圈子更舒服"},{val:1,text:"都不喜欢"}]},
+                {q: "问题 14：别人对你热情你会？", opt: [{val:3,text:"自然回应"},{val:2,text:"礼貌回应"},{val:1,text:"不知所措"}]},
+                {q: "问题 15：你享受社交带来的快乐吗？", opt: [{val:3,text:"十分享受"},{val:2,text:"偶尔享受"},{val:1,text:"毫无感觉"}]},
+                {q: "问题 16：你对自己的社交状态满意吗？", opt: [{val:3,text:"非常满意"},{val:2,text:"基本满意"},{val:1,text:"很不满意"}]},
+            ],
+            tips: [
+                {min:16,max:26,text:"🚶 社交回避型\n社交对你消耗极大，偏爱独处，独处才是真正充电。"},
+                {min:27,max:34,text:"🛋️ 安静舒适型\n喜欢小圈子社交，适度相处，不勉强自己。"},
+                {min:35,max:40,text:"🤝 从容社交型\n社交自然不刻意，相处舒服，进退自如。"},
+                {min:41,max:44,text:"🌟 温暖社交型\n擅长相处，让人安心，人缘好又温柔。"},
+                {min:45,max:48,text:"☀️ 社交自在满分\n轻松融入任何场合，真诚自在，自带吸引力。"}
+            ]
+        };
+
+        function showToast(msg) {
+            toast.innerText = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1500);
+        }
+
+        function loadTest(testObj) {
+            currentTest = testObj;
+            currentQ = 0;
+            totalScore = 0;
+            nextBtn.disabled = false;
+            renderQ();
+            result.innerText = "共16道题，一步步完成测评";
+            showToast("已切换测试");
+        }
+
+        function renderQ() {
+            if (!currentTest) return;
+            const q = currentTest.questions[currentQ];
+            question.innerText = q.q;
+            answer.innerHTML = "";
+            q.opt.forEach(item => {
+                let op = document.createElement('option');
+                op.value = item.val;
+                op.innerText = item.text;
+                answer.appendChild(op);
+            });
+        }
+
+        function getFinalResult() {
+            let resText = "";
+            for (let item of currentTest.tips) {
+                if (totalScore >= item.min && totalScore <= item.max) {
+                    resText = item.text;
+                    break;
+                }
+            }
+            result.innerText = resText;
+        }
+
+        nextBtn.onclick = function() {
+            if (!currentTest) {
+                showToast("请先选择测试");
+                return;
+            }
+            totalScore += parseInt(answer.value);
+            currentQ++;
+            if (currentQ >= currentTest.questions.length) {
+                getFinalResult();
+                nextBtn.disabled = true;
+                showToast("测评完成");
+                return;
+            }
+            renderQ();
+        };
+
+        resetBtn.onclick = function() {
+            if (!currentTest) {
+                showToast("请先选择测试");
+                return;
+            }
+            currentQ = 0;
+            totalScore = 0;
+            nextBtn.disabled = false;
+            renderQ();
+            result.innerText = "共16道题，一步步完成测评";
+            showToast("已重新开始");
+        };
+
+        testType.onchange = function() {
+            const val = this.value;
+            if (val === 'emotion') loadTest(emotionTest);
+            if (val === 'personality') loadTest(personalityTest);
+            if (val === 'animal') loadTest(animalTest);
+            if (val === 'healing') loadTest(healingTest);
+            if (val === 'happiness') loadTest(happinessTest);
+            if (val === 'social') loadTest(socialTest);
+        };
+    </script>
+</body>
+</html>
