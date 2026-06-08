@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 专升本英语自测</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #fafafa;
+            --hover: #f1f1f1;
+        }
+        .dark-mode{
+            --bg:#15171b;
+            --text:#e8e8e8;
+            --subtext:#999;
+            --border:#2c2f36;
+            --card:#1e2127;
+            --hover:#2c2f36;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+        .title-row{
+            display:flex;
+            justify-content: space-between;
+            align-items:center;
+            margin-bottom:12px;
+        }
+        .title {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+        select, textarea, input {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: var(--bg);
+            color: var(--text);
+        }
+        select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        textarea {
+            min-height: 90px;
+            resize: none;
+        }
+        .question-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            line-height: 1.7;
+        }
+        .q-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .ans-area {
+            margin-top: 10px;
+        }
+        .page-tip {
+            text-align: center;
+            font-size: 13px;
+            color: var(--subtext);
+        }
+        .result-box {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--theme);
+            line-height:1.8;
+        }
+        .btn-row, .nav-row,.func-row {
+            display: flex;
+            gap: 10px;
+        }
+        .btn-box {
+            display: flex;
+            gap: 12px;
+            margin: 12px 0;
+            flex-wrap:wrap;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+        .main-btn {
+            background: var(--theme);
+            color: #fff;
+        }
+        .light-btn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+        .stat-box{
+            padding:10px;
+            border:1px solid var(--border);
+            border-radius:10px;
+            text-align:center;
+            font-size:13px;
+            color:var(--subtext);
+            margin-bottom:10px;
+        }
+
+        /* 全局弹窗统一居中样式 */
+        .modal{
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 999;
+        }
+        .modal-inner{
+            width: 100%;
+            max-width: 340px;
+            max-height: 80vh;
+            overflow: auto;
+            background: var(--card);
+            border-radius: 14px;
+            padding: 20px;
+            border: 1px solid var(--border);
+        }
+        .hide{
+            display:none !important;
+        }
+        .err-item{
+            padding:10px 0;
+            border-bottom:1px solid var(--border);
+            font-size:14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+        .del-btn{
+            color: var(--theme);
+            background: transparent;
+            border: none;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 6px;
+            flex-shrink: 0;
+            margin-left: 8px;
+        }
+
+        /* 暗夜模式正方形按钮 + 图标防拉伸 */
+        #darkToggle {
+            width: 36px !important;
+            height: 36px !important;
+            padding: 0 !important;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            flex: none !important;
+        }
+        #darkToggle i {
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* 自定义确认弹窗专用样式 */
+        .confirm-modal .modal-inner{
+            text-align:center;
+        }
+        .confirm-tip{
+            font-size:15px;
+            margin:10px 0 20px;
+            line-height:1.6;
+        }
+        .confirm-buttons{
+            display:flex;
+            gap:10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title-row">
+            <div class="title">
+                <i class="fa-solid fa-book"></i> 专升本英语自测
+            </div>
+            <button class="light-btn" id="darkToggle"><i class="fa-solid fa-moon"></i></button>
+        </div>
+        <div class="desc">专升本英语语法、单选顺序刷题，错题本地缓存</div>
+        <div class="stat-box" id="statBox">
+            统计：已做题0 | 正确0 | 错题0 | 正确率0%
+        </div>
+        <div class="calc-box">
+            <div class="form-item">
+                <label>题型选择</label>
+                <select id="typeSelect">
+                    <option value="single">单项选择题</option>
+                    <option value="grammar">语法填空题</option>
+                </select>
+            </div>
+            <div class="page-tip" id="pageTip">当前：第 1 / 100 题</div>
+            <div class="question-box" id="qBox">
+                <div class="q-title">点击下一题开始练习</div>
+                <div class="ans-area">你的答案：</div>
+            </div>
+            <div class="form-item">
+                <label>填写你的答案（回车快速提交）</label>
+                <input type="text" id="userAns" placeholder="A/B/C/D 或单词">
+            </div>
+            <div class="btn-row">
+                <button class="main-btn" id="checkAns">核对答案</button>
+                <button class="light-btn" id="saveErr">收藏错题</button>
+            </div>
+            <div class="nav-row">
+                <button class="light-btn" id="prevQ">上一题</button>
+                <button class="main-btn" id="nextQ">下一题</button>
+            </div>
+            <div class="result-box" id="resBox">
+                答案解析将展示在这里
+            </div>
+        </div>
+        <div class="btn-box">
+            <button class="light-btn" id="resetAll">重置刷题进度</button>
+            <button class="light-btn" id="openErrModal">错题本</button>
+            <button class="light-btn" id="importBtn">导入题库</button>
+            <button class="light-btn" id="exportBtn">导出题库</button>
+        </div>
+        <div class="soft-text">
+            适配统招专升本英语｜时态/主谓一致/非谓语核心考点
+        </div>
+    </div>
+
+    <!-- 错题弹窗（屏幕正中央） -->
+    <div class="modal hide" id="errModal">
+        <div class="modal-inner">
+            <h3 style="margin-bottom:12px;color:var(--theme)">错题本</h3>
+            <div id="errListBox"></div>
+            <div class="func-row" style="margin-top:16px">
+                <button class="light-btn" id="clearErr">清空全部错题</button>
+                <button class="main-btn" id="closeErrModal">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 导出题库弹窗（屏幕正中央） -->
+    <div class="modal hide" id="exportModal">
+        <div class="modal-inner">
+            <h3 style="margin-bottom:12px;color:var(--theme)">导出全部题目</h3>
+            <div class="form-item">
+                <label>单选题库</label>
+                <textarea id="exportSingle" readonly></textarea>
+            </div>
+            <div class="form-item" style="margin-top:10px">
+                <label>语法填空题库</label>
+                <textarea id="exportGrammar" readonly></textarea>
+            </div>
+            <button class="main-btn" id="closeExport" style="margin-top:16px">关闭</button>
+        </div>
+    </div>
+
+    <!-- 导入题库弹窗 -->
+    <div class="modal hide" id="importModal">
+        <div class="modal-inner">
+            <h3 style="margin-bottom:12px;color:var(--theme)">导入题库</h3>
+            <div class="form-item">
+                <label>选择导入类型</label>
+                <select id="importType">
+                    <option value="single">单选题</option>
+                    <option value="grammar">语法填空</option>
+                </select>
+            </div>
+            <div class="form-item" style="margin-top:10px">
+                <label>粘贴题目（一行一个，格式看说明）</label>
+                <textarea id="importText" placeholder="单选题格式：题目|A|B|C|D|答案|解析
+语法填空格式：题目|答案|解析"></textarea>
+            </div>
+            <button class="main-btn" id="doImport" style="margin-top:16px">确认导入</button>
+            <button class="light-btn" id="closeImport" style="margin-top:8px">关闭</button>
+        </div>
+    </div>
+
+    <!-- 自定义居中确认弹窗 -->
+    <div class="modal hide confirm-modal" id="confirmModal">
+        <div class="modal-inner">
+            <h3 style="color:var(--theme)" id="confirmTitle">提示</h3>
+            <div class="confirm-tip" id="confirmText"></div>
+            <div class="confirm-buttons">
+                <button class="light-btn" id="confirmCancel">取消</button>
+                <button class="main-btn" id="confirmOk">确定</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 获取所有DOM元素
+        const typeSelect = document.getElementById('typeSelect');
+        const qBox = document.getElementById('qBox');
+        const pageTip = document.getElementById('pageTip');
+        const userAns = document.getElementById('userAns');
+        const prevQ = document.getElementById('prevQ');
+        const nextQ = document.getElementById('nextQ');
+        const checkAns = document.getElementById('checkAns');
+        const saveErr = document.getElementById('saveErr');
+        const resetAll = document.getElementById('resetAll');
+        const resBox = document.getElementById('resBox');
+        const darkToggle = document.getElementById('darkToggle');
+        const statBox = document.getElementById('statBox');
+        const openErrModal = document.getElementById('openErrModal');
+        const errModal = document.getElementById('errModal');
+        const errListBox = document.getElementById('errListBox');
+        const clearErr = document.getElementById('clearErr');
+        const closeErrModal = document.getElementById('closeErrModal');
+        const exportBtn = document.getElementById('exportBtn');
+        const exportModal = document.getElementById('exportModal');
+        const exportSingle = document.getElementById('exportSingle');
+        const exportGrammar = document.getElementById('exportGrammar');
+        const closeExport = document.getElementById('closeExport');
+        const importBtn = document.getElementById('importBtn');
+        const importModal = document.getElementById('importModal');
+        const importType = document.getElementById('importType');
+        const importText = document.getElementById('importText');
+        const doImport = document.getElementById('doImport');
+        const closeImport = document.getElementById('closeImport');
+
+        // 自定义确认弹窗元素
+        const confirmModal = document.getElementById('confirmModal');
+        const confirmTitle = document.getElementById('confirmTitle');
+        const confirmText = document.getElementById('confirmText');
+        const confirmCancel = document.getElementById('confirmCancel');
+        const confirmOk = document.getElementById('confirmOk');
+        let confirmCallback = null;
+
+        // 单项选择题 100 道
+        const singleList = [];
+        for(let i=1;i<=100;i++){
+            let t = i % 100;
+            let q,ans,opt,explain;
+            if(t===1){q=`${i}. He ______ English every day.`; ans="A"; opt="A.learns B.learn C.learning D.learned"; explain="一般现在时，主语三单+s";}
+            else if(t===2){q=`${i}. She ______ to school yesterday.`; ans="B"; opt="A.go B.went C.goes D.going"; explain="yesterday过去时";}
+            else if(t===3){q=`${i}. Look! They ______ basketball.`; ans="C"; opt="A.play B.plays C.are playing D.played"; explain="look现在进行时";}
+            else if(t===4){q=`${i}. I ______ here for 5 years.`; ans="D"; opt="A.live B.lived C.am living D.have lived"; explain="for+时间段现在完成时";}
+            else if(t===5){q=`${i}. We ______ to Beijing tomorrow.`; ans="A"; opt="A.will go B.go C.went D.going"; explain="tomorrow将来时";}
+            else if(t===6){q=`${i}. ______ you like music?`; ans="B"; opt="A.Is B.Do C.Are D.Does"; explain="一般现在时疑问句用do";}
+            else if(t===7){q=`${i}. ______ she like dogs?`; ans="D"; opt="A.Is B.Are C.Do D.Does"; explain="主语三单用does";}
+            else if(t===8){q=`${i}. I get up ______ 6 o'clock.`; ans="A"; opt="A.at B.in C.on D.for"; explain="时刻前用at";}
+            else if(t===9){q=`${i}. We have no class ______ Sunday.`; ans="C"; opt="A.at B.in C.on D.to"; explain="星期前用on";}
+            else if(t===10){q=`${i}. We plant trees ______ spring.`; ans="B"; opt="A.at B.in C.on D.with"; explain="季节前用in";}
+            else if(t===11){q=`${i}. This is the man ______ helped me.`; ans="A"; opt="A.who B.which C.whose D.what"; explain="先行词是人用who";}
+            else if(t===12){q=`${i}. This is the pen ______ I lost.`; ans="B"; opt="A.who B.that C.whom D.what"; explain="先行词是物用that";}
+            else if(t===13){q=`${i}. I like tea ______ he likes coffee.`; ans="C"; opt="A.so B.or C.but D.because"; explain="转折用but";}
+            else if(t===14){q=`${i}. I didn't go out ______ it rained.`; ans="D"; opt="A.but B.though C.if D.because"; explain="原因用because";}
+            else if(t===15){q=`${i}. ______ you study hard, you will pass.`; ans="A"; opt="A.If B.Although C.Unless D.Before"; explain="if条件句主将从现";}
+            else if(t===16){q=`${i}. He runs as ______ as a horse.`; ans="B"; opt="A.fastest B.fast C.faster D.more fast"; explain="as...as用原级";}
+            else if(t===17){q=`${i}. This book is ______ than that one.`; ans="C"; opt="A.interesting B.most C.more interesting D.interested"; explain="than比较级";}
+            else if(t===18){q=`${i}. This is the ______ day of my life.`; ans="D"; opt="A.happy B.happier C.happily D.happiest"; explain="最高级";}
+            else if(t===19){q=`${i}. I want ______ a teacher.`; ans="A"; opt="A.to be B.be C.being D.been"; explain="want to do";}
+            else if(t===20){q=`${i}. He enjoys ______ books.`; ans="C"; opt="A.read B.to read C.reading D.reads"; explain="enjoy doing";}
+            else if(t===21){q=`${i}. Stop ______! The bell is ringing.`; ans="B"; opt="A.talk B.talking C.to talk D.talked"; explain="stop doing";}
+            else if(t===22){q=`${i}. It's time ______ dinner.`; ans="D"; opt="A.to B.at C.in D.for"; explain="it's time for sth";}
+            else if(t===23){q=`${i}. It's good ______ English every day.`; ans="A"; opt="A.to read B.read C.reading D.reads"; explain="it is + adj + to do";}
+            else if(t===24){q=`${i}. There ______ a book and two pens.`; ans="A"; opt="A.is B.are C.be D.am"; explain="there be就近原则";}
+            else if(t===25){q=`${i}. Neither I nor he ______ wrong.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
+            else if(t===26){q=`${i}. Everyone ______ here.`; ans="C"; opt="A.are B.were C.is D.be"; explain="不定代词作主语单数";}
+            else if(t===27){q=`${i}. I have ______ friends.`; ans="A"; opt="A.many B.much C.little D.a little"; explain="many修饰可数复数";}
+            else if(t===28){q=`${i}. There is ______ water.`; ans="B"; opt="A.many B.much C.few D.a few"; explain="much修饰不可数";}
+            else if(t===29){q=`${i}. He is ______ honest boy.`; ans="C"; opt="A.a B.the C.an D./"; explain="元音开头用an";}
+            else if(t===30){q=`${i}. This is ______ university.`; ans="A"; opt="A.a B.an C.the D./"; explain="辅音开头用a";}
+            else if(t===31){q=`${i}. ______ earth goes around the sun.`; ans="C"; opt="A.A B.An C.The D./"; explain="独一无二加the";}
+            else if(t===32){q=`${i}. I like playing ______ basketball.`; ans="D"; opt="A.a B.an C.the D./"; explain="球类不加冠词";}
+            else if(t===33){q=`${i}. He can ______ very well.`; ans="B"; opt="A.swims B.swim C.swimming D.swam"; explain="情态动词后接原形";}
+            else if(t===34){q=`${i}. You must ______ hard.`; ans="A"; opt="A.work B.works C.working D.worked"; explain="must后接原形";}
+            else if(t===35){q=`${i}. May I ______ in?`; ans="B"; opt="A.comes B.come C.came D.coming"; explain="may后接原形";}
+            else if(t===36){q=`${i}. He is used to ______ early.`; ans="C"; opt="A.get B.gets C.getting D.got"; explain="be used to doing";}
+            else if(t===37){q=`${i}. I used to ______ up late.`; ans="A"; opt="A.stay B.staying C.stayed D.stays"; explain="used to do";}
+            else if(t===38){q=`${i}. The book is worth ______.`; ans="B"; opt="A.read B.reading C.to read D.reads"; explain="be worth doing";}
+            else if(t===39){q=`${i}. I don't know ______ he will come.`; ans="C"; opt="A.what B.which C.if D.who"; explain="if是否";}
+            else if(t===40){q=`${i}. I don't know ______ to do.`; ans="A"; opt="A.what B.which C.if D.whether"; explain="what to do";}
+            else if(t===41){q=`${i}. This is ______ book.`; ans="A"; opt="A.my B.mine C.me D.I"; explain="形容词性物主代词my";}
+            else if(t===42){q=`${i}. This book is ______.`; ans="B"; opt="A.my B.mine C.me D.I"; explain="名词性物主代词mine";}
+            else if(t===43){q=`${i}. He is too young ______ to school.`; ans="C"; opt="A.go B.going C.to go D.went"; explain="too...to...";}
+            else if(t===44){q=`${i}. I prefer apples ______ bananas.`; ans="D"; opt="A.for B.with C.on D.to"; explain="prefer A to B";}
+            else if(t===45){q=`${i}. Not only he but also I ______ a student.`; ans="B"; opt="A.is B.am C.are D.be"; explain="就近原则";}
+            else if(t===46){q=`${i}. Either you or he ______ right.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
+            else if(t===47){q=`${i}. I remember ______ her.`; ans="B"; opt="A.see B.seeing C.to see D.saw"; explain="remember doing";}
+            else if(t===48){q=`${i}. Remember ______ the door.`; ans="C"; opt="A.close B.closing C.to close D.closed"; explain="remember to do";}
+            else if(t===49){q=`${i}. I learn by ______ aloud.`; ans="D"; opt="A.read B.reads C.readed D.reading"; explain="by后接doing";}
+            else if(t===50){q=`${i}. He is good at ______.`; ans="C"; opt="A.dance B.dances C.dancing D.danced"; explain="介词后接doing";}
+            else if(t===51){q=`${i}. She is afraid ______ dogs.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be afraid of害怕";}
+            else if(t===52){q=`${i}. We are proud ______ our country.`; ans="B"; opt="A.in B.of C.for D.on"; explain="be proud of骄傲";}
+            else if(t===53){q=`${i}. He is late ______ school.`; ans="C"; opt="A.in B.on C.for D.at"; explain="be late for迟到";}
+            else if(t===54){q=`${i}. I am busy ______ my homework.`; ans="D"; opt="A.in B.on C.at D.with"; explain="be busy with忙于";}
+            else if(t===55){q=`${i}. He is interested ______ history.`; ans="B"; opt="A.on B.in C.at D.for"; explain="be interested in感兴趣";}
+            else if(t===56){q=`${i}. He is tired ______ the work.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be tired of厌倦";}
+            else if(t===57){q=`${i}. We look forward to ______ you.`; ans="B"; opt="A.see B.seeing C.seen D.saw"; explain="look forward to doing";}
+            else if(t===58){q=`${i}. It's no use ______ here.`; ans="C"; opt="A.wait B.waits C.waiting D.waited"; explain="it's no use doing";}
+            else if(t===59){q=`${i}. I can't help ______ when I am happy.`; ans="B"; opt="A.laugh B.laughing C.to laugh D.laughed"; explain="can't help doing忍不住";}
+            else if(t===60){q=`${i}. I feel like ______ a rest.`; ans="C"; opt="A.have B.to have C.having D.has"; explain="feel like doing想要";}
+            else if(t===61){q=`${i}. He kept me ______ for an hour.`; ans="B"; opt="A.wait B.waiting C.to wait D.waited"; explain="keep sb doing让某人一直做";}
+            else if(t===62){q=`${i}. My mother told me ______ hard.`; ans="C"; opt="A.study B.studying C.to study D.studied"; explain="tell sb to do";}
+            else if(t===63){q=`${i}. He asked me ______ him the way.`; ans="A"; opt="A.to show B.show C.showing D.showed"; explain="ask sb to do";}
+            else if(t===64){q=`${i}. I saw him ______ in the room.`; ans="B"; opt="A.sit B.sitting C.to sit D.sat"; explain="see sb doing看见某人正在做";}
+            else if(t===65){q=`${i}. I heard her ______ in the next room.`; ans="C"; opt="A.sing B.sings C.singing D.sang"; explain="hear sb doing";}
+            else if(t===66){q=`${i}. The teacher made me ______ it again.`; ans="A"; opt="A.do B.to do C.doing D.did"; explain="make sb do让某人做";}
+            else if(t===67){q=`${i}. Let's ______ a walk.`; ans="B"; opt="A.to take B.take C.taking D.took"; explain="let's后接原形";}
+            else if(t===68){q=`${i}. Why not ______ with me?`; ans="C"; opt="A.to go B.going C.go D.went"; explain="why not + 原形";}
+            else if(t===69){q=`${i}. You'd better ______ early.`; ans="A"; opt="A.go B.to go C.going D.went"; explain="had better + 原形";}
+            else if(t===70){q=`${i}. I would rather ______ at home.`; ans="B"; opt="A.to stay B.stay C.staying D.stayed"; explain="would rather do";}
+            else if(t===71){q=`${i}. I prefer ______ to ______.`; ans="C"; opt="A.read / write B.reading / write C.reading / writing D.read / writing"; explain="prefer doing to doing";}
+            else if(t===72){q=`${i}. He is ______ clever a boy.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so + adj + a/an + n";}
+            else if(t===73){q=`${i}. He is ______ a clever boy.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such + a/an + adj +n";}
+            else if(t===74){q=`${i}. It's ______ hot today.`; ans="A"; opt="A.too B.to C.two D.many"; explain="too太";}
+            else if(t===75){q=`${i}. The box is ______ heavy for me.`; ans="C"; opt="A.to B.two C.too D.much"; explain="too heavy太重";}
+            else if(t===76){q=`${i}. ______ beautiful the flower is!`; ans="A"; opt="A.How B.What C.What a D.How a"; explain="How + adj/adv";}
+            else if(t===77){q=`${i}. ______ a beautiful flower!`; ans="B"; opt="A.How B.What C.What an D.How an"; explain="What + a/an + adj +n";}
+            else if(t===78){q=`${i}. ______ good news!`; ans="B"; opt="A.How B.What C.What a D.How a"; explain="news不可数用What";}
+            else if(t===79){q=`${i}. He is ______ a good man.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a good man";}
+            else if(t===80){q=`${i}. The film is ______ moving.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so moving如此感人";}
+            else if(t===81){q=`${i}. I have ______ many books.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so many固定搭配";}
+            else if(t===82){q=`${i}. There is ______ little water.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so little固定搭配";}
+            else if(t===83){q=`${i}. He is ______ old to work.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too old to work太老不能工作";}
+            else if(t===84){q=`${i}. The question is ______ difficult.`; ans="A"; opt="A.too B.to C.two D.much"; explain="too difficult太难";}
+            else if(t===85){q=`${i}. I am ______ tired to walk.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too tired to walk太累不能走";}
+            else if(t===86){q=`${i}. He is ______ strong that he can lift it.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so...that...如此…以至于…";}
+            else if(t===87){q=`${i}. It is ______ a fine day.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a fine day";}
+            else if(t===88){q=`${i}. I was ______ excited that I cried.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so excited如此激动";}
+            else if(t===89){q=`${i}. He is ______ a kind man.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a kind man";}
+            else if(t===90){q=`${i}. The story is ______ interesting.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so interesting如此有趣";}
+            else if(t===91){q=`${i}. I will go ______ it is fine.`; ans="A"; opt="A.if B.though C.because D.unless"; explain="if如果";}
+            else if(t===92){q=`${i}. I won't go ______ it rains.`; ans="D"; opt="A.if B.though C.because D.unless"; explain="unless除非";}
+            else if(t===93){q=`${i}. I will wait ______ you come back.`; ans="C"; opt="A.if B.though C.until D.because"; explain="until直到";}
+            else if(t===94){q=`${i}. He didn't go to bed ______ his mother came back.`; ans="C"; opt="A.if B.though C.until D.because"; explain="not...until直到…才…";}
+            else if(t===95){q=`${i}. I will tell him ______ he comes.`; ans="A"; opt="A.when B.if C.though D.because"; explain="when当…时候";}
+            else if(t===96){q=`${i}. I was reading ______ he came in.`; ans="C"; opt="A.if B.though C.when D.because"; explain="when当…时候";}
+            else if(t===97){q=`${i}. I like English ______ it is interesting.`; ans="D"; opt="A.if B.though C.but D.because"; explain="because因为";}
+            else if(t===98){q=`${i}. I didn't go out ______ the bad weather.`; ans="A"; opt="A.because of B.because C.if D.though"; explain="because of + 名词";}
+            else if(t===99){q=`${i}. He is tall ______ he can't enter the door.`; ans="C"; opt="A.so B.such C.but D.and"; explain="but但是表转折";}
+            else {q=`${i}. I study hard ______ I can pass the exam.`; ans="A"; opt="A.so that B.such that C.in order to D.so as to"; explain="so that为了，引导目的状语从句";}
+            singleList.push({q,ans,opt,explain});
+        }
+
+        // 语法填空题 100 道
+        const grammarList = [];
+        for(let i=1;i<=100;i++){
+            let t = i%100;
+            let q,ans,explain;
+            if(t===1){q=`He ______(get) up early every day.`; ans="gets"; explain="一般现在时三单+s";}
+            else if(t===2){q=`I ______(go) to Beijing yesterday.`; ans="went"; explain="过去时go→went";}
+            else if(t===3){q=`Listen! They ______(sing).`; ans="are singing"; explain="现在进行时be+doing";}
+            else if(t===4){q=`I ______(live) here for 10 years.`; ans="have lived"; explain="现在完成时have done";}
+            else if(t===5){q=`She ______(visit) the park tomorrow.`; ans="will visit"; explain="将来时will do";}
+            else if(t===6){q=`It's important ______(learn) English.`; ans="to learn"; explain="it is + adj + to do";}
+            else if(t===7){q=`He is good at ______(swim).`; ans="swimming"; explain="介词后接doing";}
+            else if(t===8){q=`Thank you for ______(help) me.`; ans="helping"; explain="for后接doing";}
+            else if(t===9){q=`She enjoys ______(read) novels.`; ans="reading"; explain="enjoy doing";}
+            else if(t===10){q=`Stop ______(talk), please.`; ans="talking"; explain="stop doing停止做";}
+            else if(t===11){q=`I want ______(buy) a new bag.`; ans="to buy"; explain="want to do";}
+            else if(t===12){q=`The weather is ______(sun).`; ans="sunny"; explain="名词变形容词sunny";}
+            else if(t===13){q=`He runs ______(fast) than me.`; ans="faster"; explain="比较级faster";}
+            else if(t===14){q=`This is the ______(good) day.`; ans="best"; explain="最高级good→best";}
+            else if(t===15){q=`She sings ______(beautiful).`; ans="beautifully"; explain="副词修饰动词+ly";}
+            else if(t===16){q=`There ______(be) a book on the desk.`; ans="is"; explain="there be单数用is";}
+            else if(t===17){q=`Nobody ______(know) the truth.`; ans="knows"; explain="不定代词作主语三单";}
+            else if(t===18){q=`If it ______(rain), I will stay.`; ans="rains"; explain="if从句主将从现";}
+            else if(t===19){q=`I used ______(walk) here.`; ans="to walk"; explain="used to do过去常常";}
+            else if(t===20){q=`He is used to ______(get) up early.`; ans="getting"; explain="be used to doing习惯于";}
+            else if(t===21){q=`I feel like ______(eat) something.`; ans="eating"; explain="feel like doing";}
+            else if(t===22){q=`Can't help ______(laugh).`; ans="laughing"; explain="can't help doing忍不住";}
+            else if(t===23){q=`Look forward to ______(see) you.`; ans="seeing"; explain="look forward to doing";}
+            else if(t===24){q=`Keep on ______(try).`; ans="trying"; explain="keep on doing";}
+            else if(t===25){q=`Be busy ______(do) homework.`; ans="doing"; explain="be busy doing";}
+            else if(t===26){q=`Give up ______(smoke).`; ans="smoking"; explain="give up doing放弃";}
+            else if(t===27){q=`Put off ______(do) it.`; ans="doing"; explain="put off doing推迟";}
+            else if(t===28){q=`Mind ______(open) the door.`; ans="opening"; explain="mind doing介意做";}
+            else if(t===29){q=`Practice ______(speak) English.`; ans="speaking"; explain="practice doing练习";}
+            else if(t===30){q=`Finish ______(do) the work.`; ans="doing"; explain="finish doing完成";}
+            else if(t===31){q=`Avoid ______(make) mistakes.`; ans="making"; explain="avoid doing避免";}
+            else if(t===32){q=`Allow ______(smoke) here.`; ans="smoking"; explain="allow doing允许";}
+            else if(t===33){q=`Advise ______(take) a rest.`; ans="taking"; explain="advise doing建议";}
+            else if(t===34){q=`Suggest ______(go) out.`; ans="going"; explain="suggest doing建议";}
+            else if(t===35){q=`Consider ______(move) to a new house.`; ans="moving"; explain="consider doing考虑";}
+            else if(t===36){q=`Imagine ______(live) on the moon.`; ans="living"; explain="imagine doing想象";}
+            else if(t===37){q=`Miss ______(watch) TV.`; ans="watching"; explain="miss doing错过/想念";}
+            else if(t===38){q=`Pardon ______(interrupt) you.`; ans="interrupting"; explain="pardon doing原谅";}
+            else if(t===39){q=`Dislike ______(do) housework.`; ans="doing"; explain="dislike doing不喜欢";}
+            else if(t===40){q=`Enjoy ______(play) games.`; ans="playing"; explain="enjoy doing享受";}
+            else if(t===41){q=`Escape ______(be) punished.`; ans="being"; explain="escape doing逃避";}
+            else if(t===42){q=`Forbid ______(swim) here.`; ans="swimming"; explain="forbid doing禁止";}
+            else if(t===43){q=`Permit ______(park) here.`; ans="parking"; explain="permit doing允许";}
+            else if(t===44){q=`Advise ______(wait) a moment.`; ans="waiting"; explain="advise doing";}
+            else if(t===45){q=`Admit ______(make) a mistake.`; ans="making"; explain="admit doing承认";}
+            else if(t===46){q=`Deny ______(steal) the money.`; ans="stealing"; explain="deny doing否认";}
+            else if(t===47){q=`Risk ______(lose) the job.`; ans="losing"; explain="risk doing冒险";}
+            else if(t===48){q=`Resist ______(buy) new clothes.`; ans="buying"; explain="resist doing抵制";}
+            else if(t===49){q=`Can't stand ______(wait) long.`; ans="waiting"; explain="can't stand doing无法忍受";}
+            else if(t===50){q=`Devote to ______(work) hard.`; ans="working"; explain="devote to doing致力于";}
+            else if(t===51){q=`Stick to ______(learn) English.`; ans="learning"; explain="stick to doing坚持";}
+            else if(t===52){q=`Object to ______(do) that.`; ans="doing"; explain="object to doing反对";}
+            else if(t===53){q=`Pay attention to ______(read).`; ans="reading"; explain="pay attention to doing注意";}
+            else if(t===54){q=`Be used to ______(live) here.`; ans="living"; explain="be used to doing习惯于";}
+            else if(t===55){q=`Get used to ______(eat) bread.`; ans="eating"; explain="get used to doing习惯于";}
+            else if(t===56){q=`Look forward to ______(meet) you.`; ans="meeting"; explain="look forward to doing期待";}
+            else if(t===57){q=`Be devoted to ______(study).`; ans="studying"; explain="be devoted to doing致力于";}
+            else if(t===58){q=`Be addicted to ______(play).`; ans="playing"; explain="be addicted to doing沉迷于";}
+            else if(t===59){q=`Be related to ______(work) hard.`; ans="working"; explain="be related to doing与…有关";}
+            else if(t===60){q=`Contribute to ______(build) the city.`; ans="building"; explain="contribute to doing贡献";}
+            else if(t===61){q=`Lead to ______(make) progress.`; ans="making"; explain="lead to doing导致";}
+            else if(t===62){q=`See sb ______(do) sth.`; ans="doing"; explain="see sb doing看见某人正在做";}
+            else if(t===63){q=`Hear sb ______(sing) in the room.`; ans="singing"; explain="hear sb doing听见某人正在唱";}
+            else if(t===64){q=`Watch sb ______(play) football.`; ans="playing"; explain="watch sb doing观看某人正在踢";}
+            else if(t===65){q=`Notice sb ______(come) in.`; ans="coming"; explain="notice sb doing注意到某人正在进来";}
+            else if(t===66){q=`Find sb ______(cry) in the corner.`; ans="crying"; explain="find sb doing发现某人正在哭";}
+            else if(t===67){q=`Keep sb ______(wait) for long.`; ans="waiting"; explain="keep sb doing让某人一直等";}
+            else if(t===68){q=`Make sb ______(laugh) loudly.`; ans="laugh"; explain="make sb do让某人做";}
+            else if(t===69){q=`Let sb ______(go) first.`; ans="go"; explain="let sb do让某人做";}
+            else if(t===70){q=`Have sb ______(do) the work.`; ans="do"; explain="have sb do让某人做";}
+            else if(t===71){q=`Tell sb ______(come) early.`; ans="to come"; explain="tell sb to do告诉某人做";}
+            else if(t===72){q=`Ask sb ______(help) me.`; ans="to help"; explain="ask sb to do请求某人做";}
+            else if(t===73){q=`Want sb ______(stay) here.`; ans="to stay"; explain="want sb to do想要某人做";}
+            else if(t===74){q=`Allow sb ______(enter) the room.`; ans="to enter"; explain="allow sb to do允许某人做";}
+            else if(t===75){q=`Advise sb ______(take) a rest.`; ans="to take"; explain="advise sb to do建议某人做";}
+            else if(t===76){q=`Encourage sb ______(try) again.`; ans="to try"; explain="encourage sb to do鼓励某人做";}
+            else if(t===77){q=`Invite sb ______(attend) the party.`; ans="to attend"; explain="invite sb to do邀请某人做";}
+            else if(t===78){q=`Permit sb ______(smoke) here.`; ans="to smoke"; explain="permit sb to do允许某人做";}
+            else if(t===79){q=`Teach sb ______(swim).`; ans="to swim"; explain="teach sb to do教某人做";}
+            else if(t===80){q=`Train sb ______(run) fast.`; ans="to run"; explain="train sb to do训练某人做";}
+            else if(t===81){q=`Force sb ______(do) it.`; ans="to do"; explain="force sb to do强迫某人做";}
+            else if(t===82){q=`Order sb ______(obey) rules.`; ans="to obey"; explain="order sb to do命令某人做";}
+            else if(t===83){q=`Warn sb ______(not go) out.`; ans="not to go"; explain="warn sb not to do警告某人不做";}
+            else if(t===84){q=`Wish sb ______(succeed).`; ans="to succeed"; explain="wish sb to do希望某人成功";}
+            else if(t===85){q=`Expect sb ______(arrive) on time.`; ans="to arrive"; explain="expect sb to do期望某人到达";}
+            else if(t===86){q=`Remind sb ______(lock) the door.`; ans="to lock"; explain="remind sb to do提醒某人锁门";}
+            else if(t===87){q=`Persuade sb ______(give up) smoking.`; ans="to give up"; explain="persuade sb to do说服某人戒烟";}
+            else if(t===88){q=`Inspire sb ______(work) hard.`; ans="to work"; explain="inspire sb to do激励某人努力";}
+            else if(t===89){q=`Require sb ______(finish) the task.`; ans="to finish"; explain="require sb to do要求某人完成任务";}
+            else if(t===90){q=`Beg sb ______(help) the poor.`; ans="to help"; explain="beg sb to do乞求某人帮助穷人";}
+            else if(t===91){q=`It is easy ______(learn) English.`; ans="to learn"; explain="it is + adj + to do";}
+            else if(t===92){q=`It is difficult ______(speak) well.`; ans="to speak"; explain="it is + adj + to do";}
+            else if(t===93){q=`It is useful ______(remember) words.`; ans="to remember"; explain="it is + adj + to do";}
+            else if(t===94){q=`It is necessary ______(study) hard.`; ans="to study"; explain="it is + adj + to do";}
+            else if(t===95){q=`It is important ______(keep) healthy.`; ans="to keep"; explain="it is + adj + to do";}
+            else if(t===96){q=`It is impossible ______(finish) it today.`; ans="to finish"; explain="it is + adj + to do";}
+            else if(t===97){q=`It is dangerous ______(swim) alone.`; ans="to swim"; explain="it is + adj + to do";}
+            else if(t===98){q=`It is helpful ______(read) aloud.`; ans="to read"; explain="it is + adj + to do";}
+            else if(t===99){q=`It is useless ______(argue) with him.`; ans="to argue"; explain="it is + adj + to do";}
+            else {q=`It is kind ______(help) the old.`; ans="to help"; explain="it is + adj + to do";}
+            grammarList.push({q,ans,explain});
+        }
+
+        // 全局变量：当前题目索引、当前题库、错题列表、刷题记录
+        let currentIndex = 0;
+        let currentList = singleList;
+        let errorList = JSON.parse(localStorage.getItem('enError')) || [];
+        let record = JSON.parse(localStorage.getItem('enRecord')) || {total:0,right:0};
+
+        // 打开自定义居中确认弹窗
+        function openConfirmModal(title, text, callback){
+            confirmTitle.innerText = title;
+            confirmText.innerText = text;
+            confirmCallback = callback;
+            confirmModal.classList.remove('hide');
+        }
+        // 关闭确认弹窗
+        function closeConfirmModal(){
+            confirmModal.classList.add('hide');
+            confirmCallback = null;
+        }
+        // 确认弹窗按钮事件
+        confirmCancel.onclick = closeConfirmModal;
+        confirmOk.onclick = ()=>{
+            if(typeof confirmCallback === 'function') confirmCallback();
+            closeConfirmModal();
+        };
+
+        // 刷新顶部统计数据
+        function updateStat(){
+            const errCount = errorList.length;
+            const rate = record.total===0 ? "0" : (record.right/record.total*100).toFixed(1);
+            statBox.innerText = `统计：已做题${record.total} | 正确${record.right} | 错题${errCount} | 正确率${rate}%`;
+        }
+
+        // 渲染当前题目到页面
+        function renderItem(){
+            const total = currentList.length;
+            const item = currentList[currentIndex];
+            pageTip.innerText = `当前：第 ${currentIndex + 1} / ${total} 题`;
+            if(typeSelect.value === "single"){
+                qBox.innerHTML = `<div class="q-title">${item.q}</div><div>${item.opt}</div><div class="ans-area">你的答案：</div>`;
+            }else{
+                qBox.innerHTML = `<div class="q-title">语法填空：${item.q}</div><div class="ans-area">你的答案：</div>`;
+            }
+            userAns.value = '';
+            resBox.innerText = '答案解析将展示在这里';
+        }
+
+        // 切换题型（单选/语法填空）
+        typeSelect.onchange = () => {
+            currentIndex = 0;
+            currentList = typeSelect.value === "single" ? singleList : grammarList;
+            renderItem();
+        };
+
+        // 上一题
+        prevQ.onclick = () => {
+            if(currentIndex > 0){
+                currentIndex--;
+                renderItem();
+            }else{
+                resBox.innerText = '已经是第一题';
+            }
+        };
+
+        // 下一题
+        nextQ.onclick = () => {
+            if(currentIndex < currentList.length - 1){
+                currentIndex++;
+                renderItem();
+            }else{
+                resBox.innerText = '已经是最后一题';
+            }
+        };
+
+        // 核对答案
+        function checkAnswer(){
+            const val = userAns.value.trim().toUpperCase();
+            if(!val){
+                resBox.innerText = '请输入答案';
+                return;
+            }
+            const item = currentList[currentIndex];
+            record.total++;
+            let correct = false;
+            if(val === item.ans.toUpperCase()){
+                resBox.innerText = `✅ 正确！答案：${item.ans}\n解析：${item.explain}`;
+                record.right++;
+                correct = true;
+            }else{
+                resBox.innerText = `❌ 错误！正确答案：${item.ans}\n解析：${item.explain}`;
+            }
+            localStorage.setItem('enRecord', JSON.stringify(record));
+            updateStat();
+        }
+        checkAns.onclick = checkAnswer;
+
+        // 回车快速提交答案
+        userAns.addEventListener('keydown', (e)=>{
+            if(e.key === 'Enter') checkAnswer();
+        });
+
+        // 收藏错题到本地存储
+        saveErr.onclick = () => {
+            const item = currentList[currentIndex];
+            const has = errorList.some(e => e.q === item.q && e.type === typeSelect.value);
+            if(has){
+                resBox.innerText = '✅ 该题已在错题本';
+                return;
+            }
+            errorList.push({...item, type: typeSelect.value});
+            localStorage.setItem('enError', JSON.stringify(errorList));
+            resBox.innerText = '✅ 已收藏到错题本';
+            updateStat();
+        };
+
+        // 重置刷题进度
+        resetAll.onclick = () => {
+            openConfirmModal("重置提示", "确定重置所有刷题进度？做题总数、正确数将全部清空", ()=>{
+                record = {total:0, right:0};
+                currentIndex = 0;
+                localStorage.setItem('enRecord', JSON.stringify(record));
+                renderItem();
+                updateStat();
+            });
+        };
+
+        // 深色/浅色模式切换
+        darkToggle.onclick = () => {
+            document.body.classList.toggle('dark-mode');
+            const icon = darkToggle.querySelector('i');
+            icon.classList.toggle('fa-moon');
+            icon.classList.toggle('fa-sun');
+        };
+
+        // 渲染错题列表（带单题删除）
+        function renderErrList(){
+            if(errorList.length === 0){
+                errListBox.innerHTML = '<div style="text-align:center;padding:10px 0">暂无错题</div>';
+                return;
+            }
+            let html = '';
+            errorList.forEach((e,i) => {
+                html += `<div class="err-item">
+                    <div style="flex:1">
+                        <div>${i+1}. ${e.q}</div>
+                        <div style="margin-top:4px;color:var(--subtext)">答案：${e.ans}</div>
+                    </div>
+                    <button class="del-btn" data-index="${i}">删除</button>
+                </div>`;
+            });
+            errListBox.innerHTML = html;
+
+            // 绑定单题删除
+            document.querySelectorAll('.del-btn').forEach(btn=>{
+                btn.onclick = ()=>{
+                    const idx = btn.dataset.index;
+                    errorList.splice(idx,1);
+                    localStorage.setItem('enError', JSON.stringify(errorList));
+                    renderErrList();
+                    updateStat();
+                };
+            });
+        }
+
+        // 打开错题本弹窗
+        openErrModal.onclick = () => {
+            renderErrList();
+            errModal.classList.remove('hide');
+        };
+        // 关闭错题本弹窗
+        closeErrModal.onclick = () => errModal.classList.add('hide');
+        // 清空所有错题
+        clearErr.onclick = () => {
+            openConfirmModal("清空提示", "确定清空全部收藏错题？数据无法恢复", ()=>{
+                errorList = [];
+                localStorage.setItem('enError', JSON.stringify(errorList));
+                errListBox.innerHTML = '<div style="text-align:center;padding:10px 0">暂无错题</div>';
+                updateStat();
+            });
+        };
+
+        // 导出全部题库到弹窗
+        exportBtn.onclick = () => {
+            let s = '';
+            singleList.forEach((item,i) => {
+                s += `${item.q}\n${item.opt}\n答案：${item.ans}\n解析：${item.explain}\n----------------\n`;
+            });
+            exportSingle.value = s;
+            let g = '';
+            grammarList.forEach((item,i) => {
+                g += `${item.q}\n答案：${item.ans}\n解析：${item.explain}\n----------------\n`;
+            });
+            exportGrammar.value = g;
+            exportModal.classList.remove('hide');
+        };
+        // 关闭导出弹窗
+        closeExport.onclick = () => exportModal.classList.add('hide');
+
+        // 导入题库功能
+        importBtn.onclick = () => importModal.classList.remove('hide');
+        closeImport.onclick = () => importModal.classList.add('hide');
+        doImport.onclick = () => {
+            const type = importType.value;
+            const text = importText.value.trim();
+            if(!text){
+                alert('请粘贴题目内容');
+                return;
+            }
+            const lines = text.split('\n').filter(line=>line.trim());
+            let count = 0;
+            if(type === 'single'){
+                lines.forEach(line=>{
+                    let arr = line.split('|');
+                    if(arr.length >=6){
+                        singleList.push({
+                            q:arr[0], opt:arr[1]+' '+arr[2]+' '+arr[3]+' '+arr[4],
+                            ans:arr[5], explain:arr[6]||''
+                        });
+                        count++;
+                    }
+                });
+            }else{
+                lines.forEach(line=>{
+                    let arr = line.split('|');
+                    if(arr.length>=3){
+                        grammarList.push({q:arr[0], ans:arr[1], explain:arr[2]||''});
+                        count++;
+                    }
+                });
+            }
+            alert(`导入成功！共导入 ${count} 题`);
+            importText.value = '';
+            importModal.classList.add('hide');
+            renderItem();
+        };
+
+        // 页面初始化
+        updateStat();
+        renderItem();
+    </script>
+</body>
+</html>
