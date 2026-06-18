@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axapri |在线代码编辑器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Consolas, monospace;
+            background: #fff;
+            color: #333;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        header {
+            height: 60px;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 20px;
+            border-bottom: 1px solid #ddd;
+        }
+        .menu-btn {
+            padding: 8px 12px;
+            cursor: pointer;
+        }
+        .menu {
+            position: absolute;
+            right: 20px;
+            top: 65px;
+            border: 1px solid #ddd;
+            background: #fff;
+            display: none;
+        }
+        .menu.show {
+            display: block;
+        }
+        .menu div {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+        .menu div:hover {
+            background: #eee;
+        }
+        .wrap {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+        }
+        @media(max-width:768px){
+            .wrap{grid-template-columns: 1fr;grid-template-rows: 1fr 1fr;}
+        }
+        .panel {
+            display: flex;
+            flex-direction: column;
+            border-right:1px solid #ddd;
+        }
+        .panel:last-child{border-right:none;}
+        .title {
+            height: 40px;
+            line-height: 40px;
+            padding: 0 16px;
+            background:#f8f8f8;
+            border-bottom:1px solid #ddd;
+        }
+        .code-box{
+            flex:1;
+            display:flex;
+            overflow: hidden;
+        }
+        .line-num{
+            width:45px;
+            background:#f5f5f5;
+            padding:10px 4px;
+            font-family: Consolas, monospace;
+            font-size:14px;
+            line-height: 1.5;
+            text-align:right;
+            color:#666;
+            user-select:none;
+            white-space:pre;
+            overflow-y: auto;
+            overflow-x: hidden;
+        }
+        textarea{
+            flex:1;
+            border:none;
+            outline:none;
+            padding:10px;
+            font-family: Consolas, monospace;
+            font-size:14px;
+            line-height: 1.5;
+            resize:none;
+            white-space:pre;
+            overflow: auto;
+        }
+        iframe{
+            flex:1;
+            border:none;
+        }
+        /* 居中弹窗样式 */
+        .modal-mask {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: none;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-box {
+            background: #fff;
+            padding: 24px 32px;
+            border-radius: 8px;
+            min-width: 280px;
+            text-align: center;
+        }
+        .modal-text {
+            font-size: 15px;
+            color: #333;
+            margin-bottom: 16px;
+        }
+        .modal-btn {
+            padding: 6px 20px;
+            border: none;
+            background: #2d8cf0;
+            color: #fff;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h3>在线代码编辑器</h3>
+    <div>
+        <button class="menu-btn" id="menuBtn">菜单</button>
+        <div class="menu" id="menuBox">
+            <div id="btnTemplate">插入HTML模板</div>
+            <div id="btnFontAdd">放大字体</div>
+            <div id="btnFontMin">缩小字体</div>
+            <div id="btnFormat">格式化</div>
+            <div id="btnClear">清空</div>
+            <div id="btnCopy">复制全部</div>
+            <div id="btnDownload">导出HTML</div>
+        </div>
+    </div>
+</header>
+<div class="wrap">
+    <div class="panel">
+        <div class="title">代码编辑区</div>
+        <div class="code-box">
+            <div class="line-num" id="lineNum"></div>
+            <textarea id="codeInput" spellcheck="false"></textarea>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="title">实时预览</div>
+        <iframe id="preview"></iframe>
+    </div>
+</div>
+
+<!-- 居中弹窗结构 -->
+<div class="modal-mask" id="modalMask">
+    <div class="modal-box">
+        <div class="modal-text" id="modalMsg"></div>
+        <button class="modal-btn" id="modalConfirm">确定</button>
+    </div>
+</div>
+
+<script>
+const $ = s=>document.querySelector(s);
+const $$ = s=>document.querySelectorAll(s);
+const input = $("#codeInput");
+const lineBox = $("#lineNum");
+const preview = $("#preview");
+const menuBtn = $("#menuBtn");
+const menuBox = $("#menuBox");
+const indent = "    ";
+let fontSize = 14;
+
+// 弹窗封装函数
+function showModal(msg) {
+    $("#modalMsg").innerText = msg;
+    $("#modalMask").style.display = 'flex';
+}
+$("#modalConfirm").onclick = () => {
+    $("#modalMask").style.display = 'none';
+}
+
+// 行号更新
+function updateLine(){
+    const rows = input.value.split('\n').length;
+    let str = "";
+    for(let i=1;i<=rows;i++) str += i+"\n";
+    lineBox.innerText = str;
+}
+// 实时预览
+function render(){
+    preview.contentDocument.open();
+    preview.contentDocument.write(input.value);
+    preview.contentDocument.close();
+}
+// 初始化
+updateLine();
+render();
+
+// 输入事件
+input.oninput = ()=>{
+    updateLine();
+    render();
+}
+// 滚动同步行号
+input.onscroll = ()=>{
+    lineBox.scrollTop = input.scrollTop;
+}
+
+// 键盘核心：Tab缩进、括号配对、回车标签闭合
+input.onkeydown = function(e){
+    const pos = this.selectionStart;
+    const val = this.value;
+    const before = val.substring(0,pos);
+    // Tab
+    if(e.key==="Tab"){
+        e.preventDefault();
+        this.value = before + indent + val.substring(pos);
+        this.selectionStart = this.selectionEnd = pos+4;
+        updateLine();render();
+        return;
+    }
+    // 括号配对
+    const pair = {'(':')','[':']','{':'}','"':'"',"'":"'"};
+    if(pair[e.key]){
+        e.preventDefault();
+        this.value = before + e.key + pair[e.key] + val.substring(pos);
+        this.selectionStart = this.selectionEnd = pos+1;
+        updateLine();render();
+        return;
+    }
+    // 回车自动闭合标签
+    if(e.key==="Enter"){
+        e.preventDefault();
+        const lines = before.split('\n');
+        const curLine = lines[lines.length-1];
+        const space = curLine.match(/^(\s+)/)?.[1] || "";
+        const tagReg = /<([a-zA-Z0-9_-]+)(\s+.*?)?>$/;
+        const tagRes = curLine.match(tagReg);
+        if(tagRes){
+            const tag = tagRes[1];
+            const insert = "\n"+space+indent+"\n"+space+`</${tag}>`;
+            this.value = before + insert + val.substring(pos);
+            this.selectionStart = this.selectionEnd = pos + 1 + space.length + 4;
+        }else{
+            this.value = before + "\n"+space + val.substring(pos);
+            this.selectionStart = this.selectionEnd = pos + 1 + space.length;
+        }
+        updateLine();render();
+    }
+}
+
+// 菜单开关
+menuBtn.onclick = (e)=>{
+    e.stopPropagation();
+    menuBox.classList.toggle("show");
+}
+document.onclick = ()=>menuBox.classList.remove("show");
+
+// 功能按钮
+$("#btnTemplate").onclick = ()=>{
+    input.value = `<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+
+    </style>
+</head>
+<body>
+
+</body>
+</html>`;
+    updateLine();render();menuBox.classList.remove("show");
+}
+$("#btnFontAdd").onclick = ()=>{
+    if(fontSize<24){
+        fontSize++;
+        input.style.fontSize = fontSize+"px";
+        lineBox.style.fontSize = fontSize+"px";
+    }
+    menuBox.classList.remove("show");
+}
+$("#btnFontMin").onclick = ()=>{
+    if(fontSize>10){
+        fontSize--;
+        input.style.fontSize = fontSize+"px";
+        lineBox.style.fontSize = fontSize+"px";
+    }
+    menuBox.classList.remove("show");
+}
+$("#btnClear").onclick = ()=>{
+    input.value = "";updateLine();render();menuBox.classList.remove("show");
+}
+$("#btnCopy").onclick = async ()=>{
+    await navigator.clipboard.writeText(input.value);
+    showModal("复制成功");
+    menuBox.classList.remove("show");
+}
+$("#btnDownload").onclick = ()=>{
+    const blob = new Blob([input.value],{type:"text/html"});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "index.html";
+    a.click();
+    menuBox.classList.remove("show");
+}
+$("#btnFormat").onclick = ()=>{
+    showModal('精简版无完整格式化库，完整版需要联网CDN，此版本仅保证核心编辑功能可用');
+    menuBox.classList.remove("show");
+}
+</script>
+</body>
+</html>
