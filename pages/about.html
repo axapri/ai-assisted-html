@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="robots" content="index,follow">
+    
+    <!-- SEO 基础信息 -->
+    <title>关于本站 - Axapri・人间晚风驿站</title>
+    <meta name="description" content="Axapri・人间晚风驿站是一个纯净无广告的个人公益工具站，汇集计算、效率、学习、放松、娱乐类实用工具，守护你的上网体验。">
+    <meta name="keywords" content="关于我们,人间晚风驿站,Axapri,在线工具,公益网站">
+
+    <!-- OG 社交分享 -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="关于本站 - Axapri・人间晚风驿站">
+    <meta property="og:description" content="一个纯净无广告的个人公益工具站">
+    <meta property="og:url" content="https://axapri.icu/about.html">
+    <meta property="og:image" content="https://axapri.icu/favicon.png">
+
+    <link rel="icon" href="/favicon.png?v=1" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+        }
+
+        /* 6套主题配色变量 与全站完全一致 */
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+            font-size: 16px;
+            line-height: 1.75;
+            color: var(--text);
+            background-color: var(--bg);
+            max-width: 860px;
+            margin: 0 auto;
+            padding: 40px 20px 80px;
+            min-height: 100vh;
+        }
+
+        /* 顶部导航栏 */
+        .page-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 32px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+        .back-home {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--theme);
+            text-decoration: none;
+            font-size: 14px;
+            padding: 6px 12px;
+            border-radius: 8px;
+            background: var(--card);
+            border: 1px solid var(--border);
+        }
+        .back-home:hover {
+            background: var(--hover);
+            transform: translateX(-2px);
+        }
+
+        /* 页面标题 */
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--theme);
+            margin-bottom: 8px;
+        }
+        .page-subtitle {
+            color: var(--subtext);
+            font-size: 0.95rem;
+            margin-bottom: 36px;
+        }
+
+        /* 正文内容 */
+        .about-content {
+            color: var(--text);
+            font-size: 0.98rem;
+        }
+        .about-content h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text);
+            margin: 36px 0 14px;
+            padding-left: 12px;
+            border-left: 4px solid var(--theme);
+            scroll-margin-top: 20px;
+        }
+        .about-content h4 {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--theme);
+            margin: 18px 0 8px;
+        }
+        .about-content p {
+            margin-bottom: 10px;
+            color: var(--text);
+        }
+        .about-content strong {
+            font-weight: 600;
+        }
+        .about-content ul {
+            padding-left: 20px;
+            margin: 8px 0;
+        }
+        .about-content li {
+            margin: 4px 0;
+        }
+
+        .highlight-box {
+            background: var(--card);
+            border-left: 3px solid var(--theme);
+            padding: 14px 18px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            font-size: 0.95rem;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+        .feature-card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+        }
+        .feature-card i {
+            color: var(--theme);
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+        }
+        .feature-card h5 {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+        .feature-card p {
+            font-size: 0.9rem;
+            color: var(--subtext);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--border);
+            padding-left: 20px;
+            margin: 16px 0;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 18px;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -26px;
+            top: 7px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--theme);
+        }
+        .timeline-date {
+            font-size: 0.9rem;
+            color: var(--theme);
+            font-weight: 600;
+        }
+        .timeline-text {
+            font-size: 0.95rem;
+            color: var(--text);
+            margin-top: 2px;
+        }
+
+        /* 页脚 */
+        footer {
+            color: var(--subtext);
+            font-size: 0.875em;
+            padding-top: 24px;
+            border-top: 1px solid var(--border);
+            margin-top: 60px;
+            text-align: center;
+        }
+        footer a {
+            color: var(--theme);
+            text-decoration: none;
+            margin: 0 4px;
+            display: inline;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        footer a:hover {
+            text-decoration: underline;
+            transform: none;
+            background: none;
+        }
+
+        /* 返回顶部 */
+        .back-top {
+            position: fixed;
+            bottom: 30px;
+            right: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--card);
+            border: 1px solid var(--border);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 998;
+        }
+        .back-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        .back-top:hover {
+            transform: scale(1.1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 移动端适配 */
+        @media (max-width: 600px) {
+            body {
+                padding: 24px 16px 60px;
+            }
+            .page-title {
+                font-size: 1.5rem;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<h1 class="page-title">关于本站</h1>
+<p class="page-subtitle">Axapri・人间晚风驿站 —— 网络世界里的一处歇脚地</p>
+
+<!-- 正文 -->
+<div class="about-content">
+
+    <div class="highlight-box">
+        这是一个由个人独立开发、公益运营的纯前端在线工具站。<br>
+        没有弹窗广告，没有付费会员，没有行为追踪，只想安安静静提供实用、干净的上网体验。
+    </div>
+
+    <h3 id="intro">站点简介</h3>
+    <p>「Axapri・人间晚风驿站」诞生于2026年，是一个专注于实用工具与轻量放松体验的个人公益网站。</p>
+    <p>我们汇集了日常生活、学习工作、休闲放松等场景下的各类小工具，所有功能均基于纯前端技术实现，绝大多数数据仅保存在你的本地浏览器中，无需上传服务器，最大限度保护你的隐私安全。</p>
+    <p>我们希望这里能像傍晚拂面的晚风一样，轻柔、自在、没有负担，在你需要的时候，随时可以停下来歇一歇。</p>
+
+    <h3 id="idea">我们的理念</h3>
+    <div class="feature-grid">
+        <div class="feature-card">
+            <i class="fa-solid fa-shield-halved"></i>
+            <h5>隐私优先</h5>
+            <p>坚持最小必要原则，不收集个人信息，数据本地存储，不上传、不追踪、不画像。</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-ban"></i>
+            <h5>纯净无广告</h5>
+            <p>全站无商业广告、无弹窗引流、无诱导点击，还你干净清爽的使用体验。</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-heart"></i>
+            <h5>公益免费</h5>
+            <p>所有功能全部免费开放，无会员、无付费解锁、无隐藏消费，用爱发电。</p>
+        </div>
+        <div class="feature-card">
+            <i class="fa-solid fa-palette"></i>
+            <h5>多主题适配</h5>
+            <p>支持6套主题配色与深色模式，适配多种设备，照顾你的视觉偏好与使用习惯。</p>
+        </div>
+    </div>
+
+    <h3 id="features">功能分区</h3>
+    <p>目前站点已覆盖六大类、数十款实用工具，持续更新迭代中：</p>
+    <ul>
+        <li><strong>计算工具</strong>：房贷计算、个税计算、利息计算、存款计算、BMI计算、通用计算器等；</li>
+        <li><strong>效率工具</strong>：二维码生成、加密解密、密码生成、格式转换、图片压缩、待办清单等；</li>
+        <li><strong>学习辅助</strong>：英语作文模板、专升本词汇、自测题库、字数统计、进制转换等；</li>
+        <li><strong>健康舒缓</strong>：呼吸训练、情绪日记、白噪音、温柔寄语、心理小测试等；</li>
+        <li><strong>休闲娱乐</strong>：2048、五子棋、扫雷、中国象棋、记忆小游戏、随机抽签等；</li>
+        <li><strong>开发工具</strong>：在线代码编辑器、时间戳转换、UUID生成、单位换算等。</li>
+    </ul>
+
+    <h3 id="tech">技术说明</h3>
+    <p>本站为纯前端静态网站，不依赖后端服务，所有复杂运算与数据处理均在本地浏览器完成。</p>
+    <h4>核心技术栈</h4>
+    <ul>
+        <li>原生 HTML5 + CSS3 + JavaScript，无重型框架依赖；</li>
+        <li>响应式布局，适配电脑、平板、手机等多端设备；</li>
+        <li>使用 localStorage / sessionStorage 实现本地数据存储；</li>
+        <li>采用 CSS 变量实现多主题切换，支持深色模式。</li>
+    </ul>
+    <h4>第三方开源资源</h4>
+    <ul>
+        <li><strong>Font Awesome</strong>：提供页面图标资源，遵循开源协议；</li>
+        <li><strong>BootCDN</strong>：静态资源公共加速服务，提升访问速度；</li>
+        <li><strong>Umami</strong>：匿名流量统计工具，仅统计粗粒度访问数据。</li>
+    </ul>
+
+    <h3 id="timeline">更新日志</h3>
+    <div class="timeline">
+        <div class="timeline-item">
+            <div class="timeline-date">2026年6月</div>
+            <div class="timeline-text">站点正式上线，首批开放计算、效率、学习、娱乐四大类工具；上线多主题切换功能；发布独立隐私政策与关于本站页面。</div>
+        </div>
+        <div class="timeline-item">
+            <div class="timeline-date">持续迭代中</div>
+            <div class="timeline-text">持续优化现有工具体验，新增更多实用功能与治愈向内容。</div>
+        </div>
+    </div>
+
+    <h3 id="contact">联系与反馈</h3>
+    <p>如果你有功能建议、问题反馈、合作意向，或者只是想打个招呼，都可以通过邮箱联系我们：</p>
+    <p><strong>📮 联系邮箱：</strong><a href="mailto:axapri@163.com" style="color: var(--theme); text-decoration: none;">axapri@163.com</a></p>
+    <p>我们会认真阅读每一封邮件，但因个人运营精力有限，无法保证每封都及时回复，还请谅解。</p>
+
+    <h3 id="thanks">写在最后</h3>
+    <p>感谢每一位来到这里的朋友。</p>
+    <p>互联网很大，信息很杂，我们很庆幸能在这里留下一小片安静的角落。愿你在这里能找到趁手的工具，也能获得片刻的放松。</p>
+    <p>晚风常在，驿站常开。</p>
+
+    <p style="margin-top:40px; text-align:right; color: var(--subtext); font-size: 0.9em;">
+        —— Axapri・人间晚风驿站 运营团队
+    </p>
+</div>
+
+<footer>
+    <p>© 2026 Axapri・人间晚风驿站</p>
+    <p style="margin-top:6px;">
+        <a href="/">首页</a> | 
+        <a href="/about.html" style="font-weight: 600;">关于本站</a> | 
+        <a href="/privacy.html">隐私政策</a> | 
+        <a href="mailto:axapri@163.com">联系我们</a>
+    </p>
+</footer>
+
+<!-- 返回顶部按钮 -->
+<div class="back-top" id="backTop">
+    <i class="fa-solid fa-arrow-up"></i>
+</div>
+
+<script>
+    // 主题同步：与全站保持一致
+    (function() {
+        const saved = localStorage.getItem('site-theme');
+        const theme = saved || 'light';
+        document.body.className = `theme-${theme}`;
+
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+            if (!localStorage.getItem('site-theme')) {
+                document.body.className = e.matches ? 'theme-dark' : 'theme-light';
+            }
+        });
+    })();
+
+    // 返回顶部
+    const backTop = document.getElementById('backTop');
+    window.addEventListener('scroll', () => {
+        backTop.classList.toggle('show', window.scrollY > 300);
+    });
+    backTop.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+</script>
+</body>
+</html>
