@@ -416,221 +416,221 @@
         const confirmOk = document.getElementById('confirmOk');
         let confirmCallback = null;
 
-        // 单项选择题 100 道
-        const singleList = [];
-        for(let i=1;i<=100;i++){
-            let t = i % 100;
-            let q,ans,opt,explain;
-            if(t===1){q=`${i}. He ______ English every day.`; ans="A"; opt="A.learns B.learn C.learning D.learned"; explain="一般现在时，主语三单+s";}
-            else if(t===2){q=`${i}. She ______ to school yesterday.`; ans="B"; opt="A.go B.went C.goes D.going"; explain="yesterday过去时";}
-            else if(t===3){q=`${i}. Look! They ______ basketball.`; ans="C"; opt="A.play B.plays C.are playing D.played"; explain="look现在进行时";}
-            else if(t===4){q=`${i}. I ______ here for 5 years.`; ans="D"; opt="A.live B.lived C.am living D.have lived"; explain="for+时间段现在完成时";}
-            else if(t===5){q=`${i}. We ______ to Beijing tomorrow.`; ans="A"; opt="A.will go B.go C.went D.going"; explain="tomorrow将来时";}
-            else if(t===6){q=`${i}. ______ you like music?`; ans="B"; opt="A.Is B.Do C.Are D.Does"; explain="一般现在时疑问句用do";}
-            else if(t===7){q=`${i}. ______ she like dogs?`; ans="D"; opt="A.Is B.Are C.Do D.Does"; explain="主语三单用does";}
-            else if(t===8){q=`${i}. I get up ______ 6 o'clock.`; ans="A"; opt="A.at B.in C.on D.for"; explain="时刻前用at";}
-            else if(t===9){q=`${i}. We have no class ______ Sunday.`; ans="C"; opt="A.at B.in C.on D.to"; explain="星期前用on";}
-            else if(t===10){q=`${i}. We plant trees ______ spring.`; ans="B"; opt="A.at B.in C.on D.with"; explain="季节前用in";}
-            else if(t===11){q=`${i}. This is the man ______ helped me.`; ans="A"; opt="A.who B.which C.whose D.what"; explain="先行词是人用who";}
-            else if(t===12){q=`${i}. This is the pen ______ I lost.`; ans="B"; opt="A.who B.that C.whom D.what"; explain="先行词是物用that";}
-            else if(t===13){q=`${i}. I like tea ______ he likes coffee.`; ans="C"; opt="A.so B.or C.but D.because"; explain="转折用but";}
-            else if(t===14){q=`${i}. I didn't go out ______ it rained.`; ans="D"; opt="A.but B.though C.if D.because"; explain="原因用because";}
-            else if(t===15){q=`${i}. ______ you study hard, you will pass.`; ans="A"; opt="A.If B.Although C.Unless D.Before"; explain="if条件句主将从现";}
-            else if(t===16){q=`${i}. He runs as ______ as a horse.`; ans="B"; opt="A.fastest B.fast C.faster D.more fast"; explain="as...as用原级";}
-            else if(t===17){q=`${i}. This book is ______ than that one.`; ans="C"; opt="A.interesting B.most C.more interesting D.interested"; explain="than比较级";}
-            else if(t===18){q=`${i}. This is the ______ day of my life.`; ans="D"; opt="A.happy B.happier C.happily D.happiest"; explain="最高级";}
-            else if(t===19){q=`${i}. I want ______ a teacher.`; ans="A"; opt="A.to be B.be C.being D.been"; explain="want to do";}
-            else if(t===20){q=`${i}. He enjoys ______ books.`; ans="C"; opt="A.read B.to read C.reading D.reads"; explain="enjoy doing";}
-            else if(t===21){q=`${i}. Stop ______! The bell is ringing.`; ans="B"; opt="A.talk B.talking C.to talk D.talked"; explain="stop doing";}
-            else if(t===22){q=`${i}. It's time ______ dinner.`; ans="D"; opt="A.to B.at C.in D.for"; explain="it's time for sth";}
-            else if(t===23){q=`${i}. It's good ______ English every day.`; ans="A"; opt="A.to read B.read C.reading D.reads"; explain="it is + adj + to do";}
-            else if(t===24){q=`${i}. There ______ a book and two pens.`; ans="A"; opt="A.is B.are C.be D.am"; explain="there be就近原则";}
-            else if(t===25){q=`${i}. Neither I nor he ______ wrong.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
-            else if(t===26){q=`${i}. Everyone ______ here.`; ans="C"; opt="A.are B.were C.is D.be"; explain="不定代词作主语单数";}
-            else if(t===27){q=`${i}. I have ______ friends.`; ans="A"; opt="A.many B.much C.little D.a little"; explain="many修饰可数复数";}
-            else if(t===28){q=`${i}. There is ______ water.`; ans="B"; opt="A.many B.much C.few D.a few"; explain="much修饰不可数";}
-            else if(t===29){q=`${i}. He is ______ honest boy.`; ans="C"; opt="A.a B.the C.an D./"; explain="元音开头用an";}
-            else if(t===30){q=`${i}. This is ______ university.`; ans="A"; opt="A.a B.an C.the D./"; explain="辅音开头用a";}
-            else if(t===31){q=`${i}. ______ earth goes around the sun.`; ans="C"; opt="A.A B.An C.The D./"; explain="独一无二加the";}
-            else if(t===32){q=`${i}. I like playing ______ basketball.`; ans="D"; opt="A.a B.an C.the D./"; explain="球类不加冠词";}
-            else if(t===33){q=`${i}. He can ______ very well.`; ans="B"; opt="A.swims B.swim C.swimming D.swam"; explain="情态动词后接原形";}
-            else if(t===34){q=`${i}. You must ______ hard.`; ans="A"; opt="A.work B.works C.working D.worked"; explain="must后接原形";}
-            else if(t===35){q=`${i}. May I ______ in?`; ans="B"; opt="A.comes B.come C.came D.coming"; explain="may后接原形";}
-            else if(t===36){q=`${i}. He is used to ______ early.`; ans="C"; opt="A.get B.gets C.getting D.got"; explain="be used to doing";}
-            else if(t===37){q=`${i}. I used to ______ up late.`; ans="A"; opt="A.stay B.staying C.stayed D.stays"; explain="used to do";}
-            else if(t===38){q=`${i}. The book is worth ______.`; ans="B"; opt="A.read B.reading C.to read D.reads"; explain="be worth doing";}
-            else if(t===39){q=`${i}. I don't know ______ he will come.`; ans="C"; opt="A.what B.which C.if D.who"; explain="if是否";}
-            else if(t===40){q=`${i}. I don't know ______ to do.`; ans="A"; opt="A.what B.which C.if D.whether"; explain="what to do";}
-            else if(t===41){q=`${i}. This is ______ book.`; ans="A"; opt="A.my B.mine C.me D.I"; explain="形容词性物主代词my";}
-            else if(t===42){q=`${i}. This book is ______.`; ans="B"; opt="A.my B.mine C.me D.I"; explain="名词性物主代词mine";}
-            else if(t===43){q=`${i}. He is too young ______ to school.`; ans="C"; opt="A.go B.going C.to go D.went"; explain="too...to...";}
-            else if(t===44){q=`${i}. I prefer apples ______ bananas.`; ans="D"; opt="A.for B.with C.on D.to"; explain="prefer A to B";}
-            else if(t===45){q=`${i}. Not only he but also I ______ a student.`; ans="B"; opt="A.is B.am C.are D.be"; explain="就近原则";}
-            else if(t===46){q=`${i}. Either you or he ______ right.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
-            else if(t===47){q=`${i}. I remember ______ her.`; ans="B"; opt="A.see B.seeing C.to see D.saw"; explain="remember doing";}
-            else if(t===48){q=`${i}. Remember ______ the door.`; ans="C"; opt="A.close B.closing C.to close D.closed"; explain="remember to do";}
-            else if(t===49){q=`${i}. I learn by ______ aloud.`; ans="D"; opt="A.read B.reads C.readed D.reading"; explain="by后接doing";}
-            else if(t===50){q=`${i}. He is good at ______.`; ans="C"; opt="A.dance B.dances C.dancing D.danced"; explain="介词后接doing";}
-            else if(t===51){q=`${i}. She is afraid ______ dogs.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be afraid of害怕";}
-            else if(t===52){q=`${i}. We are proud ______ our country.`; ans="B"; opt="A.in B.of C.for D.on"; explain="be proud of骄傲";}
-            else if(t===53){q=`${i}. He is late ______ school.`; ans="C"; opt="A.in B.on C.for D.at"; explain="be late for迟到";}
-            else if(t===54){q=`${i}. I am busy ______ my homework.`; ans="D"; opt="A.in B.on C.at D.with"; explain="be busy with忙于";}
-            else if(t===55){q=`${i}. He is interested ______ history.`; ans="B"; opt="A.on B.in C.at D.for"; explain="be interested in感兴趣";}
-            else if(t===56){q=`${i}. He is tired ______ the work.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be tired of厌倦";}
-            else if(t===57){q=`${i}. We look forward to ______ you.`; ans="B"; opt="A.see B.seeing C.seen D.saw"; explain="look forward to doing";}
-            else if(t===58){q=`${i}. It's no use ______ here.`; ans="C"; opt="A.wait B.waits C.waiting D.waited"; explain="it's no use doing";}
-            else if(t===59){q=`${i}. I can't help ______ when I am happy.`; ans="B"; opt="A.laugh B.laughing C.to laugh D.laughed"; explain="can't help doing忍不住";}
-            else if(t===60){q=`${i}. I feel like ______ a rest.`; ans="C"; opt="A.have B.to have C.having D.has"; explain="feel like doing想要";}
-            else if(t===61){q=`${i}. He kept me ______ for an hour.`; ans="B"; opt="A.wait B.waiting C.to wait D.waited"; explain="keep sb doing让某人一直做";}
-            else if(t===62){q=`${i}. My mother told me ______ hard.`; ans="C"; opt="A.study B.studying C.to study D.studied"; explain="tell sb to do";}
-            else if(t===63){q=`${i}. He asked me ______ him the way.`; ans="A"; opt="A.to show B.show C.showing D.showed"; explain="ask sb to do";}
-            else if(t===64){q=`${i}. I saw him ______ in the room.`; ans="B"; opt="A.sit B.sitting C.to sit D.sat"; explain="see sb doing看见某人正在做";}
-            else if(t===65){q=`${i}. I heard her ______ in the next room.`; ans="C"; opt="A.sing B.sings C.singing D.sang"; explain="hear sb doing";}
-            else if(t===66){q=`${i}. The teacher made me ______ it again.`; ans="A"; opt="A.do B.to do C.doing D.did"; explain="make sb do让某人做";}
-            else if(t===67){q=`${i}. Let's ______ a walk.`; ans="B"; opt="A.to take B.take C.taking D.took"; explain="let's后接原形";}
-            else if(t===68){q=`${i}. Why not ______ with me?`; ans="C"; opt="A.to go B.going C.go D.went"; explain="why not + 原形";}
-            else if(t===69){q=`${i}. You'd better ______ early.`; ans="A"; opt="A.go B.to go C.going D.went"; explain="had better + 原形";}
-            else if(t===70){q=`${i}. I would rather ______ at home.`; ans="B"; opt="A.to stay B.stay C.staying D.stayed"; explain="would rather do";}
-            else if(t===71){q=`${i}. I prefer ______ to ______.`; ans="C"; opt="A.read / write B.reading / write C.reading / writing D.read / writing"; explain="prefer doing to doing";}
-            else if(t===72){q=`${i}. He is ______ clever a boy.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so + adj + a/an + n";}
-            else if(t===73){q=`${i}. He is ______ a clever boy.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such + a/an + adj +n";}
-            else if(t===74){q=`${i}. It's ______ hot today.`; ans="A"; opt="A.too B.to C.two D.many"; explain="too太";}
-            else if(t===75){q=`${i}. The box is ______ heavy for me.`; ans="C"; opt="A.to B.two C.too D.much"; explain="too heavy太重";}
-            else if(t===76){q=`${i}. ______ beautiful the flower is!`; ans="A"; opt="A.How B.What C.What a D.How a"; explain="How + adj/adv";}
-            else if(t===77){q=`${i}. ______ a beautiful flower!`; ans="B"; opt="A.How B.What C.What an D.How an"; explain="What + a/an + adj +n";}
-            else if(t===78){q=`${i}. ______ good news!`; ans="B"; opt="A.How B.What C.What a D.How a"; explain="news不可数用What";}
-            else if(t===79){q=`${i}. He is ______ a good man.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a good man";}
-            else if(t===80){q=`${i}. The film is ______ moving.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so moving如此感人";}
-            else if(t===81){q=`${i}. I have ______ many books.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so many固定搭配";}
-            else if(t===82){q=`${i}. There is ______ little water.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so little固定搭配";}
-            else if(t===83){q=`${i}. He is ______ old to work.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too old to work太老不能工作";}
-            else if(t===84){q=`${i}. The question is ______ difficult.`; ans="A"; opt="A.too B.to C.two D.much"; explain="too difficult太难";}
-            else if(t===85){q=`${i}. I am ______ tired to walk.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too tired to walk太累不能走";}
-            else if(t===86){q=`${i}. He is ______ strong that he can lift it.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so...that...如此…以至于…";}
-            else if(t===87){q=`${i}. It is ______ a fine day.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a fine day";}
-            else if(t===88){q=`${i}. I was ______ excited that I cried.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so excited如此激动";}
-            else if(t===89){q=`${i}. He is ______ a kind man.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a kind man";}
-            else if(t===90){q=`${i}. The story is ______ interesting.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so interesting如此有趣";}
-            else if(t===91){q=`${i}. I will go ______ it is fine.`; ans="A"; opt="A.if B.though C.because D.unless"; explain="if如果";}
-            else if(t===92){q=`${i}. I won't go ______ it rains.`; ans="D"; opt="A.if B.though C.because D.unless"; explain="unless除非";}
-            else if(t===93){q=`${i}. I will wait ______ you come back.`; ans="C"; opt="A.if B.though C.until D.because"; explain="until直到";}
-            else if(t===94){q=`${i}. He didn't go to bed ______ his mother came back.`; ans="C"; opt="A.if B.though C.until D.because"; explain="not...until直到…才…";}
-            else if(t===95){q=`${i}. I will tell him ______ he comes.`; ans="A"; opt="A.when B.if C.though D.because"; explain="when当…时候";}
-            else if(t===96){q=`${i}. I was reading ______ he came in.`; ans="C"; opt="A.if B.though C.when D.because"; explain="when当…时候";}
-            else if(t===97){q=`${i}. I like English ______ it is interesting.`; ans="D"; opt="A.if B.though C.but D.because"; explain="because因为";}
-            else if(t===98){q=`${i}. I didn't go out ______ the bad weather.`; ans="A"; opt="A.because of B.because C.if D.though"; explain="because of + 名词";}
-            else if(t===99){q=`${i}. He is tall ______ he can't enter the door.`; ans="C"; opt="A.so B.such C.but D.and"; explain="but但是表转折";}
-            else {q=`${i}. I study hard ______ I can pass the exam.`; ans="A"; opt="A.so that B.such that C.in order to D.so as to"; explain="so that为了，引导目的状语从句";}
-            singleList.push({q,ans,opt,explain});
-        }
+        // 单项选择题 100道 
+const singleList = [];
+for(let i=1;i<=100;i++){
+    let t = i % 100;
+    let q,ans,opt,explain;
+    if(t===1){q=`${i}. Jason ______ professional English training courses every workday.`; ans="A"; opt="A.learns B.learn C.learning D.learned"; explain="一般现在时，主语三单+s";}
+    else if(t===2){q=`${i}. Sophia ______ to the downtown vocational campus during yesterday morning.`; ans="B"; opt="A.go B.went C.goes D.going"; explain="yesterday过去时";}
+    else if(t===3){q=`${i}. Look! The male sports team ______ football matches on the stadium field.`; ans="C"; opt="A.play B.plays C.are playing D.played"; explain="look现在进行时";}
+    else if(t===4){q=`${i}. I ______ reside in this suburban residential zone for five full calendar years.`; ans="D"; opt="A.live B.lived C.am living D.have lived"; explain="for+时间段现在完成时";}
+    else if(t===5){q=`${i}. Our entire major class ______ to the provincial capital for an organized field trip tomorrow.`; ans="A"; opt="A.will go B.go C.went D.going"; explain="tomorrow将来时";}
+    else if(t===6){q=`${i}. ______ you enjoy appreciating modern pop music tracks?`; ans="B"; opt="A.Is B.Do C.Are D.Does"; explain="一般现在时疑问句用do";}
+    else if(t===7){q=`${i}. ______ your elder female sibling adore cute domestic pet puppies?`; ans="D"; opt="A.Is B.Are C.Do D.Does"; explain="主语三单用does";}
+    else if(t===8){q=`${i}. I routinely get out of bed ______ six o'clock sharp in the early morning hours.`; ans="A"; opt="A.at B.in C.on D.for"; explain="时刻前用at";}
+    else if(t===9){q=`${i}. We have no scheduled academic classes ______ every weekend Sunday.`; ans="C"; opt="A.at B.in C.on D.to"; explain="星期前用on";}
+    else if(t===10){q=`${i}. Local rural residents plant young sapling trees ______ each annual spring season.`; ans="B"; opt="A.at B.in C.on D.with"; explain="季节前用in";}
+    else if(t===11){q=`${i}. This is the kind-hearted stranger ______ lent me a helping hand in my hardship.`; ans="A"; opt="A.who B.which C.whose D.what"; explain="先行词是人用who";}
+    else if(t===12){q=`${i}. This is the signature fountain pen ______ I misplaced during last week's outing.`; ans="B"; opt="A.who B.that C.whom D.what"; explain="先行词是物用that";}
+    else if(t===13){q=`${i}. I prefer mild jasmine tea ______ my elder brother favors rich roasted coffee.`; ans="C"; opt="A.so B.or C.but D.because"; explain="转折用but";}
+    else if(t===14){q=`${i}. I remained indoors the whole day ______ heavy rainfall persisted outdoors.`; ans="D"; opt="A.but B.though C.if D.because"; explain="原因用because";}
+    else if(t===15){q=`${i}. ______ you maintain consistent daily studying, you will pass the assessment smoothly.`; ans="A"; opt="A.If B.Although C.Unless D.Before"; explain="if条件句主将从现";}
+    else if(t===16){q=`${i}. He sprints as ______ swiftly as a sturdy ranch-bred stallion.`; ans="B"; opt="A.fastest B.fast C.faster D.more fast"; explain="as...as用原级";}
+    else if(t===17){q=`${i}. This illustrated storybook is ______ engaging than the classic old fiction novel.`; ans="C"; opt="A.interesting B.most C.more interesting D.interested"; explain="than比较级";}
+    else if(t===18){q=`${i}. This counts as the ______ cheerful moment throughout my summer break vacation.`; ans="D"; opt="A.happy B.happier C.happily D.happiest"; explain="最高级";}
+    else if(t===19){q=`${i}. My lifelong ambition is ______ a certified professional English educator in future career.`; ans="A"; opt="A.to be B.be C.being D.been"; explain="want to do";}
+    else if(t===20){q=`${i}. He takes pleasure in ______ assorted literary publications during leisure hours.`; ans="C"; opt="A.read B.to read C.reading D.reads"; explain="enjoy doing";}
+    else if(t===21){q=`${i}. Cease ______ chatting loudly! The classroom bell is ringing right this instant.`; ans="B"; opt="A.talk B.talking C.to talk D.talked"; explain="stop doing";}
+    else if(t===22){q=`${i}. It is precisely the appointed time ______ our nightly family supper meal.`; ans="D"; opt="A.to B.at C.in D.for"; explain="it's time for sth";}
+    else if(t===23){q=`${i}. It proves highly beneficial ______ recite English passages aloud each single day.`; ans="A"; opt="A.to read B.read C.reading D.reads"; explain="it is + adj + to do";}
+    else if(t===24){q=`${i}. There ______ one textbook volume alongside two ballpoint pens atop the wooden desk.`; ans="A"; opt="A.is B.are C.be D.am"; explain="there be就近原则";}
+    else if(t===25){q=`${i}. Neither my deskmate nor myself ______ at fault regarding this incident affair.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
+    else if(t===26){q=`${i}. Every enrolled student ______ present within our classroom venue today.`; ans="C"; opt="A.are B.were C.is D.be"; explain="不定代词作主语单数";}
+    else if(t===27){q=`${i}. I have accumulated plenty of ______ new companions throughout this academic semester.`; ans="A"; opt="A.many B.much C.little D.a little"; explain="many修饰可数复数";}
+    else if(t===28){q=`${i}. There is insufficient ______ purified drinking water remaining inside the container.`; ans="B"; opt="A.many B.much C.few D.a few"; explain="much修饰不可数";}
+    else if(t===29){q=`${i}. He is ______ upright and benevolent teenage young male youngster.`; ans="C"; opt="A.a B.the C.an D./"; explain="元音开头用an";}
+    else if(t===30){q=`${i}. This is ______ renowned local higher education institute inside our urban district.`; ans="A"; opt="A.a B.an C.the D./"; explain="辅音开头用a";}
+    else if(t===31){q=`${i}. ______ planet Earth orbits around the sun constantly all year round.`; ans="C"; opt="A.A B.An C.The D./"; explain="独一无二加the";}
+    else if(t===32){q=`${i}. I have a passion for playing ______ basketball after daily school coursework finishes.`; ans="D"; opt="A.a B.an C.the D./"; explain="球类不加冠词";}
+    else if(t===33){q=`${i}. He can ______ traverse the community swimming pool with outstanding skill.`; ans="B"; opt="A.swims B.swim C.swimming D.swam"; explain="情态动词后接原形";}
+    else if(t===34){q=`${i}. You must ______ diligently to catch up with your fellow classmates' progress.`; ans="A"; opt="A.work B.works C.working D.worked"; explain="must后接原形";}
+    else if(t===35){q=`${i}. May I ______ enter your quiet private reading study room?`; ans="B"; opt="A.comes B.come C.came D.coming"; explain="may后接原形";}
+    else if(t===36){q=`${i}. He has grown accustomed to ______ rising early for daily morning physical workouts.`; ans="C"; opt="A.get B.gets C.getting D.got"; explain="be used to doing";}
+    else if(t===37){q=`${i}. I used to ______ stay up late throughout the summer holiday period.`; ans="A"; opt="A.stay B.staying C.stayed D.stays"; explain="used to do";}
+    else if(t===38){q=`${i}. This practical teaching textbook is fully worthy of ______ careful study.`; ans="B"; opt="A.read B.reading C.to read D.reads"; explain="be worth doing";}
+    else if(t===39){q=`${i}. I cannot confirm ______ he will attend our weekend social gathering party.`; ans="C"; opt="A.what B.which C.if D.who"; explain="if是否";}
+    else if(t===40){q=`${i}. I remain unsure ______ actions I ought to take for the subsequent step.`; ans="A"; opt="A.what B.which C.if D.whether"; explain="what to do";}
+    else if(t===41){q=`${i}. This thick bound notebook serves as ______ personal academic study volume.`; ans="A"; opt="A.my B.mine C.me D.I"; explain="形容词性物主代词my";}
+    else if(t===42){q=`${i}. The thick notebook placed on the far side belongs to ______.`; ans="B"; opt="A.my B.mine C.me D.I"; explain="名词性物主代词mine";}
+    else if(t===43){q=`${i}. The young child is far too immature ______ attend primary school unaccompanied.`; ans="C"; opt="A.go B.going C.to go D.went"; explain="too...to...";}
+    else if(t===44){q=`${i}. I favor fresh crisp apples ______ sweet fully ripened banana fruits.`; ans="D"; opt="A.for B.with C.on D.to"; explain="prefer A to B";}
+    else if(t===45){q=`${i}. Not only him but also myself ______ an official high school enrolled student.`; ans="B"; opt="A.is B.am C.are D.be"; explain="就近原则";}
+    else if(t===46){q=`${i}. Either your team partner or himself ______ correct regarding this answer option.`; ans="C"; opt="A.are B.am C.is D.be"; explain="就近原则";}
+    else if(t===47){q=`${i}. I distinctly recall ______ encountering this amiable young lady previously.`; ans="B"; opt="A.see B.seeing C.to see D.saw"; explain="remember doing";}
+    else if(t===48){q=`${i}. Kindly remember ______ secure the wooden door prior to your departure.`; ans="C"; opt="A.close B.closing C.to close D.closed"; explain="remember to do";}
+    else if(t===49){q=`${i}. I expand my vocabulary reservoir by ______ reciting English passages aloud.`; ans="D"; opt="A.read B.reads C.readed D.reading"; explain="by后接doing";}
+    else if(t===50){q=`${i}. My desk mate excels at ______ modern street dance stage performances.`; ans="C"; opt="A.dance B.dances C.dancing D.danced"; explain="介词后接doing";}
+    else if(t===51){q=`${i}. The little female child feels frightened ______ large fierce stray canines.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be afraid of害怕";}
+    else if(t===52){q=`${i}. We hold sincere pride ______ our gorgeous hometown local region.`; ans="B"; opt="A.in B.of C.for D.on"; explain="be proud of骄傲";}
+    else if(t===53){q=`${i}. Never arrive late ______ your daily morning academic lessons.`; ans="C"; opt="A.in B.on C.for D.at"; explain="be late for迟到";}
+    else if(t===54){q=`${i}. I am fully occupied ______ finishing my holiday assignment tasks.`; ans="D"; opt="A.in B.on C.at D.with"; explain="be busy with忙于";}
+    else if(t===55){q=`${i}. He holds deep fascination ______ global ancient historical culture systems.`; ans="B"; opt="A.on B.in C.at D.for"; explain="be interested in感兴趣";}
+    else if(t===56){q=`${i}. Gradually he grows weary ______ the repetitive daily office routine work.`; ans="A"; opt="A.of B.in C.on D.at"; explain="be tired of厌倦";}
+    else if(t===57){q=`${i}. Every single one of us anticipates ______ reuniting with our former classmates again.`; ans="B"; opt="A.see B.seeing C.seen D.saw"; explain="look forward to doing";}
+    else if(t===58){q=`${i}. It serves no purpose ______ linger outside amid such torrential rainfall.`; ans="C"; opt="A.wait B.waits C.waiting D.waited"; explain="it's no use doing";}
+    else if(t===59){q=`${i}. I cannot restrain myself ______ laughing upon hearing humorous interesting tales.`; ans="B"; opt="A.laugh B.laughing C.to laugh D.laughed"; explain="can't help doing忍不住";}
+    else if(t===60){q=`${i}. I have an urge ______ take a brief rest following lengthy study sessions.`; ans="C"; opt="A.have B.to have C.having D.has"; explain="feel like doing想要";}
+    else if(t===61){q=`${i}. The supervisor kept our team ______ waiting for nearly a full sixty minutes.`; ans="B"; opt="A.wait B.waiting C.to wait D.waited"; explain="keep sb doing让某人一直做";}
+    else if(t===62){q=`${i}. My guardian always instructs me ______ study diligently every single day.`; ans="C"; opt="A.study B.studying C.to study D.studied"; explain="tell sb to do";}
+    else if(t===63){q=`${i}. The unknown pedestrian requested me ______ guide him toward the correct street route.`; ans="A"; opt="A.to show B.show C.showing D.showed"; explain="ask sb to do";}
+    else if(t===64){q=`${i}. I chanced to spot him ______ seated inside this quiet indoor room.`; ans="B"; opt="A.sit B.sitting C.to sit D.sat"; explain="see sb doing看见某人正在做";}
+    else if(t===65){q=`${i}. I overheard her ______ humming soft melodious tunes within the adjacent room.`; ans="C"; opt="A.sing B.sings C.singing D.sang"; explain="hear sb doing";}
+    else if(t===66){q=`${i}. Our tutor compelled me ______ redo this exercise worksheet once more.`; ans="A"; opt="A.do B.to do C.doing D.did"; explain="make sb do让某人做";}
+    else if(t===67){q=`${i}. Let's ______ embark on a leisurely stroll around the community public park.`; ans="B"; opt="A.to take B.take C.taking D.took"; explain="let's后接原形";}
+    else if(t===68){q=`${i}. Why not ______ head out shopping alongside me during this afternoon period?`; ans="C"; opt="A.to go B.going C.go D.went"; explain="why not + 原形";}
+    else if(t===69){q=`${i}. You had better ______ return home ahead of schedule during tonight.`; ans="A"; opt="A.go B.to go C.going D.went"; explain="had better + 原形";}
+    else if(t===70){q=`${i}. I would prefer ______ remain indoors on rainy weekend dates.`; ans="B"; opt="A.to stay B.stay C.staying D.stayed"; explain="would rather do";}
+    else if(t===71){q=`${i}. I prefer ______ reading literary novels over ______ playing online digital games.`; ans="C"; opt="A.read / write B.reading / write C.reading / writing D.read / writing"; explain="prefer doing to doing";}
+    else if(t===72){q=`${i}. He possesses ______ remarkable intelligence for a teenage young lad.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so + adj + a/an + n";}
+    else if(t===73){q=`${i}. He is ______ an intelligent and well-mannered adolescent boy.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such + a/an + adj +n";}
+    else if(t===74){q=`${i}. The outdoor ambient temperature is ______ excessively high at noon today.`; ans="A"; opt="A.too B.to C.two D.many"; explain="too太";}
+    else if(t===75){q=`${i}. The wooden storage crate is ______ weighty for me to carry alone unassisted.`; ans="C"; opt="A.to B.two C.too D.much"; explain="too heavy太重";}
+    else if(t===76){q=`${i}. ______ vividly bright and gorgeous this garden blossom appears!`; ans="A"; opt="A.How B.What C.What a D.How a"; explain="How + adj/adv";}
+    else if(t===77){q=`${i}. ______ an adorable and radiant flowering plant from the garden!`; ans="B"; opt="A.How B.What C.What an D.How an"; explain="What + a/an + adj +n";}
+    else if(t===78){q=`${i}. ______ fantastic and exhilarating favorable news we have received!`; ans="B"; opt="A.How B.What C.What a D.How a"; explain="news不可数用What";}
+    else if(t===79){q=`${i}. He proves to be ______ an earnest warm-hearted gentleman.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a good man";}
+    else if(t===80){q=`${i}. This touching movie plotline is ______ profoundly emotional indeed.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so moving如此感人";}
+    else if(t===81){q=`${i}. I have gathered ______ an abundance of practical reference reading materials.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so many固定搭配";}
+    else if(t===82){q=`${i}. There remains ______ minimal fresh clean water remaining within the drinking cup.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so little固定搭配";}
+    else if(t===83){q=`${i}. He has grown ______ advanced in age to complete this strenuous manual labor task.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too old to work太老不能工作";}
+    else if(t===84){q=`${i}. This grammar examination item is ______ overly challenging for beginner learners.`; ans="A"; opt="A.too B.to C.two D.much"; explain="too difficult太难";}
+    else if(t===85){q=`${i}. I am ______ physically exhausted to continue walking any further distance currently.`; ans="C"; opt="A.to B.two C.too D.so"; explain="too tired to walk太累不能走";}
+    else if(t===86){q=`${i}. He is ______ immensely powerful that he can effortlessly hoist the massive stone boulder.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so...that...如此…以至于…";}
+    else if(t===87){q=`${i}. It turns out to be ______ a lovely sunlit day perfect for outdoor recreational activities.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a fine day";}
+    else if(t===88){q=`${i}. I was ______ overwhelmingly thrilled that I could not resist shouting aloud excitedly.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so excited如此激动";}
+    else if(t===89){q=`${i}. He is ______ a compassionate and helpful local community resident.`; ans="B"; opt="A.so B.such C.much D.very"; explain="such a kind man";}
+    else if(t===90){q=`${i}. The complete short narrative story is ______ tremendously captivating to read fully through.`; ans="A"; opt="A.so B.such C.much D.very"; explain="so interesting如此有趣";}
+    else if(t===91){q=`${i}. I plan to embark on mountain hiking ______ the outdoor atmospheric conditions turn pleasant.`; ans="A"; opt="A.if B.though C.because D.unless"; explain="if如果";}
+    else if(t===92){q=`${i}. I will not venture outdoors ______ the sky becomes completely cloudless and sunny.`; ans="D"; opt="A.if B.though C.because D.unless"; explain="unless除非";}
+    else if(t===93){q=`${i}. I will wait patiently ______ you journey back safely to your household residence.`; ans="C"; opt="A.if B.though C.until D.because"; explain="until直到";}
+    else if(t===94){q=`${i}. He did not retire to bed ______ his mother arrived back home late into the night hours.`; ans="C"; opt="A.if B.though C.until D.because"; explain="not...until直到…才…";}
+    else if(t===95){q=`${i}. I will relay this message toward him ______ the moment he arrives on-site.`; ans="A"; opt="A.when B.if C.though D.because"; explain="when当…时候";}
+    else if(t===96){q=`${i}. I was immersed in novel reading quietly ______ my friend stepped inside the room space.`; ans="C"; opt="A.if B.though C.when D.because"; explain="when当…时候";}
+    else if(t===97){q=`${i}. I adore studying the English language ______ it delivers abundant joy and fun.`; ans="D"; opt="A.if B.though C.but D.because"; explain="because因为";}
+    else if(t===98){q=`${i}. I stayed confined indoors all day long ______ the severe rainy climate outdoors.`; ans="A"; opt="A.because of B.because C.if D.though"; explain="because of + 名词";}
+    else if(t===99){q=`${i}. He possesses a tall physical stature ______ he cannot pass through this narrow doorway.`; ans="C"; opt="A.so B.such C.but D.and"; explain="but但是表转折";}
+    else {q=`${i}. I study diligently each day ______ I am able to successfully pass the upcoming assessment exam.`; ans="A"; opt="A.so that B.such that C.in order to D.so as to"; explain="so that为了，引导目的状语从句";}
+    singleList.push({q,ans,opt,explain});
+}
 
-        // 语法填空题 100 道
-        const grammarList = [];
-        for(let i=1;i<=100;i++){
-            let t = i%100;
-            let q,ans,explain;
-            if(t===1){q=`He ______(get) up early every day.`; ans="gets"; explain="一般现在时三单+s";}
-            else if(t===2){q=`I ______(go) to Beijing yesterday.`; ans="went"; explain="过去时go→went";}
-            else if(t===3){q=`Listen! They ______(sing).`; ans="are singing"; explain="现在进行时be+doing";}
-            else if(t===4){q=`I ______(live) here for 10 years.`; ans="have lived"; explain="现在完成时have done";}
-            else if(t===5){q=`She ______(visit) the park tomorrow.`; ans="will visit"; explain="将来时will do";}
-            else if(t===6){q=`It's important ______(learn) English.`; ans="to learn"; explain="it is + adj + to do";}
-            else if(t===7){q=`He is good at ______(swim).`; ans="swimming"; explain="介词后接doing";}
-            else if(t===8){q=`Thank you for ______(help) me.`; ans="helping"; explain="for后接doing";}
-            else if(t===9){q=`She enjoys ______(read) novels.`; ans="reading"; explain="enjoy doing";}
-            else if(t===10){q=`Stop ______(talk), please.`; ans="talking"; explain="stop doing停止做";}
-            else if(t===11){q=`I want ______(buy) a new bag.`; ans="to buy"; explain="want to do";}
-            else if(t===12){q=`The weather is ______(sun).`; ans="sunny"; explain="名词变形容词sunny";}
-            else if(t===13){q=`He runs ______(fast) than me.`; ans="faster"; explain="比较级faster";}
-            else if(t===14){q=`This is the ______(good) day.`; ans="best"; explain="最高级good→best";}
-            else if(t===15){q=`She sings ______(beautiful).`; ans="beautifully"; explain="副词修饰动词+ly";}
-            else if(t===16){q=`There ______(be) a book on the desk.`; ans="is"; explain="there be单数用is";}
-            else if(t===17){q=`Nobody ______(know) the truth.`; ans="knows"; explain="不定代词作主语三单";}
-            else if(t===18){q=`If it ______(rain), I will stay.`; ans="rains"; explain="if从句主将从现";}
-            else if(t===19){q=`I used ______(walk) here.`; ans="to walk"; explain="used to do过去常常";}
-            else if(t===20){q=`He is used to ______(get) up early.`; ans="getting"; explain="be used to doing习惯于";}
-            else if(t===21){q=`I feel like ______(eat) something.`; ans="eating"; explain="feel like doing";}
-            else if(t===22){q=`Can't help ______(laugh).`; ans="laughing"; explain="can't help doing忍不住";}
-            else if(t===23){q=`Look forward to ______(see) you.`; ans="seeing"; explain="look forward to doing";}
-            else if(t===24){q=`Keep on ______(try).`; ans="trying"; explain="keep on doing";}
-            else if(t===25){q=`Be busy ______(do) homework.`; ans="doing"; explain="be busy doing";}
-            else if(t===26){q=`Give up ______(smoke).`; ans="smoking"; explain="give up doing放弃";}
-            else if(t===27){q=`Put off ______(do) it.`; ans="doing"; explain="put off doing推迟";}
-            else if(t===28){q=`Mind ______(open) the door.`; ans="opening"; explain="mind doing介意做";}
-            else if(t===29){q=`Practice ______(speak) English.`; ans="speaking"; explain="practice doing练习";}
-            else if(t===30){q=`Finish ______(do) the work.`; ans="doing"; explain="finish doing完成";}
-            else if(t===31){q=`Avoid ______(make) mistakes.`; ans="making"; explain="avoid doing避免";}
-            else if(t===32){q=`Allow ______(smoke) here.`; ans="smoking"; explain="allow doing允许";}
-            else if(t===33){q=`Advise ______(take) a rest.`; ans="taking"; explain="advise doing建议";}
-            else if(t===34){q=`Suggest ______(go) out.`; ans="going"; explain="suggest doing建议";}
-            else if(t===35){q=`Consider ______(move) to a new house.`; ans="moving"; explain="consider doing考虑";}
-            else if(t===36){q=`Imagine ______(live) on the moon.`; ans="living"; explain="imagine doing想象";}
-            else if(t===37){q=`Miss ______(watch) TV.`; ans="watching"; explain="miss doing错过/想念";}
-            else if(t===38){q=`Pardon ______(interrupt) you.`; ans="interrupting"; explain="pardon doing原谅";}
-            else if(t===39){q=`Dislike ______(do) housework.`; ans="doing"; explain="dislike doing不喜欢";}
-            else if(t===40){q=`Enjoy ______(play) games.`; ans="playing"; explain="enjoy doing享受";}
-            else if(t===41){q=`Escape ______(be) punished.`; ans="being"; explain="escape doing逃避";}
-            else if(t===42){q=`Forbid ______(swim) here.`; ans="swimming"; explain="forbid doing禁止";}
-            else if(t===43){q=`Permit ______(park) here.`; ans="parking"; explain="permit doing允许";}
-            else if(t===44){q=`Advise ______(wait) a moment.`; ans="waiting"; explain="advise doing";}
-            else if(t===45){q=`Admit ______(make) a mistake.`; ans="making"; explain="admit doing承认";}
-            else if(t===46){q=`Deny ______(steal) the money.`; ans="stealing"; explain="deny doing否认";}
-            else if(t===47){q=`Risk ______(lose) the job.`; ans="losing"; explain="risk doing冒险";}
-            else if(t===48){q=`Resist ______(buy) new clothes.`; ans="buying"; explain="resist doing抵制";}
-            else if(t===49){q=`Can't stand ______(wait) long.`; ans="waiting"; explain="can't stand doing无法忍受";}
-            else if(t===50){q=`Devote to ______(work) hard.`; ans="working"; explain="devote to doing致力于";}
-            else if(t===51){q=`Stick to ______(learn) English.`; ans="learning"; explain="stick to doing坚持";}
-            else if(t===52){q=`Object to ______(do) that.`; ans="doing"; explain="object to doing反对";}
-            else if(t===53){q=`Pay attention to ______(read).`; ans="reading"; explain="pay attention to doing注意";}
-            else if(t===54){q=`Be used to ______(live) here.`; ans="living"; explain="be used to doing习惯于";}
-            else if(t===55){q=`Get used to ______(eat) bread.`; ans="eating"; explain="get used to doing习惯于";}
-            else if(t===56){q=`Look forward to ______(meet) you.`; ans="meeting"; explain="look forward to doing期待";}
-            else if(t===57){q=`Be devoted to ______(study).`; ans="studying"; explain="be devoted to doing致力于";}
-            else if(t===58){q=`Be addicted to ______(play).`; ans="playing"; explain="be addicted to doing沉迷于";}
-            else if(t===59){q=`Be related to ______(work) hard.`; ans="working"; explain="be related to doing与…有关";}
-            else if(t===60){q=`Contribute to ______(build) the city.`; ans="building"; explain="contribute to doing贡献";}
-            else if(t===61){q=`Lead to ______(make) progress.`; ans="making"; explain="lead to doing导致";}
-            else if(t===62){q=`See sb ______(do) sth.`; ans="doing"; explain="see sb doing看见某人正在做";}
-            else if(t===63){q=`Hear sb ______(sing) in the room.`; ans="singing"; explain="hear sb doing听见某人正在唱";}
-            else if(t===64){q=`Watch sb ______(play) football.`; ans="playing"; explain="watch sb doing观看某人正在踢";}
-            else if(t===65){q=`Notice sb ______(come) in.`; ans="coming"; explain="notice sb doing注意到某人正在进来";}
-            else if(t===66){q=`Find sb ______(cry) in the corner.`; ans="crying"; explain="find sb doing发现某人正在哭";}
-            else if(t===67){q=`Keep sb ______(wait) for long.`; ans="waiting"; explain="keep sb doing让某人一直等";}
-            else if(t===68){q=`Make sb ______(laugh) loudly.`; ans="laugh"; explain="make sb do让某人做";}
-            else if(t===69){q=`Let sb ______(go) first.`; ans="go"; explain="let sb do让某人做";}
-            else if(t===70){q=`Have sb ______(do) the work.`; ans="do"; explain="have sb do让某人做";}
-            else if(t===71){q=`Tell sb ______(come) early.`; ans="to come"; explain="tell sb to do告诉某人做";}
-            else if(t===72){q=`Ask sb ______(help) me.`; ans="to help"; explain="ask sb to do请求某人做";}
-            else if(t===73){q=`Want sb ______(stay) here.`; ans="to stay"; explain="want sb to do想要某人做";}
-            else if(t===74){q=`Allow sb ______(enter) the room.`; ans="to enter"; explain="allow sb to do允许某人做";}
-            else if(t===75){q=`Advise sb ______(take) a rest.`; ans="to take"; explain="advise sb to do建议某人做";}
-            else if(t===76){q=`Encourage sb ______(try) again.`; ans="to try"; explain="encourage sb to do鼓励某人做";}
-            else if(t===77){q=`Invite sb ______(attend) the party.`; ans="to attend"; explain="invite sb to do邀请某人做";}
-            else if(t===78){q=`Permit sb ______(smoke) here.`; ans="to smoke"; explain="permit sb to do允许某人做";}
-            else if(t===79){q=`Teach sb ______(swim).`; ans="to swim"; explain="teach sb to do教某人做";}
-            else if(t===80){q=`Train sb ______(run) fast.`; ans="to run"; explain="train sb to do训练某人做";}
-            else if(t===81){q=`Force sb ______(do) it.`; ans="to do"; explain="force sb to do强迫某人做";}
-            else if(t===82){q=`Order sb ______(obey) rules.`; ans="to obey"; explain="order sb to do命令某人做";}
-            else if(t===83){q=`Warn sb ______(not go) out.`; ans="not to go"; explain="warn sb not to do警告某人不做";}
-            else if(t===84){q=`Wish sb ______(succeed).`; ans="to succeed"; explain="wish sb to do希望某人成功";}
-            else if(t===85){q=`Expect sb ______(arrive) on time.`; ans="to arrive"; explain="expect sb to do期望某人到达";}
-            else if(t===86){q=`Remind sb ______(lock) the door.`; ans="to lock"; explain="remind sb to do提醒某人锁门";}
-            else if(t===87){q=`Persuade sb ______(give up) smoking.`; ans="to give up"; explain="persuade sb to do说服某人戒烟";}
-            else if(t===88){q=`Inspire sb ______(work) hard.`; ans="to work"; explain="inspire sb to do激励某人努力";}
-            else if(t===89){q=`Require sb ______(finish) the task.`; ans="to finish"; explain="require sb to do要求某人完成任务";}
-            else if(t===90){q=`Beg sb ______(help) the poor.`; ans="to help"; explain="beg sb to do乞求某人帮助穷人";}
-            else if(t===91){q=`It is easy ______(learn) English.`; ans="to learn"; explain="it is + adj + to do";}
-            else if(t===92){q=`It is difficult ______(speak) well.`; ans="to speak"; explain="it is + adj + to do";}
-            else if(t===93){q=`It is useful ______(remember) words.`; ans="to remember"; explain="it is + adj + to do";}
-            else if(t===94){q=`It is necessary ______(study) hard.`; ans="to study"; explain="it is + adj + to do";}
-            else if(t===95){q=`It is important ______(keep) healthy.`; ans="to keep"; explain="it is + adj + to do";}
-            else if(t===96){q=`It is impossible ______(finish) it today.`; ans="to finish"; explain="it is + adj + to do";}
-            else if(t===97){q=`It is dangerous ______(swim) alone.`; ans="to swim"; explain="it is + adj + to do";}
-            else if(t===98){q=`It is helpful ______(read) aloud.`; ans="to read"; explain="it is + adj + to do";}
-            else if(t===99){q=`It is useless ______(argue) with him.`; ans="to argue"; explain="it is + adj + to do";}
-            else {q=`It is kind ______(help) the old.`; ans="to help"; explain="it is + adj + to do";}
-            grammarList.push({q,ans,explain});
-        }
+// 语法填空题100道 
+const grammarList = [];
+for(let i=1;i<=100;i++){
+    let t = i%100;
+    let q,ans,explain;
+    if(t===1){q=`Jason ______(get) out of bed early each weekday morning routinely.`; ans="gets"; explain="一般现在时三单+s";}
+    else if(t===2){q=`My household family ______(go) to the downtown scenic sightseeing zone in the past day.`; ans="went"; explain="过去时go→went";}
+    else if(t===3){q=`Listen! The female team members ______(sing) pop melodies cheerfully together in chorus.`; ans="are singing"; explain="现在进行时be+doing";}
+    else if(t===4){q=`I ______(live) within this quiet suburban living compound for a full decade.`; ans="have lived"; explain="现在完成时have done";}
+    else if(t===5){q=`Lucy ______(visit) the urban central city park alongside her peer companions tomorrow.`; ans="will visit"; explain="将来时will do";}
+    else if(t===6){q=`It proves genuinely vital ______(learn) English linguistic knowledge steadily and persistently.`; ans="to learn"; explain="it is + adj + to do";}
+    else if(t===7){q=`My desk partner excels at ______(swim) within the community public swimming facility.`; ans="swimming"; explain="介词后接doing";}
+    else if(t===8){q=`I offer sincere gratitude to you for ______(help) me resolve this complicated puzzle problem.`; ans="helping"; explain="for后接doing";}
+    else if(t===9){q=`Ms.White derives enjoyment from ______(read) assorted literary fiction novels in spare moments.`; ans="reading"; explain="enjoy doing";}
+    else if(t===10){q=`Kindly cease ______(talk) loudly inside this tranquil school library building.`; ans="talking"; explain="stop doing停止做";}
+    else if(t===11){q=`I intend ______(buy) a brand-new school backpack bag in recent days.`; ans="to buy"; explain="want to do";}
+    else if(t===12){q=`The outdoor weather condition over the weekend is remarkably ______(sun) today.`; ans="sunny"; explain="名词变形容词sunny";}
+    else if(t===13){q=`He is capable of running far ______(fast) compared to his younger little brother.`; ans="faster"; explain="比较级faster";}
+    else if(t===14){q=`This weekend period represents the ______(good) window for outdoor mountain hiking excursions.`; ans="best"; explain="good的最高级为best";}
+    else if(t===15){q=`This young female vocalist sings extremely ______(beautiful) upon the performance stage.`; ans="beautifully"; explain="副词修饰动词+ly";}
+    else if(t===16){q=`There ______(be) one textbook volume plus several pens placed upon the desktop surface.`; ans="is"; explain="there be单数用is";}
+    else if(t===17){q=`No single individual ______(know) the genuine hidden truth behind this whole incident affair.`; ans="knows"; explain="不定代词作主语三单";}
+    else if(t===18){q=`If atmospheric conditions ______(rain) tomorrow, I will remain home indoors the entire day.`; ans="rains"; explain="if从句主将从现";}
+    else if(t===19){q=`I was accustomed ______(walk) alongside the river embankment following evening dinner time.`; ans="to walk"; explain="used to do过去常常";}
+    else if(t===20){q=`He has fully grown accustomed to ______(get) up early for daily morning reading sessions.`; ans="getting"; explain="be used to doing习惯于";}
+    else if(t===21){q=`I have a craving ______(eat) several sweet snack treats following lengthy study hours.`; ans="eating"; explain="feel like doing";}
+    else if(t===22){q=`We cannot contain ourselves ______(laugh) at this hilarious short stage performance skit.`; ans="laughing"; explain="can't help doing忍不住";}
+    else if(t===23){q=`Every one of us is eagerly looking forward to ______(see) our former old school classmates once again.`; ans="seeing"; explain="look forward to内to为介词，后接动名词";}
+    else if(t===24){q=`Persistently keep on ______(try) repeatedly until genuine progress is finally achieved.`; ans="trying"; explain="keep on doing 坚持持续做某事";}
+    else if(t===25){q=`The young children are fully occupied ______(do) their daily holiday homework assignments.`; ans="doing"; explain="be busy doing sth 忙于进行某项工作";}
+    else if(t===26){q=`You ought to abandon ______(smoke) cigarettes for the sake of your bodily physical wellness.`; ans="smoking"; explain="give up doing 放弃某种行为习惯";}
+    else if(t===27){q=`Do not postpone ______(do) your essential daily routine scheduled tasks.`; ans="doing"; explain="put off 推迟，介词off后搭配doing";}
+    else if(t===28){q=`Would you take offense at ______(open) the window to draw in fresh outdoor ambient air?`; ans="opening"; explain="mind doing 介意做某事，固定用法";}
+    else if(t===29){q=`We must consistently practice ______(speak) oral spoken English every single day.`; ans="speaking"; explain="practice后面固定搭配动名词doing";}
+    else if(t===30){q=`Please complete finishing ______(do) your written coursework before class concludes.`; ans="doing"; explain="finish doing 完成某项动作";}
+    else if(t===31){q=`Make every effort to evade ______(make) careless errors throughout the examination test.`; ans="making"; explain="avoid doing 规避、避免做某事";}
+    else if(t===32){q=`Local community regulations permit ______(smoke) tobacco solely within designated exclusive zones.`; ans="smoking"; explain="allow doing 允许进行某项行为";}
+    else if(t===33){q=`I recommend ______(take) a brief rest break after prolonged continuous studying time.`; ans="taking"; explain="advise doing 建议做某事";}
+    else if(t===34){q=`All faculty educators suggest ______(go) outdoors to obtain proper relaxation time.`; ans="going"; explain="suggest后面只能接动名词doing作宾语";}
+    else if(t===35){q=`We are contemplating ______(move) residence to a brand-new quiet residential neighborhood shortly.`; ans="moving"; explain="consider doing 考虑计划做某事";}
+    else if(t===36){q=`It proves difficult to envision ______(live) upon the moon within ordinary daily human life.`; ans="living"; explain="imagine doing 想象设想某种场景";}
+    else if(t===37){q=`I truly cherish recollections of ______(watch) animated cartoon series during my childhood years.`; ans="watching"; explain="miss doing 怀念过去做的事";}
+    else if(t===38){q=`Forgive me for ______(interrupt) your serious private one-on-one conversation dialogue.`; ans="interrupting"; explain="pardon doing 原谅某人做出的行为";}
+    else if(t===39){q=`Most adolescent teenagers detest ______(do) tedious daily household chores regularly.`; ans="doing"; explain="dislike doing 不喜欢做某事";}
+    else if(t===40){q=`Teenage youngsters derive joy from ______(play) casual entertaining games once school ends.`; ans="playing"; explain="enjoy doing 享受做某事";}
+    else if(t===41){q=`He managed to evade ______(be) penalized due to his casual careless oversight mistake.`; ans="being"; explain="escape doing 逃避某种结果，此处为被动含义being done";}
+    else if(t===42){q=`Community public rules strictly prohibit ______(swim) within the deep river water region.`; ans="swimming"; explain="forbid doing 明令禁止某种行为";}
+    else if(t===43){q=`The urban city park authorizes ______(park) private motor vehicles along the roadside pavement.`; ans="parking"; explain="permit doing 允许开展对应行为";}
+    else if(t===44){q=`Professional industry specialists recommend ______(wait) patiently for official published notifications.`; ans="waiting"; explain="advise doing";}
+    else if(t===45){q=`The young male youth admits ______(make) a minor careless mistake just moments ago.`; ans="making"; explain="admit doing承认";}
+    else if(t===46){q=`This juvenile boy denies ______(steal) cash currency from the front service counter.`; ans="stealing"; explain="deny doing否认";}
+    else if(t===47){q=`Never gamble with the risk of ______(lose) your stable formal career job casually.`; ans="losing"; explain="risk doing冒险";}
+    else if(t===48){q=`Strive your utmost to resist the urge of ______(buy) unnecessary apparel clothing items.`; ans="buying"; explain="resist doing抵制";}
+    else if(t===49){q=`I cannot endure ______(wait) for such an extended lengthy period of time.`; ans="waiting"; explain="can't stand doing无法忍受";}
+    else if(t===50){q=`Devote your whole self to ______(work) diligently toward your personal life objectives.`; ans="working"; explain="devote to doing致力于";}
+    else if(t===51){q=`Firmly stick to ______(learn) English language knowledge day after consecutive day.`; ans="learning"; explain="stick to doing坚持";}
+    else if(t===52){q=`Numerous local residents raise objections to ______(do) such unreasonable behaviors.`; ans="doing"; explain="object to doing反对";}
+    else if(t===53){q=`Concentrate your full attention on ______(read) these English passage articles carefully.`; ans="reading"; explain="pay attention to doing注意";}
+    else if(t===54){q=`He has thoroughly adapted to ______(live) within this small township district area.`; ans="living"; explain="be used to doing习惯于";}
+    else if(t===55){q=`Gradually grow accustomed to ______(eat) western-style bread for daily morning breakfast.`; ans="eating"; explain="get used to doing习惯于";}
+    else if(t===56){q=`All of us anticipate with excitement ______(meet) with you face to face in person.`; ans="meeting"; explain="look forward to doing期待";}
+    else if(t===57){q=`Be fully dedicated and devoted to ______(study) hard for your upcoming future examinations.`; ans="studying"; explain="be devoted to doing致力于";}
+    else if(t===58){q=`Never become addicted to ______(play) online internet games throughout the entire day.`; ans="playing"; explain="be addicted to doing沉迷于";}
+    else if(t===59){q=`This particular incident matter is closely connected with ______(work) hard in daily academic study.`; ans="working"; explain="be related to doing与…有关";}
+    else if(t===60){q=`Every citizen contributes their part to ______(build) our exquisite modern metropolitan city.`; ans="building"; explain="contribute to doing贡献";}
+    else if(t===61){q=`Negative bad living habits will result in ______(make) slow progress within academic study.`; ans="making"; explain="lead to doing导致";}
+    else if(t===62){q=`We witness somebody ______(do) certain actions within real everyday daily life scenarios.`; ans="doing"; explain="see sb doing看见某人正在做";}
+    else if(t===63){q=`I can hear her ______(sing) soft gentle melodious songs inside the adjacent room space.`; ans="singing"; explain="hear sb doing听见某人正在唱";}
+    else if(t===64){q=`We observe somebody ______(play) football sport upon the playground field ground.`; ans="playing"; explain="watch sb doing观看某人正在踢";}
+    else if(t===65){q=`I catch notice of somebody ______(come) inside the classroom quietly and silently.`; ans="coming"; explain="notice sb doing注意到某人正在进来";}
+    else if(t===66){q=`I discover somebody ______(cry) sorrowfully within the street corner area.`; ans="crying"; explain="find sb doing发现某人正在哭";}
+    else if(t===67){q=`Do not keep other people ______(wait) for your arrival for excessive lengthy periods.`; ans="waiting"; explain="keep sb doing让某人一直等";}
+    else if(t===68){q=`The classroom teacher makes students ______(laugh) loudly during class hours.`; ans="laugh"; explain="make sb do让某人做";}
+    else if(t===69){q=`Allow somebody ______(go) forward first to cut down unnecessary waiting duration.`; ans="go"; explain="let sb do让某人做";}
+    else if(t===70){q=`We arrange for somebody ______(do) the heavy manual labor work on our behalf.`; ans="do"; explain="have sb do让某人做";}
+    else if(t===71){q=`My maternal mother instructs somebody ______(come) to school early each morning.`; ans="to come"; explain="tell sb to do告诉某人做";}
+    else if(t===72){q=`He requests somebody ______(help) him complete this difficult challenging assignment task.`; ans="to help"; explain="ask sb to do请求某人做";}
+    else if(t===73){q=`I desire somebody ______(stay) on-site here and await my eventual return.`; ans="to stay"; explain="want sb to do想要某人做";}
+    else if(t===74){q=`Official regulations permit somebody ______(enter) the reading room facility freely.`; ans="to enter"; explain="allow sb to do允许某人做";}
+    else if(t===75){q=`Professional specialists advise somebody ______(take) appropriate rest on a regular basis.`; ans="to take"; explain="advise sb to do建议某人做";}
+    else if(t===76){q=`Classroom teachers encourage somebody ______(try) once again following failure setbacks.`; ans="to try"; explain="encourage sb to do鼓励某人做";}
+    else if(t===77){q=`We extend an invitation to somebody ______(attend) our weekend evening social party event.`; ans="to attend"; explain="invite sb to do邀请某人做";}
+    else if(t===78){q=`The management supervisor authorizes somebody ______(smoke) only inside the designated restricted zone.`; ans="to smoke"; explain="permit sb to do允许某人做";}
+    else if(t===79){q=`Professional swimming coaches teach somebody ______(swim) proficiently within water.`; ans="to swim"; explain="teach sb to do教某人做";}
+    else if(t===80){q=`Professional athletic trainers train somebody ______(run) at faster speeds on the track field.`; ans="to run"; explain="train sb to do训练某人做";}
+    else if(t===81){q=`Never compel or force somebody ______(do) activities that they personally dislike.`; ans="to do"; explain="force sb to do强迫某人做";}
+    else if(t===82){q=`The official officer commands somebody ______(obey) all public institutional rules strictly.`; ans="to obey"; explain="order sb to do命令某人做";}
+    else if(t===83){q=`We issue a warning to somebody ______(not go) outdoors alone during late nighttime hours.`; ans="not to go"; explain="warn sb not to do警告某人不做";}
+    else if(t===84){q=`We sincerely offer wishes to somebody ______(succeed) within their professional career path.`; ans="to succeed"; explain="wish sb to do希望某人成功";}
+    else if(t===85){q=`We hold expectations for somebody ______(arrive) at the station terminal according to fixed schedule time.`; ans="to arrive"; explain="expect sb to do期望某人到达";}
+    else if(t===86){q=`Remind somebody ______(lock) the front entrance door before departing from home.`; ans="to lock"; explain="remind sb to do提醒某人锁门";}
+    else if(t===87){q=`We persuade and convince somebody ______(give up) harmful smoking habits entirely and completely.`; ans="to give up"; explain="persuade sb to do说服某人戒烟";}
+    else if(t===88){q=`Grand lofty aspirations inspire somebody ______(work) diligently day in and day out.`; ans="to work"; explain="inspire sb to do激励某人努力";}
+    else if(t===89){q=`The school institution requires somebody ______(finish) daily assigned tasks punctually on time.`; ans="to finish"; explain="require sb to do要求某人完成任务";}
+    else if(t===90){q=`Beg and plead with somebody ______(help) impoverished needy kind people around us kindly.`; ans="to help"; explain="beg sb to do乞求某人帮助穷人";}
+    else if(t===91){q=`It proves fairly straightforward ______(learn) fundamental basic English grammar rules well.`; ans="to learn"; explain="it is + adj + to do";}
+    else if(t===92){q=`It remains relatively challenging ______(speak) fluent conversational oral English proficiently.`; ans="to speak"; explain="it is + adj + to do";}
+    else if(t===93){q=`It carries extremely high practical value ______(remember) daily English vocabulary words.`; ans="to remember"; explain="it is + adj + to do";}
+    else if(t===94){q=`It stands totally essential and necessary ______(study) hard for upcoming future examinations.`; ans="to study"; explain="it is + adj + to do";}
+    else if(t===95){q=`It holds vital great importance ______(maintain) sound healthy physical bodily condition.`; ans="to keep"; explain="it is + adj + to do";}
+    else if(t===96){q=`It is nearly impossible ______(finish all assigned work fully within today's timeframe.`; ans="to finish"; explain="it is + adj + to do";}
+    else if(t===97){q=`It possesses significant danger ______(swim) by oneself within wild deep river waters.`; ans="to swim"; explain="it is + adj + to do";}
+    else if(t===98){q=`It delivers genuine practical benefits ______(read) English articles aloud each daily day.`; ans="to read"; explain="it is + adj + to do";}
+    else if(t===99){q=`It is utterly pointless and useless ______(argue) endlessly with stubborn-minded individuals.`; ans="to argue"; explain="it is + adj + to do";}
+    else {q=`It demonstrates genuine kindness ______(help) elderly senior citizens surrounding our daily lives.`; ans="to help"; explain="it is + adj + to do";}
+    grammarList.push({q,ans,explain});
+}
 
         // 全局变量：当前题目索引、当前题库、错题列表、刷题记录
         let currentIndex = 0;
