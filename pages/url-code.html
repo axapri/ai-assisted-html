@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta name="baidu-site-verification" content="codeva-CsjXm2nfVY" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="x5-orientation" content="portrait">
+    <meta name="x5-page-mode" content="app">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="font-size-adjust" content="none">
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <title>Axapri | URL编码解码</title>
+    <meta name="description" content="在线URL网址编码、解码，前端后端开发必备，一键处理中文、特殊字符链接，支持两套编码规则">
+    <meta name="keywords" content="URL编码,URL解码,网址转义,开发工具,特殊字符处理,encodeURI,encodeURIComponent">
+	<link rel="icon" href="/favicon.png?v=1" type="image/png" sizes="32x32">
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 310px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+        .form-item textarea,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+        .form-item textarea {
+            resize: none;
+            height: 90px;
+        }
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 15px;
+            font-weight: 500;
+            color: var(--text);
+            line-height:1.7;
+            word-break: break-all;
+            min-height: 80px;
+        }
+        .btn-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+            margin: 22px 0 12px;
+        }
+        .extra-btn-box {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+        .runBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+        .copyBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+        .clearBtn {
+            background: var(--card);
+            color: var(--subtext);
+            border: 1px solid var(--border);
+        }
+        .swapBtn {
+            background: var(--card);
+            color: var(--theme);
+            border: 1px solid var(--theme);
+        }
+        .soft-text {
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+        .tip-text {
+            font-size: 12px;
+            color: var(--subtext);
+            line-height: 1.7;
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(0,0,0,0.03);
+        }
+        .theme-dark .tip-text {
+            background: rgba(255,255,255,0.05);
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: var(--bg);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-link"></i> URL编码解码
+        </div>
+        <div class="desc">网址URL一键编码转义 / 解码还原，后端接口调试必备</div>
+        <div class="calc-box">
+            <div class="form-item">
+                <label>转换模式</label>
+                <select id="modeSelect">
+                    <option value="encodeComponent">encodeURIComponent 编码(参数专用)</option>
+                    <option value="encodeUri">encodeURI 编码(完整链接)</option>
+                    <option value="decode">URL 解码</option>
+                </select>
+            </div>
+            <div class="form-item">
+                <label>输入内容</label>
+                <textarea id="inputText" placeholder="粘贴链接、带中文参数URL进行处理"></textarea>
+            </div>
+            <div class="result-box" id="result">
+                处理结果将展示在这里
+            </div>
+        </div>
+        <div class="btn-box">
+            <button class="runBtn" id="runBtn">执行转换</button>
+            <button class="copyBtn" id="copyBtn">复制结果</button>
+            <button class="clearBtn" id="clearBtn">清空</button>
+        </div>
+        <div class="extra-btn-box">
+            <button class="swapBtn" id="swapBtn"><i class="fa-solid fa-exchange-alt"></i> 互换输入输出（结果填入输入框）</button>
+        </div>
+        <div class="soft-text">
+            本地运算，数据不会上传服务器，自带反斜杠\兼容处理
+        </div>
+        <div class="tip-text">
+            <strong>两种编码区别（新手必读）：</strong><br>
+            1. encodeURI：完整网址专用，不会编码 / ?:&#35;@&amp;+=$ 适合整站URL编码<br>
+            2. encodeURIComponent：接口参数专用，会编码所有特殊字符，适合Query参数、POST参数
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+<script>
+    const modeSelect = document.getElementById('modeSelect');
+    const inputText = document.getElementById('inputText');
+    const runBtn = document.getElementById('runBtn');
+    const copyBtn = document.getElementById('copyBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const swapBtn = document.getElementById('swapBtn');
+    const resultBox = document.getElementById('result');
+    const toast = document.getElementById('toast');
+    let resContent = "";
+
+    function showToast(msg) {
+        toast.textContent = msg;
+        toast.classList.add('show');
+        setTimeout(() => toast.classList.remove('show'), 1500);
+    }
+
+    // 新增：反斜杠兼容预处理
+    function preHandleStr(str) {
+        // 统一正反斜杠兼容，自动转义\，兼容Windows路径、带反斜杠URL
+        return str.replace(/\\/g, '/');
+    }
+
+    function handleConvert() {
+        let raw = inputText.value.trim();
+        if (!raw) {
+            resultBox.innerText = "请输入需要处理的URL文本";
+            resContent = "";
+            return;
+        }
+        // 反斜杠转义兼容处理
+        raw = preHandleStr(raw);
+        try {
+            const mode = modeSelect.value;
+            if (mode === 'encodeComponent') {
+                resContent = encodeURIComponent(raw);
+            } else if (mode === 'encodeUri') {
+                resContent = encodeURI(raw);
+            } else {
+                resContent = decodeURIComponent(raw);
+            }
+            resultBox.innerText = resContent;
+        } catch (err) {
+            resContent = "";
+            resultBox.innerText = `解析失败：${err.message}\n当前内容并非标准URL编码字符串`;
+        }
+    }
+
+    // 互换输入输出
+    swapBtn.addEventListener('click', () => {
+        if (!resContent) {
+            showToast('暂无结果可互换');
+            return;
+        }
+        inputText.value = resContent;
+        resultBox.innerText = '处理结果将展示在这里';
+        resContent = '';
+        showToast('已将结果填入输入框，可切换解码模式二次处理');
+    })
+
+    // 清空全部
+    clearBtn.addEventListener('click', () => {
+        inputText.value = '';
+        resultBox.innerText = '处理结果将展示在这里';
+        resContent = '';
+        showToast('已清空');
+    })
+
+    async function copyResult() {
+        if (!resContent) {
+            showToast('暂无有效结果');
+            return;
+        }
+        try {
+            await navigator.clipboard.writeText(resContent);
+            showToast('复制成功');
+        } catch (e) {
+            const temp = document.createElement('textarea');
+            temp.value = resContent;
+            document.body.appendChild(temp);
+            temp.select();
+            document.execCommand('copy');
+            document.body.removeChild(temp);
+            showToast('已选中，直接粘贴');
+        }
+    }
+
+    runBtn.addEventListener('click', handleConvert);
+    copyBtn.addEventListener('click', copyResult);
+    inputText.addEventListener('keydown', e => {
+        if (e.key === 'Enter') handleConvert();
+    })
+
+    // 全局主题读取
+    const localTheme = localStorage.getItem('site-theme');
+    if (localTheme) document.body.className = `theme-${localTheme}`;
+</script>
+</body>
+</html>
