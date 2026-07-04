@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="font-size-adjust" content="none">
+    <title>Axapri | 手机号生成器</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+            --hover: #f1f1f1;
+        }
+        .theme-dark {
+            --bg: #111827;
+            --text: #f3f6f6;
+            --subtext: #9ca3af;
+            --border: #374151;
+            --theme: #c94444;
+            --card: #1f3133;
+            --hover: #374151;
+        }
+        .theme-green {
+            --bg: #f8fff9;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dcfce7;
+            --theme: #16a34a;
+            --card: #f0fdf4;
+            --hover: #dcfce7;
+        }
+        .theme-blue {
+            --bg: #f8fafc;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #dbeafe;
+            --theme: #3b82f6;
+            --card: #eff6ff;
+            --hover: #dbeafe;
+        }
+        .theme-purple {
+            --bg: #fdfaff;
+            --text: #1e293b;
+            --subtext: #475569;
+            --border: #f3e8ff;
+            --theme: #a855f7;
+            --card: #faf5ff;
+            --hover: #f3e8ff;
+        }
+        .theme-yellow {
+            --bg: #fffbeb;
+            --text: #292524;
+            --subtext: #78716c;
+            --border: #fef3c7;
+            --theme: #d97706;
+            --card: #fffced;
+            --hover: #fef3c7;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            min-height: 310px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item select {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            color: #24292f;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        .form-item select {
+            background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b7880' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        .result-box {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 14px;
+            margin-top: 10px;
+            text-align: left;
+            font-size: 14px;
+            font-weight: normal;
+            color: var(--text);
+            line-height:1.8;
+            max-height: 180px;
+            overflow-y: auto;
+            white-space: pre-line;
+            font-family: Consolas;
+        }
+
+        .btn-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 12px;
+            margin: 22px 0 12px;
+        }
+        /* 导出按钮居中 */
+        .btn-box-2 {
+            display: flex;
+            justify-content: center;
+        }
+        .btn-box-2 button {
+            width: 160px;
+        }
+
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 14px;
+            cursor: pointer;
+            font-weight: 500;
+            -webkit-appearance: none;
+        }
+        button:active {
+            transform: scale(0.96);
+        }
+
+        #generateBtn {
+            background: var(--theme);
+            color: #fff;
+        }
+        #copyBtn {
+            background: var(--hover);
+            color: var(--text);
+        }
+        #downloadBtn {
+            background: var(--hover);
+            color: var(--text);
+        }
+        #resetBtn {
+            background: var(--card);
+            color: var(--text);
+            border: 1px solid var(--border);
+        }
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 13px;
+            color: var(--subtext);
+            line-height: 1.6;
+            text-align: center;
+        }
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text);
+            color: var(--bg);
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 999;
+        }
+        .toast.show {
+            opacity: 1;
+            visibility: visible;
+        }
+        * {
+            -webkit-tap-highlight-color: transparent !important;
+            -webkit-text-size-adjust: none !important;
+            tap-highlight-color: transparent !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-mobile-screen-button"></i> 手机号生成器
+        </div>
+        <div class="desc">正规号段随机生成，归属地查询，支持复制与TXT导出</div>
+
+        <div class="calc-box">
+            <div class="form-item">
+                <label>运营商号段</label>
+                <select id="operatorType">
+                    <option value="all">全部运营商</option>
+                    <option value="mobile">中国移动</option>
+                    <option value="unicom">中国联通</option>
+                    <option value="telecom">中国电信</option>
+                </select>
+            </div>
+
+            <div class="form-item">
+                <label>生成数量</label>
+                <select id="countNum">
+                    <option value="1">1 条</option>
+                    <option value="5">5 条</option>
+                    <option value="10">10 条</option>
+                    <option value="20">20 条</option>
+                </select>
+            </div>
+
+            <div class="result-box" id="result">
+                生成结果将显示在这里（自动附带归属地）
+            </div>
+        </div>
+
+        <div class="btn-box">
+            <button id="generateBtn">一键生成</button>
+            <button id="copyBtn">复制结果</button>
+            <button id="resetBtn">清空重置</button>
+        </div>
+        <!-- 导出按钮居中布局 -->
+        <div class="btn-box-2">
+            <button id="downloadBtn"><i class="fa-solid fa-download"></i> 导出TXT文件</button>
+        </div>
+
+        <div class="soft-text">
+            仅用于开发测试、接口调试场景，仅供学习开发使用<br>严禁用于短信骚扰、注册刷量、营销扰民等违规违法行为
+        </div>
+    </div>
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const operatorType = document.getElementById('operatorType');
+        const countNum = document.getElementById('countNum');
+        const generateBtn = document.getElementById('generateBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resultBox = document.getElementById('result');
+        const toast = document.getElementById('toast');
+        let isClicking = false;
+        let lastPhoneList = [];
+
+        // 号段 + 运营商 + 省份库
+        const phoneData = {
+            mobile: {
+                list: [134,135,136,137,138,139,147,150,151,152,157,158,159,178,182,183,184,187,188,198],
+                name:"中国移动"
+            },
+            unicom: {
+                list: [130,131,132,145,155,156,166,175,176,185,186,196],
+                name:"中国联通"
+            },
+            telecom: {
+                list: [133,149,153,173,177,180,181,189,191,199],
+                name:"中国电信"
+            }
+        };
+        const provinceMap = {
+            130:"山东",131:"江苏",132:"四川",133:"上海",134:"北京",135:"河北",136:"广东",137:"浙江",138:"江苏",139:"广东",
+            145:"广东",147:"北京",149:"广东",150:"江苏",151:"浙江",152:"四川",153:"上海",155:"山东",156:"北京",157:"湖南",158:"浙江",159:"广东",
+            166:"北京",173:"浙江",175:"山东",176:"广东",177:"浙江",178:"江苏",180:"四川",181:"上海",182:"江苏",183:"湖南",184:"北京",185:"广东",186:"山东",187:"浙江",188:"广东",189:"上海",
+            191:"上海",196:"北京",198:"广东",199:"上海"
+        };
+        const phoneReg = /^1[3-9]\d{9}$/;
+
+        document.body.className = localStorage.getItem('site-theme') || 'theme-light';
+
+        window.onload = function () {
+            let save = localStorage.getItem('phoneGenData');
+            if (save) {
+                let d = JSON.parse(save);
+                operatorType.value = d.operator || 'all';
+                countNum.value = d.count || '1';
+            }
+            (function() {
+                if (typeof WeixinJSBridge == 'object' && typeof document.addEventListener == 'function') {
+                    document.addEventListener('WeixinJSBridgeReady', function() {
+                        WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+                        WeixinJSBridge.on('menu:setfont', function() {
+                            WeixinJSBridge.invoke('setFontSizeCallback', { 'fontSize': 0 });
+                        });
+                    });
+                }
+            })();
+        };
+
+        function showToast(text) {
+            toast.textContent = text;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 1500);
+        }
+        function autoSave() {
+            let data = {
+                operator: operatorType.value,
+                count: countNum.value
+            };
+            localStorage.setItem('phoneGenData', JSON.stringify(data));
+        }
+        function randomNum(min,max){
+            return Math.floor(Math.random()*(max-min+1))+min;
+        }
+
+        function getPhoneInfo(prefix3){
+            let op = "";
+            let province = provinceMap[prefix3] || "未知";
+            if(phoneData.mobile.list.includes(prefix3)) op = phoneData.mobile.name;
+            else if(phoneData.unicom.list.includes(prefix3)) op = phoneData.unicom.name;
+            else if(phoneData.telecom.list.includes(prefix3)) op = phoneData.telecom.name;
+            else op = "未知运营商";
+            return {op,province};
+        }
+
+        function createPhone(type){
+            let arr = [];
+            if(type === 'all'){
+                arr = [...phoneData.mobile.list,...phoneData.unicom.list,...phoneData.telecom.list];
+            }else{
+                arr = phoneData[type].list;
+            }
+            const prefix = arr[randomNum(0,arr.length-1)];
+            let suffix = '';
+            for(let i=0;i<8;i++) suffix += randomNum(0,9);
+            return prefix + suffix;
+        }
+
+        function generate(){
+            if(isClicking) return;
+            isClicking = true;
+            setTimeout(()=>isClicking = false, 500);
+            const type = operatorType.value;
+            const count = parseInt(countNum.value);
+            let set = new Set();
+            while(set.size < count){
+                set.add(createPhone(type));
+            }
+            const arr = Array.from(set);
+            lastPhoneList = arr;
+            let output = "";
+            arr.forEach(phone=>{
+                const pre3 = parseInt(phone.substring(0,3));
+                const info = getPhoneInfo(pre3);
+                output += `${phone}  |  ${info.province}  |  ${info.op}\n`;
+            });
+            resultBox.innerText = output;
+            autoSave();
+            showToast('生成成功');
+        }
+
+        async function copyResult() {
+            const text = resultBox.innerText.trim();
+            if(!text || text.includes("生成结果将显示在这里")){
+                showToast('暂无可复制内容');
+                return;
+            }
+            await navigator.clipboard.writeText(text);
+            showToast('复制成功');
+        }
+
+        function downloadTxt(){
+            if(lastPhoneList.length === 0){
+                showToast('暂无数据，先生成号码');
+                return;
+            }
+            let content = "手机号\t省份\t运营商\n";
+            lastPhoneList.forEach(phone=>{
+                const pre3 = parseInt(phone.substring(0,3));
+                const info = getPhoneInfo(pre3);
+                content += `${phone}\t${info.province}\t${info.op}\n`;
+            });
+            const blob = new Blob([content], {type:"text/plain;charset=utf-8"});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "手机号列表_" + new Date().getTime() + ".txt";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+            showToast("TXT文件已下载");
+        }
+
+        function resetAll() {
+            operatorType.value = 'all';
+            countNum.value = '1';
+            resultBox.innerText = '生成结果将显示在这里（自动附带归属地）';
+            lastPhoneList = [];
+            localStorage.removeItem('phoneGenData');
+            showToast('已重置');
+        }
+
+        generateBtn.addEventListener('click', generate);
+        resetBtn.addEventListener('click', resetAll);
+        copyBtn.addEventListener('click', copyResult);
+        downloadBtn.addEventListener('click', downloadTxt);
+        operatorType.addEventListener('change', autoSave);
+        countNum.addEventListener('change', autoSave);
+    </script>
+</body>
+</html>
