@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="x5-fullscreen" content="true">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Axapri | 表格生成JSON</title>
+    <link rel="stylesheet" href="https://cdn.bootcdn.net/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: color 0.2s ease, background-color 0.25s ease, border-color 0.2s ease, transform 0.2s ease;
+            -webkit-appearance: none;
+        }
+
+        :root {
+            --bg: #ffffff;
+            --text: #24292f;
+            --subtext: #6b7880;
+            --border: #e5e7eb;
+            --theme: #ae3333;
+            --card: #f9f9f9;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 24px 20px 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 340px;
+        }
+
+        .title {
+            text-align: center;
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--theme);
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .desc {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 14px;
+            margin-bottom: 24px;
+        }
+
+        .calc-box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(174,51,51,0.08);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .form-item {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-item label {
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-item input,
+        .form-item textarea {
+            padding: 12px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 15px;
+            outline: none;
+            background: #fff;
+            font-family: Consolas, monospace;
+        }
+        .form-item textarea {
+            min-height: 140px;
+            resize: none;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+        }
+        /* 列宽分配：Key 32%  Value 32%  类型26%  操作10% */
+        th:nth-child(1) { width: 32%; }
+        th:nth-child(2) { width: 32%; }
+        th:nth-child(3) { width: 26%; }
+        th:nth-child(4) { width: 10%; }
+
+        th {
+            background: #fff;
+            border: 1px solid var(--border);
+            padding: 9px 2px;
+            font-size: 13px;
+        }
+        td {
+            border: 1px solid var(--border);
+            padding: 4px;
+        }
+        td input {
+            width: 100%;
+            padding: 7px;
+            border: 1px solid var(--border);
+            border-radius: 7px;
+            font-size: 13px;
+        }
+        td select{
+            width:100%;
+            padding:5px 2px;
+            border:1px solid var(--border);
+            border-radius:6px;
+            font-size:12px;
+        }
+        .del-btn {
+            width: 100%;
+            padding: 5px 0;
+            background: #f8d7da;
+            color: #c0392b;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        .del-btn:active {transform: scale(0.95);}
+
+        .btn-row {
+            display: flex;
+            gap: 10px;
+        }
+        button {
+            flex: 1;
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            -webkit-appearance: none;
+        }
+        button:active {transform: scale(0.96);}
+
+        .btn-main{background: var(--theme);color:#fff;}
+        .btn-blue{background:#3672b9;color:#fff;}
+        .btn-green{background:#28a745;color:#fff;}
+        .btn-purple{background:#9c27b0;color:#fff;}
+        .btn-gray{background:var(--card);border:1px solid var(--border);}
+
+        .soft-text {
+            margin-top: 14px;
+            font-size: 12px;
+            color: var(--subtext);
+            text-align: center;
+        }
+        .file-hidden{display:none;}
+
+        /* 居中弹窗 */
+        .alert-mask {
+            position: fixed;
+            top: 0;left: 0;
+            width: 100vw;height: 100vh;
+            background: rgba(0, 0, 0, 0.45);
+            z-index: 9999;
+            display: flex;align-items: center;justify-content: center;
+        }
+        .alert-box {
+            width: 280px;background: #fff;border-radius: 14px;overflow: hidden;
+            animation: alertShow 0.2s ease forwards;
+        }
+        @keyframes alertShow {to {transform: scale(1);}}
+        .alert-content {padding:22px 18px;text-align:center;font-size:15px;}
+        .alert-textarea{
+            width:100%;
+            height:110px;
+            border:1px solid var(--border);
+            border-radius:8px;
+            padding:8px;
+            margin:8px 0;
+            font-family:Consolas;
+            resize: none;
+        }
+        .alert-btn {width:100%;border:none;padding:12px;background:var(--theme);color:#fff;font-size:15px;cursor:pointer;}
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="title">
+            <i class="fa-solid fa-table-cells"></i> 表格生成JSON
+        </div>
+        <div class="desc">键值录入，一键生成JSON</div>
+
+        <div class="calc-box">
+            <table id="dataTable">
+                <thead>
+                    <tr>
+                        <th>Key</th>
+                        <th>Value</th>
+                        <th>类型</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input class="keyInput" placeholder="字段"></td>
+                        <td><input class="valInput" placeholder="内容"></td>
+                        <td>
+                            <select class="typeSelect">
+                                <option value="string">字符串</option>
+                                <option value="number">数字</option>
+                                <option value="boolean">布尔</option>
+                            </select>
+                        </td>
+                        <td></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <!-- 第一行 核心操作 -->
+            <div class="btn-row">
+                <button id="addRowBtn" class="btn-blue">新增行</button>
+                <button id="genBtn" class="btn-main">格式化</button>
+                <button id="zipBtn" class="btn-green">压缩</button>
+            </div>
+            <!-- 第二行 导入导出 -->
+            <div class="btn-row">
+                <button id="importBtn" class="btn-purple">导入JSON</button>
+                <button id="exportBtn" class="btn-blue">导出文件</button>
+                <button id="copyBtn" class="btn-blue">复制</button>
+            </div>
+            <!-- 第三行 均分两半：清空结果 / 全部重置 -->
+            <div class="btn-row">
+                <button id="clearAllResult" class="btn-gray">清空结果</button>
+                <button id="resetBtn" class="btn-gray">全部重置</button>
+            </div>
+
+            <div class="form-item">
+                <label>JSON结果</label>
+                <textarea id="jsonResult" readonly placeholder="生成内容"></textarea>
+            </div>
+            <input type="file" id="fileInput" accept=".json" class="file-hidden">
+        </div>
+
+        <div class="soft-text">回车快速加行 | 类型手动切换 | 精准报错 | 本地缓存</div>
+    </div>
+
+    <script>
+        const table = document.getElementById('dataTable').querySelector('tbody');
+        const jsonResult = document.getElementById('jsonResult');
+        const addRowBtn = document.getElementById('addRowBtn');
+        const genBtn = document.getElementById('genBtn');
+        const zipBtn = document.getElementById('zipBtn');
+        const importBtn = document.getElementById('importBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const clearAllResult = document.getElementById('clearAllResult');
+        const fileInput = document.getElementById('fileInput');
+
+        // 居中弹窗
+        function centerAlert(msg, openImport = false) {
+            if(document.querySelector('.alert-mask')) return;
+            const mask = document.createElement('div');
+            mask.className = 'alert-mask';
+            if(openImport){
+                mask.innerHTML = `<div class="alert-box"><div class="alert-content">粘贴JSON<textarea class="alert-textarea" id="impText"></textarea></div><button class="alert-btn">确认导入</button></div>`;
+            }else{
+                mask.innerHTML = `<div class="alert-box"><div class="alert-content">${msg}</div><button class="alert-btn">确定</button></div>`;
+            }
+            document.body.appendChild(mask);
+            const btn = mask.querySelector('.alert-btn');
+            btn.onclick = () => {
+                if(openImport) importJson(document.getElementById('impText').value.trim(), mask);
+                else mask.remove();
+            };
+            mask.onclick = e=>{if(e.target === mask) mask.remove();}
+        }
+
+        // JSON精准错误解析
+        function checkJson(jsonStr) {
+            try {
+                return {ok:true, data:JSON.parse(jsonStr)};
+            } catch (e) {
+                let pos = e.message.match(/position (\d+)/);
+                let idx = pos ? +pos[1] : 0;
+                let lines = jsonStr.slice(0, idx).split('\n');
+                let line = lines.length, col = lines[lines.length - 1].length + 1;
+                return {ok:false, msg:`格式错误 第${line}行 第${col}列`};
+            }
+        }
+
+        // 导入解析
+        function importJson(str, mask) {
+            const res = checkJson(str);
+            if(!res.ok){centerAlert(res.msg);return;}
+            const obj = res.data;
+            if(typeof obj !== 'object' || Array.isArray(obj)){centerAlert('仅支持JSON对象');return;}
+            table.innerHTML = '';
+            for(let k in obj){
+                let v = obj[k], type = 'string';
+                if(typeof v === 'number') type = 'number';
+                if(typeof v === 'boolean') type = 'boolean';
+                appendRow(k, String(v), type);
+            }
+            mask.remove();saveData();centerAlert('导入成功');
+        }
+
+        // 文件导入
+        importBtn.onclick = ()=>centerAlert('', true);
+        fileInput.onchange = e=>{
+            const f = e.target.files[0];
+            if(!f) return;
+            const reader = new FileReader();
+            reader.onload = ev=>importJson(ev.target.result, null);
+            reader.readAsText(f);
+            fileInput.value = '';
+        }
+        importBtn.oncontextmenu = e=>{e.preventDefault();fileInput.click();}
+
+        // 导出文件
+        exportBtn.onclick = ()=>{
+            if(!jsonResult.value){centerAlert('暂无内容');return;}
+            const blob = new Blob([jsonResult.value], {type:'application/json'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);a.download = 'data.json';a.click();
+            URL.revokeObjectURL(a.href);
+        }
+
+        // 绑定事件：保存、回车新增、删除行
+        function bindEvent(){
+            document.querySelectorAll('.keyInput,.valInput,.typeSelect').forEach(el=>{
+                el.oninput = saveData;
+                if(el.classList.contains('keyInput') || el.classList.contains('valInput')){
+                    el.onkeydown = e=>{
+                        if(e.key === 'Enter'){e.preventDefault();appendRow();saveData();}
+                    }
+                }
+            })
+            document.querySelectorAll('.del-btn').forEach(btn=>{
+                btn.onclick = function(){
+                    if(table.rows.length <= 1){centerAlert('最少保留一行');return;}
+                    this.closest('tr').remove();saveData();
+                }
+            })
+        }
+
+        // 本地存储
+        function saveData(){
+            const rows = [...table.querySelectorAll('tr')].map(tr=>({
+                key:tr.querySelector('.keyInput').value,
+                val:tr.querySelector('.valInput').value,
+                type:tr.querySelector('.typeSelect').value
+            }));
+            localStorage.setItem('tableJsonFull', JSON.stringify({rows, result:jsonResult.value}));
+        }
+
+        // 初始化行
+        function appendRow(k='',v='',t='string'){
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input class="keyInput" value="${k}" placeholder="字段"></td>
+                <td><input class="valInput" value="${v}" placeholder="内容"></td>
+                <td><select class="typeSelect">
+                    <option value="string" ${t==='string'?'selected':''}>字符串</option>
+                    <option value="number" ${t==='number'?'selected':''}>数字</option>
+                    <option value="boolean" ${t==='boolean'?'selected':''}>布尔</option>
+                </select></td>
+                <td><button class="del-btn"><i class="fa-solid fa-trash"></i></button></td>
+            `;
+            table.appendChild(tr);bindEvent();
+        }
+
+        // 页面加载读取缓存
+        window.onload = function () {
+            let cache = localStorage.getItem('tableJsonFull');
+            if (cache) {
+                const saveObj = JSON.parse(cache);
+                jsonResult.value = saveObj.result || '';
+                table.innerHTML = "";
+                saveObj.rows.forEach(item=>{
+                    appendRow(item.key, item.val, item.type);
+                })
+            }
+            bindEvent();
+        }
+
+        addRowBtn.onclick = function () {
+            appendRow();
+            saveData();
+        }
+
+        // 组装JSON
+        function buildJson(){
+            const obj = {}, keys = [];
+            for(let tr of table.querySelectorAll('tr')){
+                const key = tr.querySelector('.keyInput').value.trim();
+                const valRaw = tr.querySelector('.valInput').value.trim();
+                const type = tr.querySelector('.typeSelect').value;
+                if(!key) continue;
+                if(keys.includes(key)){centerAlert(`键【${key}】重复`);return null;}
+                keys.push(key);
+                switch(type){
+                    case 'number':obj[key] = Number(valRaw)||0;break;
+                    case 'boolean':obj[key] = valRaw.toLowerCase()==='true';break;
+                    default:obj[key] = valRaw;
+                }
+            }
+            return obj;
+        }
+
+        genBtn.onclick = function () {
+            const res = buildJson();
+            if(!res) return;
+            jsonResult.value = JSON.stringify(res, null, 4);
+            saveData();
+        }
+        zipBtn.onclick = function () {
+            const res = buildJson();
+            if(!res) return;
+            jsonResult.value = JSON.stringify(res);
+            saveData();
+        }
+
+        // 复制
+        copyBtn.onclick = async ()=>{
+            if(!jsonResult.value){centerAlert('暂无内容');return;}
+            try{await navigator.clipboard.writeText(jsonResult.value);centerAlert('复制成功');}
+            catch{jsonResult.select();centerAlert('手动Ctrl+C复制');}
+        }
+
+        // 清空结果框
+        clearAllResult.onclick = ()=>{
+            jsonResult.value = '';
+            saveData();
+            centerAlert('已清空JSON结果');
+        }
+
+        // 全部重置（表格+结果全部清空，清除缓存）
+        resetBtn.onclick = function () {
+            table.innerHTML='';appendRow();jsonResult.value='';
+            localStorage.removeItem('tableJsonFull');bindEvent();
+            centerAlert('已全部重置');
+        }
+    </script>
+</body>
+</html>
