@@ -1,0 +1,46 @@
+name: Deploy Axapri Pages
+# 推送main分支自动部署，也可手动触发
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+# 全局权限，解决Deployment failed报错
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 并发控制，避免多次部署冲突
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # Pages部署必须配置环境
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      # 拉取仓库全部静态HTML文件
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 打包网站静态文件
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: . # 你的index.html在根目录，填 .
+
+      # 部署到GitHub Pages v5
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v5
+        with:
+          timeout: 600000
+          error_count: 10
+          reporting_interval: 5000
+          artifact_name: github-pages
+          preview: false
